@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'championship_list' %}">Championships</a></li>
+    <li class="breadcrumb-item active">{{ championship }}</li>
+{% endblock %}
+
+{% block content %}
+
+<ul>
+    <li>
+        <a href="{% url 'race_list' championship.slug %}">{{ championship }} - Races </a>
+    </li>
+    <li>
+        <a href="{% url 'season_driver_list' championship.slug %}">{{ championship }} - Drivers </a>
+    </li>
+</ul>
+
+{% endblock %}

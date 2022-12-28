@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+  <li class="breadcrumb-item">Drivers</li>
+{% endblock %}
+
+{% block content %}
+  <h5>Driver List</h5>
+  <ul>
+    {% for driver in driver_list %}
+      <li>
+        <a href="{% url 'driver_detail' driver.slug %}">{{ driver.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

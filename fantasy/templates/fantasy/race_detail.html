@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'championship_list' %}">Championships</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'championship_detail' race.championship.slug %}">{{ race.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'race_list' race.championship.slug %}">Races</a></li>
+    <li class="breadcrumb-item">{{ race.name }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#drivers">Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#teams">Team Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#kadrolar">Kadrolar</a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane container show active" id="drivers">
+                <br/>
+                <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Driver</th>
+                        <th>Price</th>
+                        <th>Qualy</th>
+                        <th>Grid</th>
+                        <th>Result</th>
+                        <th>Sprint</th>
+                        <th>EHT</th>
+                        <th>Over</th>
+                        <th>Qual</th>
+                        <th>Race</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for race_driver in race_driver_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'driver_detail' race_driver.driver.slug %}">{{ race_driver.driver }}</a>
+                            </td>
+                            <td>
+                                {{ race_driver.price }}₺
+                            </td>
+                            <td>
+                                {{ race_driver.qualy|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ race_driver.grid|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ race_driver.result|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ race_driver.sprint|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ race_driver.fastest_lap|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ race_driver.overtake_point }}
+                            </td>
+                            <td>
+                                {{ race_driver.qualy_point }}
+                            </td>
+                            <td>
+                                {{ race_driver.race_point }}
+                            </td>
+                            <td>
+                                <b>{{ race_driver.total_point }}</b>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane container fade" id="teams">
+                <br/>
+                <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Tactic</th>
+                        <th>Token</th>
+                        <th>Budget</th>
+                        <th>Name</th>
+                        <th colspan="8">Drivers</th>
+                        <th>Total</th>
+                        <th>if overtake</th>
+                        <th>if quali</th>
+                        <th>if race</th>
+                        <th>2018</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for race_team in race_team_list %}
+                        <tr>
+                            <td>{{ race_team.tactic }}</td>
+                            <td>{{ race_team.token }}</td>
+                            <td>{{ race_team.budget }}₺</td>
+                            <td>{{ race_team.team.name }}</td>
+
+                            {% with race_team.raceteamdrivers.all as trd_list %}
+                                <td>
+                                    {{ trd_list.0.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.0.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.1.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.1.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.2.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.2.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.3.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.3.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.4.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.4.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.5.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.5.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.6.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.6.total_point }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.7.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.7.total_point }}</small>
+                                </td>
+                            {% endwith %}
+
+                            <td>{{ race_team.total_point }}</td>
+                            <td>{{ race_team.overtake_point }}</td>
+                            <td>{{ race_team.qualy_point }}</td>
+                            <td>{{ race_team.race_point }}</td>
+                            <td>{{ race_team.none_point }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+            <br/>
+            <div class="tab-pane container fade" id="kadrolar">
+                <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Tactic</th>
+                        <th>Token</th>
+                        <th>Budget</th>
+                        <th>Name</th>
+                        <th colspan="8">Drivers</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for race_team in race_team_list %}
+                        <tr>
+                            <td>{{ race_team.tactic }}</td>
+                            <td>{{ race_team.token }}</td>
+                            <td>{{ race_team.budget }}₺</td>
+                            <td>{{ race_team.team.name }}</td>
+
+                            {% with race_team.raceteamdrivers.all as trd_list %}
+                                <td>
+                                    {{ trd_list.0.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.0.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.1.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.1.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.2.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.2.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.3.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.3.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.4.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.4.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.5.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.5.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.6.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.6.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                                <td>
+                                    {{ trd_list.7.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ trd_list.7.racedriver.price|stringformat:"s"|add:"₺" }}</small>
+                                </td>
+                            {% endwith %}
+
+                            <td>{{ race_team.total_worth }}₺</td>
+
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

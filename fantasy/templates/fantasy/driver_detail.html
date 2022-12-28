@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">
+        {{ driver }}
+    </li>
+{% endblock %}
+
+{% block content %}
+
+<li> Forename: {{ driver.forename }} </li>
+<li> Surname: {{ driver.surname }} </li>
+<li> Code: {{ driver.code }} </li>
+<li> Number: {{ driver.number }} </li>
+<li> Nationality: {{ driver.nationality }} </li>
+<li> Constructor: {{ driver.constructor }} </li>
+
+
+{% endblock %}
