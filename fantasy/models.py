@@ -3,6 +3,7 @@ from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 JSON_PATH = Path(__file__).parent / "points.json"
@@ -32,6 +33,9 @@ class Championship(models.Model):
         if not self.slug:
             self.slug = f"{self.year}-f{self.series[-1]}"
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("fantasy:championship_detail", kwargs={"slug": self.slug})
 
 
 class Circuit(models.Model):
@@ -84,6 +88,9 @@ class Driver(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse("fantasy:driver_detail", kwargs={"slug": self.slug})
+
 
 class Race(models.Model):
     name = models.CharField(max_length=255)
@@ -97,6 +104,9 @@ class Race(models.Model):
 
     def __str__(self):
         return f"{self.championship.year} {self.name}"
+
+    def get_absolute_url(self):
+        return reverse("fantasy:race_detail", kwargs={"slug": self.championship.slug, "round": self.round})
 
 
 class RaceDriver(models.Model):

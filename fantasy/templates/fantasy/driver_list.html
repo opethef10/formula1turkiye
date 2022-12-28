@@ -10,7 +10,7 @@
   <ul>
     {% for driver in driver_list %}
       <li>
-        <a href="{% url 'fantasy:driver_detail' driver.slug %}">{{ driver.name }}</a>
+        <a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a>
       </li>
     {% endfor %}
   </ul>

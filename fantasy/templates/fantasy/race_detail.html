@@ -4,7 +4,7 @@
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
     <li class="breadcrumb-item">
-        <a href="{% url 'fantasy:championship_detail' race.championship.slug %}">{{ race.championship }}</a></li>
+        <a href="{{ race.championship.get_absolute_url }}">{{ race.championship }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' race.championship.slug %}">Races</a></li>
     <li class="breadcrumb-item">{{ race.name }}</li>
 {% endblock %}
