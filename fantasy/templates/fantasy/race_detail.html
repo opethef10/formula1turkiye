@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'championship_list' %}">Championships</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
     <li class="breadcrumb-item">
-        <a href="{% url 'championship_detail' race.championship.slug %}">{{ race.championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'race_list' race.championship.slug %}">Races</a></li>
+        <a href="{% url 'fantasy:championship_detail' race.championship.slug %}">{{ race.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' race.championship.slug %}">Races</a></li>
     <li class="breadcrumb-item">{{ race.name }}</li>
 {% endblock %}
 
@@ -48,7 +48,7 @@
                     {% for race_driver in race_driver_list %}
                         <tr>
                             <td>
-                                <a href="{% url 'driver_detail' race_driver.driver.slug %}">{{ race_driver.driver }}</a>
+                                <a href="{% url 'fantasy:driver_detail' race_driver.driver.slug %}">{{ race_driver.driver }}</a>
                             </td>
                             <td>
                                 {{ race_driver.price }}₺

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
   <li class="breadcrumb-item">Championships</li>
 {% endblock %}
 
@@ -10,7 +10,7 @@
   <ul>
     {% for championship in championship_list %}
       <li>
-        <a href="{% url 'championship_detail' championship.slug %}">
+        <a href="{% url 'fantasy:championship_detail' championship.slug %}">
           {{ championship.year }} {{ championship.series }}
         </a>
       </li>

@@ -9,6 +9,7 @@ from .. import views
 
 
 class ViewTestBase:
+    app_name_prefix = "fantasy:"
     url_name = ''
     url_kwargs = {}
     url_kwargs_404 = {}
@@ -20,7 +21,7 @@ class ViewTestBase:
     def url_reverse(self, kwargs=None):
         if kwargs is None:
             kwargs = self.url_kwargs
-        return reverse(self.url_name, kwargs=kwargs)
+        return reverse(self.app_name_prefix + self.url_name, kwargs=kwargs)
 
     def urlstring(self):
         return self.urlstring_without_slash + "/"
@@ -66,12 +67,12 @@ class HomeTests(ViewTestBase, TestCase):
 
     def test_home_view_contains_link_to_driver_list_page(self):
         response = self.client.get(self.url_reverse())
-        driver_list_url = reverse('driver_list')
+        driver_list_url = reverse('fantasy:driver_list')
         self.assertContains(response, f'href="{driver_list_url}"')
 
     def test_home_view_contains_link_to_championship_list_page(self):
         response = self.client.get(self.url_reverse())
-        championship_list_url = reverse('championship_list')
+        championship_list_url = reverse('fantasy:championship_list')
         self.assertContains(response, f'href="{championship_list_url}"')
 
 
@@ -85,7 +86,7 @@ class DriverListTests(ViewTestBase, TestCase):
         cls.view = views.DriverListView
 
     def test_driver_list_view_contains_navigation_links(self):
-        homepage_url = reverse('home')
+        homepage_url = reverse('fantasy:home')
         response = self.client.get(self.url_reverse())
         self.assertContains(response, f'href="{homepage_url}"')
 
