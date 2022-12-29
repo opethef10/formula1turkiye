@@ -48,7 +48,7 @@
                     {% for race_driver in race_driver_list %}
                         <tr>
                             <td>
-                                <a href="{% url 'fantasy:driver_detail' race_driver.driver.slug %}">{{ race_driver.driver }}</a>
+                                <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
                             </td>
                             <td>
                                 {{ race_driver.price }}₺
