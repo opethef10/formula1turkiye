@@ -21,15 +21,40 @@ class ChampionshipDriverListView(ListView):
             attended_races__in=Race.objects.filter(
                 championship=championship
             )
-        )
-        queryset = queryset.order_by('forename')
+        ).distinct()
+        # queryset = queryset.order_by('forename')
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["championship"] = Championship.objects.get(
-            slug=self.kwargs.get("slug")
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
         )
+        race_list = Race.objects.filter(
+            championship=championship
+        )
+
+        context["championship"] = championship
+        context["race_list"] = race_list
+        context["tabs"] = {
+            "total_point": "Total Points",
+            "qualy": "Qualifying",
+            "grid": "Grid",
+            "result": "Results",
+            "overtake_point": "Overtake Points",
+            "qualy_point": "Qualifying Points",
+            "race_point": "Race Points"
+        }
+        driver_list = self.get_queryset()
+        race_driver_dict = {}
+        for driver in driver_list:
+            race_driver_dict[driver] = []
+            for race in race_list:
+                race_driver = RaceDriver.objects.filter(race=race, driver=driver).first()
+                race_driver_dict[driver].append(race_driver)
+
+        context["race_driver_dict"] = race_driver_dict
         return context
 
 
