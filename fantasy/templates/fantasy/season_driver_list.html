@@ -38,16 +38,48 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if tab_id == "instances" %}
+                        {% for driver, count_list in driver_count_dict.items %}
+                            <tr>
+                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+
+
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+
+                            </tr>
+                        {% endfor %}
+                            <tr><td>&nbsp;</td></tr>
+
+                        {% for tactic, count_list in tactic_count_dict.items %}
+                            <tr>
+                                <td>{{ tactic }}</td>
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+
+                            </tr>
+                        {% endfor %}
+                        {% else %}
                         {% for driver, race_driver_list in race_driver_dict.items %}
                             <tr>
                                 <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+
+
                                 {% for race_driver in race_driver_list %}
                                     <td>
                                         {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
+
                             </tr>
                         {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>

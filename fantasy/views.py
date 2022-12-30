@@ -35,6 +35,39 @@ class ChampionshipDriverListView(ListView):
             championship=championship
         )
 
+        driver_list = self.get_queryset()
+        race_driver_dict = {}
+        for driver in driver_list:
+            race_driver_dict[driver] = [
+                RaceDriver.objects.filter(race=race, driver=driver).first()
+                for race
+                in race_list
+            ]
+
+        driver_count_dict = {}
+        for driver in driver_list:
+            driver_count_dict[driver] = [
+                RaceTeamDriver.objects.filter(
+                    racedriver__driver=driver,
+                    racedriver__race=race
+                ).count()
+                for race
+                in race_list
+            ]
+        tactic_count_dict = {}
+        for tactic in "G", "S", "F":
+            tactic_count_dict[tactic] = [
+                RaceTeam.objects.filter(
+                    tactic=tactic,
+                    race=race
+                ).count()
+                for race
+                in race_list
+            ]
+
+        context["tactic_count_dict"] = tactic_count_dict
+        context["race_driver_dict"] = race_driver_dict
+        context["driver_count_dict"] = driver_count_dict
         context["championship"] = championship
         context["race_list"] = race_list
         context["tabs"] = {
@@ -44,17 +77,10 @@ class ChampionshipDriverListView(ListView):
             "result": "Results",
             "overtake_point": "Overtake Points",
             "qualy_point": "Qualifying Points",
-            "race_point": "Race Points"
+            "race_point": "Race Points",
+            "price_with_currency": "Prices",
+            "instances": "Count",
         }
-        driver_list = self.get_queryset()
-        race_driver_dict = {}
-        for driver in driver_list:
-            race_driver_dict[driver] = []
-            for race in race_list:
-                race_driver = RaceDriver.objects.filter(race=race, driver=driver).first()
-                race_driver_dict[driver].append(race_driver)
-
-        context["race_driver_dict"] = race_driver_dict
         return context
 
 

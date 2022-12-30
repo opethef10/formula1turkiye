@@ -150,6 +150,9 @@ class RaceDriver(models.Model):
     def total_point(self, tactic=None):
         return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
 
+    def price_with_currency(self, currency="₺"):
+        return f"{self.price}{currency}"
+
     def __str__(self):
         return f"{self.race}-{self.driver}"
 

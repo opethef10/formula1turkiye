@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load fantasy_tags %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
@@ -110,39 +111,16 @@
                             <td>{{ race_team.budget }}₺</td>
                             <td>{{ race_team.team.name }}</td>
 
+
                             {% with race_team.raceteamdrivers.all as trd_list %}
-                                <td>
-                                    {{ trd_list.0.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.0.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.1.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.1.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.2.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.2.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.3.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.3.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.4.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.4.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.5.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.5.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.6.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.6.total_point }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.7.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.7.total_point }}</small>
-                                </td>
+                                {% for idx in "01234567" %}
+                                    {% with trd_list|index:forloop.counter0 as raceteamdriver  %}
+                                    <td>
+                                        {{ raceteamdriver.racedriver.driver.surname }}
+                                        <small class="text-muted d-block">{{ raceteamdriver.total_point }}</small>
+                                    </td>
+                                    {% endwith %}
+                                {% endfor %}
                             {% endwith %}
 
                             <td>{{ race_team.total_point }}</td>
@@ -179,43 +157,17 @@
                             <td>{{ race_team.team.name }}</td>
 
                             {% with race_team.raceteamdrivers.all as trd_list %}
-                                <td>
-                                    {{ trd_list.0.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.0.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.1.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.1.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.2.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.2.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.3.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.3.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.4.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.4.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.5.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.5.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.6.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.6.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
-                                <td>
-                                    {{ trd_list.7.racedriver.driver.surname }}
-                                    <small class="text-muted d-block">{{ trd_list.7.racedriver.price|stringformat:"s"|add:"₺" }}</small>
-                                </td>
+                                {% for idx in "01234567" %}
+                                    {% with trd_list|index:forloop.counter0 as raceteamdriver  %}
+                                    <td>
+                                    {{ raceteamdriver.racedriver.driver.surname }}
+                                    <small class="text-muted d-block">{{ raceteamdriver.racedriver.price_with_currency }}</small>
+                                    </td>
+                                    {% endwith %}
+                                {% endfor %}
                             {% endwith %}
 
                             <td>{{ race_team.total_worth }}₺</td>
-
-
                         </tr>
                     {% endfor %}
 
