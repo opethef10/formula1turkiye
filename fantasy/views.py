@@ -33,20 +33,21 @@ class ChampionshipDriverListView(ListView):
         )
         race_list = Race.objects.filter(
             championship=championship
-        )
+        ).order_by('round')
 
         driver_list = self.get_queryset()
-        race_driver_dict = {}
-        for driver in driver_list:
-            race_driver_dict[driver] = [
+        race_driver_dict = {
+            driver: [
                 RaceDriver.objects.filter(race=race, driver=driver).first()
                 for race
                 in race_list
             ]
+            for driver
+            in driver_list
+        }
 
-        driver_count_dict = {}
-        for driver in driver_list:
-            driver_count_dict[driver] = [
+        driver_count_dict = {
+            driver: [
                 RaceTeamDriver.objects.filter(
                     racedriver__driver=driver,
                     racedriver__race=race
@@ -54,9 +55,11 @@ class ChampionshipDriverListView(ListView):
                 for race
                 in race_list
             ]
-        tactic_count_dict = {}
-        for tactic in "G", "S", "F":
-            tactic_count_dict[tactic] = [
+            for driver
+            in driver_list
+        }
+        tactic_count_dict = {
+            tactic: [
                 RaceTeam.objects.filter(
                     tactic=tactic,
                     race=race
@@ -64,6 +67,9 @@ class ChampionshipDriverListView(ListView):
                 for race
                 in race_list
             ]
+            for tactic
+            in {"G", "S", "F"}
+        }
 
         context["tactic_count_dict"] = tactic_count_dict
         context["race_driver_dict"] = race_driver_dict
@@ -127,3 +133,56 @@ class RaceListView(ListView):
         context = super().get_context_data(**kwargs)
         context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get("slug"))
         return context
+
+
+class TeamListView(ListView):
+    model = Team
+
+    def get_queryset(self):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
+        )
+        queryset = Team.objects.filter(
+            championship=championship
+        ).distinct()
+        # queryset = queryset.order_by('forename')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
+        )
+        race_list = Race.objects.filter(
+            championship=championship
+        ).order_by('round')
+        team_list = self.get_queryset()
+        race_team_dict = {
+            team: [
+                RaceTeam.objects.filter(race=race, team=team).first()
+                for race
+                in race_list
+            ]
+            for team
+            in team_list
+        }
+        context = super().get_context_data(**kwargs)
+        context["championship"] = championship
+        context["race_list"] = race_list
+        context["race_team_dict"] = race_team_dict
+        context["tabs"] = {
+            "total_point": "Total Points",
+        }
+        return context
+
+
+class TeamDetailView(DetailView):
+    model = Team
+
+    def get_object(self):
+        return get_object_or_404(
+            Team,
+            championship__slug=self.kwargs.get('slug'),
+            pk=self.kwargs.get('pk')
+        )

@@ -165,6 +165,9 @@ class Team(models.Model):
     def __str__(self):
         return f"{self.account}'s Team: {self.name}"
 
+    def get_absolute_url(self):
+        return reverse("fantasy:team_detail", kwargs={"slug": self.championship.slug, "pk": self.pk})
+
 
 class RaceTeam(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='team_instances')

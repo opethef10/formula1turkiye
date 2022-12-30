@@ -9,12 +9,9 @@
 {% block content %}
 
 <ul>
-    <li>
-        <a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }} - Races </a>
-    </li>
-    <li>
-        <a href="{% url 'fantasy:season_driver_list' championship.slug %}">{{ championship }} - Drivers </a>
-    </li>
+    <li><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }} - Races </a></li>
+    <li><a href="{% url 'fantasy:season_driver_list' championship.slug %}">{{ championship }} - Drivers </a></li>
+    <li><a href="{% url 'fantasy:team_list' championship.slug %}">{{ championship }} - Teams </a></li>
 </ul>
 
 {% endblock %}

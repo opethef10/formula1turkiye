@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load fantasy_tags %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
+    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item">Teams</li>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {% for tab_id in tabs %}
+                <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
+                     id="{{ tab_id }}">
+
+                    <br/>
+                    <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                        <thead class="thead-inverse">
+                        <tr>
+                            <th>Driver</th>
+                            {% for race in race_list %}
+                                <th>
+                                    <a href="{{ race.get_absolute_url }}">{{ race.circuit.country }}</a>
+                                </th>
+                            {% endfor %}
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for team, race_team_list in race_team_dict.items %}
+                            <tr>
+                                <td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></td>
+
+
+                                {% for race_team in race_team_list %}
+                                    <td>
+                                        {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock %}

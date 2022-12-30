@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
+    <li class="breadcrumb-item"><a href="{{ team.championship.get_absolute_url }}">{{ team.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' team.championship.slug %}">Teams</a></li>
+    <li class="breadcrumb-item">{{ team.name }}</li>
+{% endblock %}
+
+{% block content %}
+
+<li> Name: {{ team.name }} </li>
+
+
+
+{% endblock %}

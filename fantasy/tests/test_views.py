@@ -8,7 +8,7 @@ from ..models import *
 from .. import views
 
 
-class ViewTestBase:
+class ViewTestMixin:
     app_name_prefix = "fantasy:"
     url_name = ''
     url_kwargs = {}
@@ -51,13 +51,13 @@ class ViewTestBase:
         self.assertEquals(view.func.view_class, self.view)
 
 
-class DetailViewTestBase(ViewTestBase):
+class DetailViewTestMixin(ViewTestMixin):
     def test_view_not_found_status_code(self):
         response = self.client.get(self.url_reverse(kwargs=self.url_kwargs_404))
         self.assertEquals(response.status_code, 404)
 
 
-class HomeTests(ViewTestBase, TestCase):
+class HomeTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url_name = 'home'
@@ -76,7 +76,7 @@ class HomeTests(ViewTestBase, TestCase):
         self.assertContains(response, f'href="{championship_list_url}"')
 
 
-class DriverListTests(ViewTestBase, TestCase):
+class DriverListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url_name = 'driver_list'
@@ -91,7 +91,7 @@ class DriverListTests(ViewTestBase, TestCase):
         self.assertContains(response, f'href="{homepage_url}"')
 
 
-class ChampionshipListTests(ViewTestBase, TestCase):
+class ChampionshipListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url_name = 'championship_list'
@@ -104,7 +104,7 @@ class ChampionshipListTests(ViewTestBase, TestCase):
         cls.championship2 = Championship.objects.create(year=2022, series="Formula 2")
 
 
-class RaceListTests(ViewTestBase, TestCase):
+class RaceListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(year=2022, series="Formula 1")
@@ -121,7 +121,24 @@ class RaceListTests(ViewTestBase, TestCase):
         self.assertEquals(self.championship, response.context["championship"])
 
 
-class DriverDetailViewTests(DetailViewTestBase, TestCase):
+class TeamListTests(ViewTestMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.championship = Championship.objects.create(year=2022, series="Formula 1")
+        cls.url_name = 'team_list'
+        cls.url_kwargs = {'slug': cls.championship.slug}
+        cls.url_kwargs_404 = {'slug': "arbitrary"}
+        cls.urlstring_without_slash = f"/fantasy/championships/{cls.championship.slug}/teams"
+        cls.template_name = "fantasy/team_list.html"
+        cls.context_variable = 'team_list'
+        cls.view = views.TeamListView
+
+    # def test_view_uses_championship_context(self):
+    #     response = self.client.get(self.url_reverse())
+    #     self.assertEquals(self.championship, response.context["championship"])
+
+
+class DriverDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         championship = Championship.objects.create(year=2022, series="Formula 1")
@@ -139,7 +156,7 @@ class DriverDetailViewTests(DetailViewTestBase, TestCase):
         cls.view = views.DriverDetailView
 
 
-class ChampionshipDetailViewTests(DetailViewTestBase, TestCase):
+class ChampionshipDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(year=2024, series="Formula 1")
@@ -152,7 +169,7 @@ class ChampionshipDetailViewTests(DetailViewTestBase, TestCase):
         cls.view = views.ChampionshipDetailView
 
 
-class RaceDetailViewTests(DetailViewTestBase, TestCase):
+class RaceDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(year=2024, series="Formula 1")
@@ -171,3 +188,22 @@ class RaceDetailViewTests(DetailViewTestBase, TestCase):
         cls.template_name = "fantasy/race_detail.html"
         cls.context_variable = 'race'
         cls.view = views.RaceDetailView
+
+
+class TeamDetailViewTests(DetailViewTestMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.championship = Championship.objects.create(year=2024, series="Formula 1")
+        cls.user = User.objects.create_user(username='test_user', password='12345')
+        cls.team = Team.objects.create(
+            account=cls.user,
+            championship=cls.championship,
+            name="Firstname Lastname"
+        )
+        cls.url_name = 'team_detail'
+        cls.url_kwargs = {'slug': cls.championship.slug, "pk": 1}
+        cls.url_kwargs_404 = {'slug': cls.championship.slug, "pk": 9999}
+        cls.urlstring_without_slash = f"/fantasy/championships/{cls.championship.slug}"
+        cls.template_name = "fantasy/team_detail.html"
+        cls.context_variable = 'team'
+        cls.view = views.TeamDetailView
