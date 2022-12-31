@@ -20,28 +20,12 @@
     </thead>
     <tbody>
       {% for race in race_list %}
-        <tr>
-          <td class="align-middle">
-            {{ race.round }}
-          </td>
-
-          <td class="align-middle">
-              <a href="{{ race.get_absolute_url }}">{{ race.name }}</a>
-          </td>
-
-          <td class="align-middle">
-            {{ race.circuit }}
-          </td>
-
-          <td class="align-middle">
-            {{ race.date }}
-          </td>
-
-          <td class="align-middle">
-            {{ race.time }}
-          </td>
-
-
+        <tr class="align-middle">
+          <td>{{ race.round }}</td>
+          <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
+          <td>{{ race.circuit }}</td>
+          <td>{{ race.date }}</td>
+          <td>{{ race.time }}</td>
         </tr>
       {% endfor %}
     </tbody>

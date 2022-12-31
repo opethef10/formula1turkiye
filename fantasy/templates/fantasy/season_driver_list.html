@@ -25,7 +25,7 @@
                      id="{{ tab_id }}">
 
                     <br/>
-                    <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                    <table id="table_{{ tab_id }}" class="table table-bordered small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>
                             <th>Driver</th>
@@ -49,10 +49,11 @@
                                         {{ count|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-
+                                <td></td>
                             </tr>
                         {% endfor %}
-                            <tr><td>&nbsp;</td></tr>
+                            </table>
+                            <table class="table table-bordered small justify-content-center text-center text-nowrap">
 
                         {% for tactic, count_list in tactic_count_dict.items %}
                             <tr>
@@ -62,7 +63,7 @@
                                         {{ count|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-
+                                <td></td>
                             </tr>
                         {% endfor %}
                         {% else %}
@@ -76,16 +77,37 @@
                                         {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-
+                                <td></td>
                             </tr>
                         {% endfor %}
                         {% endif %}
                         </tbody>
                     </table>
                 </div>
+
             {% endfor %}
         </div>
     </div>
 
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+                $(document).ready(function() {
+                    {% for tab_id in tabs %}
+                  $("#table_{{ tab_id }}").DataTable(
+                      {
+                          paging: false,
+                          "order": []
+                      }
+                  );
+                  {% endfor %}
+                });
+
+    </script>
 
 {% endblock %}
