@@ -34,7 +34,12 @@
                                     <a href="{{ race.get_absolute_url }}">{{ race.circuit.country }}</a>
                                 </th>
                             {% endfor %}
-                            <th>Total</th>
+                            {% if tab_id in 'qualy,grid,results' %}
+                                <th>Avg</th>
+                            {% elif tab_id == "instances" %}
+                            {% else %}
+                                <th>Total</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -49,7 +54,6 @@
                                         {{ count|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-                                <td></td>
                             </tr>
                         {% endfor %}
                             </table>
@@ -102,7 +106,34 @@
                   $("#table_{{ tab_id }}").DataTable(
                       {
                           paging: false,
-                          "order": []
+                          "order": [],
+                          "info": false,
+                          {% if tab_id != "instances" %}
+                          columnDefs: [
+                              {
+                                   render: function (data, type, row) {
+                                       let result = 0;
+                                       let num;
+                                       let nan_count = 0;
+                                       for (let i = 1; i < row.length - 1; i++) {
+                                           num = parseInt(row[i]);
+                                           if (isNaN(num)) {
+                                               num = 0;
+                                               nan_count += 1;
+                                           }
+                                           result += num;
+                                       }
+                                       {% if tab_id in 'qualy,grid,results' %}
+                                           result /= row.length - 2 -nan_count;
+                                           result = isNaN(result) ? "" : result;
+                                       {% endif %}
+
+                                       return result;
+                                   },
+                                   targets: -1,
+                               },
+                          ],
+                        {% endif %}
                       }
                   );
                   {% endfor %}

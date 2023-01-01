@@ -118,6 +118,11 @@ class RaceDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["race_driver_list"] = RaceDriver.objects.filter(race=context["race"])
         context["race_team_list"] = RaceTeam.objects.filter(race=context["race"]).order_by("team__name")
+        context["tabs"] = {
+            "drivers": "Drivers",
+            "teams": "Teams",
+            "kadrolar": "Kadrolar"
+        }
         return context
 
 

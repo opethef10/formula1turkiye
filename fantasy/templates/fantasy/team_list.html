@@ -25,9 +25,10 @@
                      id="{{ tab_id }}">
 
                     <br/>
-                    <table class="table table-bordered small justify-content-center text-center text-nowrap">
+                    <table id="table_{{ tab_id }}" class="table table-bordered small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>
+                            <th>Rank</th>
                             <th>Driver</th>
                             {% for race in race_list %}
                                 <th>
@@ -41,6 +42,7 @@
 
                         {% for team, race_team_list in race_team_dict.items %}
                             <tr>
+                                <td></td>
                                 <td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></td>
 
 
@@ -49,6 +51,7 @@
                                         {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
+                                <td></td>
 
                             </tr>
                         {% endfor %}
@@ -59,5 +62,49 @@
         </div>
     </div>
 
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+                $(document).ready(function() {
+                    {% for tab_id in tabs %}
+                  $("#table_{{ tab_id }}").DataTable(
+                      {
+                          paging: false,
+                          "order": [],
+                          "info": false,
+
+                          columnDefs: [
+                              {
+                                   render: function (data, type, row) {
+                                       let result = 0.0;
+                                       let num;
+                                       let nan_count = 0;
+                                       for (let i = 1; i < row.length - 1; i++) {
+                                           num = parseFloat(row[i]);
+                                           if (isNaN(num)) {
+                                               num = 0.0;
+                                               nan_count += 1;
+                                           }
+                                           result += num;
+                                       }
+                                       {% if tab_id in 'qualy,grid,results' %}
+                                           result /= row.length - 2 -nan_count;
+                                           result = isNaN(result) ? "" : result;
+                                       {% endif %}
+
+                                       return result;
+                                   },
+                                   targets: -1,
+                               }
+                          ]
+                      }
+                  );
+                  {% endfor %}
+                });
+
+    </script>
 
 {% endblock %}
