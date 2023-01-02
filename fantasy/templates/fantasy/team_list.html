@@ -83,7 +83,7 @@
                                        let num;
                                        let nan_count = 0;
                                        for (let i = 1; i < row.length - 1; i++) {
-                                           num = parseFloat(row[i]);
+                                           num = parseFloat(row[i].replace(',','.'));
                                            if (isNaN(num)) {
                                                num = 0.0;
                                                nan_count += 1;

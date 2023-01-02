@@ -36,7 +36,7 @@
                             {% endfor %}
                             {% if tab_id in 'qualy,grid,results' %}
                                 <th>Avg</th>
-                            {% elif tab_id == "instances" %}
+                            {% elif tab_id in "instances,price_with_currency" %}
                             {% else %}
                                 <th>Total</th>
                             {% endif %}
@@ -81,7 +81,7 @@
                                         {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-                                <td></td>
+                                {% if tab_id != "price_with_currency" %}<td></td>{% endif %}
                             </tr>
                         {% endfor %}
                         {% endif %}
@@ -108,7 +108,7 @@
                           paging: false,
                           "order": [],
                           "info": false,
-                          {% if tab_id != "instances" %}
+                          {% if tab_id not in "instances,price_with_currency" %}
                           columnDefs: [
                               {
                                    render: function (data, type, row) {

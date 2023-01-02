@@ -19,3 +19,10 @@ def index(indexable, i):
         return indexable[i]
     except IndexError:
         return ""
+
+
+@register.filter
+def with_currency(obj, currency="₺"):
+    if not obj:
+        return ""
+    return f"{obj}{currency}"

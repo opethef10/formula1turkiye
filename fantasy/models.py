@@ -102,6 +102,11 @@ class Race(models.Model):
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
     teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['championship', 'round'], name='unique_championship_round'),
+        ]
+
     def __str__(self):
         return f"{self.championship.year} {self.name}"
 
@@ -149,9 +154,6 @@ class RaceDriver(models.Model):
 
     def total_point(self, tactic=None):
         return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
-
-    def price_with_currency(self, currency="₺"):
-        return f"{self.price}{currency}"
 
     def __str__(self):
         return f"{self.race}-{self.driver}"

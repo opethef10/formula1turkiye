@@ -191,3 +191,22 @@ class TeamDetailView(DetailView):
             championship__slug=self.kwargs.get('slug'),
             pk=self.kwargs.get('pk')
         )
+
+    def get_context_data(self, **kwargs):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
+        )
+        race_list = Race.objects.filter(
+            championship=championship
+        ).order_by('round')
+        team = self.get_object()
+        race_team_dict = {
+            race: RaceTeam.objects.filter(race=race, team=team).first()
+            for race
+            in race_list
+        }
+        context = super().get_context_data(**kwargs)
+        context["championship"] = championship
+        context["race_team_dict"] = race_team_dict
+        return context
