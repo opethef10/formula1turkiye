@@ -10,7 +10,7 @@ class PasswordResetMailTests(TestCase):
         self.email = mail.outbox[0]
 
     def test_email_subject(self):
-        self.assertEqual('[F1T Fantasy League] Parolanızı Sıfırlayın', self.email.subject)
+        self.assertEqual('[Formula 1 Türkiye] Parolanızı Sıfırlayın', self.email.subject)
 
     def test_email_body(self):
         context = self.response.context

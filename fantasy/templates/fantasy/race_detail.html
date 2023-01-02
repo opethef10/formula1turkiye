@@ -2,7 +2,8 @@
 {% load fantasy_tags %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
     <li class="breadcrumb-item">
         <a href="{{ race.championship.get_absolute_url }}">{{ race.championship }}</a></li>

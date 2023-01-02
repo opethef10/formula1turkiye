@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
-  <li class="breadcrumb-item">Championships</li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item">Championships</li>
 {% endblock %}
 
 {% block content %}
