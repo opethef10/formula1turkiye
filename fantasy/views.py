@@ -21,8 +21,7 @@ class ChampionshipDriverListView(ListView):
             attended_races__in=Race.objects.filter(
                 championship=championship
             )
-        ).distinct()
-        # queryset = queryset.order_by('forename')
+        ).distinct().order_by('race_instances__championship_constructor__garage_order')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -116,7 +115,7 @@ class RaceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["race_driver_list"] = RaceDriver.objects.filter(race=context["race"])
+        context["race_driver_list"] = RaceDriver.objects.filter(race=context["race"]).order_by("championship_constructor__garage_order")
         context["race_team_list"] = RaceTeam.objects.filter(race=context["race"]).order_by("team__name")
         context["tabs"] = {
             "drivers": "Drivers",

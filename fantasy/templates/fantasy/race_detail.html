@@ -49,7 +49,7 @@
                         <tr>
                             <td>
                                 <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
-                                <small class="text-muted d-block">{{ race_driver.driver.constructor }}</small>
+                                <small class="text-muted d-block">{{ race_driver.championship_constructor.constructor }}</small>
                             </td>
                             <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
                             <td>{{ race_driver.grid|default_if_none:"-" }}</td>

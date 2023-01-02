@@ -74,7 +74,6 @@ class Driver(models.Model):
     number = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=3, blank=True, null=True)
     nationality = models.CharField(max_length=255, blank=True, null=True)
-    constructor = models.ForeignKey(Constructor, null=True, on_delete=models.SET_NULL, related_name='drivers')
 
     def __str__(self):
         return self.name
@@ -117,6 +116,7 @@ class Race(models.Model):
 class RaceDriver(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='driver_instances')
     driver = models.ForeignKey(Driver, on_delete=models.RESTRICT, related_name='race_instances')
+    championship_constructor = models.ForeignKey("ChampionshipConstructor", null=True, on_delete=models.SET_NULL, related_name='race_drivers')
     price = models.DecimalField(max_digits=3, decimal_places=1)
     discount = models.BooleanField(default=False)
     qualy = models.IntegerField(blank=True, null=True)

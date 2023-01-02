@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active">
-        {{ driver }}
-    </li>
+  <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Home</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'fantasy:driver_list' %}">Drivers</a></li>
+  <li class="breadcrumb-item">{{ driver }}</li>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,5 @@
 <li> Code: {{ driver.code }} </li>
 <li> Number: {{ driver.number }} </li>
 <li> Nationality: {{ driver.nationality }} </li>
-<li> Constructor: {{ driver.constructor }} </li>
-
 
 {% endblock %}
