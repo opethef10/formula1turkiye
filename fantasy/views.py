@@ -8,16 +8,16 @@ from .models import *
 
 class ChampionshipDetailView(DetailView):
     model = Championship
+    slug_url_kwarg = "champ"
 
 
-class ChampionshipDriverListView(ListView):
+class DriverListView(ListView):
     model = Driver
-    template_name = "fantasy/season_driver_list.html"
 
     def get_queryset(self):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         queryset = Driver.objects.filter(
             attended_races__in=Race.objects.filter(
@@ -30,7 +30,7 @@ class ChampionshipDriverListView(ListView):
         context = super().get_context_data(**kwargs)
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         race_list = Race.objects.filter(
             championship=championship
@@ -98,11 +98,7 @@ class ChampionshipListView(ListView):
 
 class DriverDetailView(DetailView):
     model = Driver
-
-
-class DriverListView(ListView):
-    model = Driver
-    ordering = "forename"
+    slug_url_kwarg = "driver_slug"
 
 
 class RaceDetailView(DetailView):
@@ -111,7 +107,7 @@ class RaceDetailView(DetailView):
     def get_object(self):
         return get_object_or_404(
             Race,
-            championship__slug=self.kwargs.get('slug'),
+            championship__slug=self.kwargs.get('champ'),
             round=self.kwargs.get('round')
         )
 
@@ -131,13 +127,13 @@ class RaceListView(ListView):
     model = Race
 
     def get_queryset(self):
-        races = Race.objects.filter(championship__slug=self.kwargs.get('slug'))
+        races = Race.objects.filter(championship__slug=self.kwargs.get('champ'))
         queryset = races.order_by('round')
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get("slug"))
+        context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get('champ'))
         return context
 
 
@@ -147,7 +143,7 @@ class TeamListView(ListView):
     def get_queryset(self):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         queryset = Team.objects.filter(
             championship=championship
@@ -158,7 +154,7 @@ class TeamListView(ListView):
     def get_context_data(self, **kwargs):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         race_list = Race.objects.filter(
             championship=championship
@@ -189,14 +185,14 @@ class TeamDetailView(DetailView):
     def get_object(self):
         return get_object_or_404(
             Team,
-            championship__slug=self.kwargs.get('slug'),
+            championship__slug=self.kwargs.get('champ'),
             pk=self.kwargs.get('pk')
         )
 
     def get_context_data(self, **kwargs):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         race_list = Race.objects.filter(
             championship=championship
@@ -220,7 +216,7 @@ class TeamCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         context = super().get_context_data(**kwargs)
         context["championship"] = championship
@@ -229,7 +225,7 @@ class TeamCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('slug')
+            slug=self.kwargs.get('champ')
         )
         form.instance.account = self.request.user
         form.instance.championship = championship

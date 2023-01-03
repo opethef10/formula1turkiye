@@ -1,19 +1,144 @@
 {% extends 'base.html' %}
+{% load fantasy_tags %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
     <li class="breadcrumb-item">Drivers</li>
 {% endblock %}
 
 {% block content %}
-  <h5>Driver List</h5>
-  <ul>
-    {% for driver in driver_list %}
-      <li>
-        <a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a>
-      </li>
-    {% endfor %}
-  </ul>
+    <div class="container">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {% for tab_id in tabs %}
+                <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
+                     id="{{ tab_id }}">
+
+                    <br/>
+                    <table id="table_{{ tab_id }}" class="table table-bordered small justify-content-center text-center text-nowrap">
+                        <thead class="thead-inverse">
+                        <tr>
+                            <th>Driver</th>
+                            {% for race in race_list %}
+                                <th>
+                                    <a href="{{ race.get_absolute_url }}">{{ race.circuit.country }}</a>
+                                </th>
+                            {% endfor %}
+                            {% if tab_id in 'qualy,grid,results' %}
+                                <th>Avg</th>
+                            {% elif tab_id in "instances,price_with_currency" %}
+                            {% else %}
+                                <th>Total</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if tab_id == "instances" %}
+                        {% for driver, count_list in driver_count_dict.items %}
+                            <tr>
+                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+
+
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                            </table>
+                            <table class="table table-bordered small justify-content-center text-center text-nowrap">
+
+                        {% for tactic, count_list in tactic_count_dict.items %}
+                            <tr>
+                                <td>{{ tactic }}</td>
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% for driver, race_driver_list in race_driver_dict.items %}
+                            <tr>
+                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+
+
+                                {% for race_driver in race_driver_list %}
+                                    <td>
+                                        {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                                {% if tab_id != "price_with_currency" %}<td></td>{% endif %}
+                            </tr>
+                        {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+                $(document).ready(function() {
+                    {% for tab_id in tabs %}
+                  $("#table_{{ tab_id }}").DataTable(
+                      {
+                          paging: false,
+                          "order": [],
+                          "info": false,
+                          {% if tab_id not in "instances,price_with_currency" %}
+                          columnDefs: [
+                              {
+                                   render: function (data, type, row) {
+                                       let result = 0;
+                                       let num;
+                                       let nan_count = 0;
+                                       for (let i = 1; i < row.length - 1; i++) {
+                                           num = parseInt(row[i]);
+                                           if (isNaN(num)) {
+                                               num = 0;
+                                               nan_count += 1;
+                                           }
+                                           result += num;
+                                       }
+                                       {% if tab_id in 'qualy,grid,results' %}
+                                           result /= row.length - 2 -nan_count;
+                                           result = isNaN(result) ? "" : result;
+                                       {% endif %}
+
+                                       return result;
+                                   },
+                                   targets: -1,
+                               },
+                          ],
+                        {% endif %}
+                      }
+                  );
+                  {% endfor %}
+                });
+
+    </script>
 
 {% endblock %}

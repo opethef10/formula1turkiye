@@ -35,7 +35,7 @@ class Championship(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("fantasy:championship_detail", kwargs={"slug": self.slug})
+        return reverse("fantasy:championship_detail", kwargs={'champ': self.slug})
 
 
 class Circuit(models.Model):
@@ -88,7 +88,7 @@ class Driver(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("fantasy:driver_detail", kwargs={"slug": self.slug})
+        return reverse("fantasy:driver_detail", kwargs={"driver_slug": self.slug})
 
 
 class Race(models.Model):
@@ -110,7 +110,7 @@ class Race(models.Model):
         return f"{self.championship.year} {self.name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:race_detail", kwargs={"slug": self.championship.slug, "round": self.round})
+        return reverse("fantasy:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
 
 
 class RaceDriver(models.Model):
@@ -168,7 +168,7 @@ class Team(models.Model):
         return f"{self.account}'s Team: {self.name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:team_detail", kwargs={"slug": self.championship.slug, "pk": self.pk})
+        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "pk": self.pk})
 
 
 class RaceTeam(models.Model):

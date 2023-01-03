@@ -5,7 +5,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:championship_list' %}">Championships</a></li>
+
     <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Teams</a></li>
     <li class="breadcrumb-item">Create Team</li>
