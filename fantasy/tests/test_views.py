@@ -141,11 +141,8 @@ class TeamListTests(ViewTestMixin, TestCase):
 class DriverDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        championship = Championship.objects.create(year=2022, series="Formula 1")
-        constructor = Constructor.objects.create(name="Mclaren", nationality="British")
-        constructor.championship.add(championship, through_defaults={"garage_order": 1})
         cls.driver = Driver.objects.create(
-            forename='Sebastian', surname="Vettel", number=5, code="VET", nationality="German", constructor=constructor
+            forename='Sebastian', surname="Vettel", number=5, code="VET", nationality="German"
         )
         cls.url_name = 'driver_detail'
         cls.url_kwargs = {'slug': cls.driver.slug}

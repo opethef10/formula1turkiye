@@ -1,6 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
+from .forms import *
 from .models import *
 
 
@@ -209,3 +211,26 @@ class TeamDetailView(DetailView):
         context["championship"] = championship
         context["race_team_dict"] = race_team_dict
         return context
+
+
+class TeamCreateView(LoginRequiredMixin, CreateView):
+    model = Team
+    fields = ['name']
+
+    def get_context_data(self, **kwargs):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
+        )
+        context = super().get_context_data(**kwargs)
+        context["championship"] = championship
+        return context
+
+    def form_valid(self, form):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('slug')
+        )
+        form.instance.account = self.request.user
+        form.instance.championship = championship
+        return super().form_valid(form)
