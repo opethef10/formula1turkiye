@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import *
@@ -210,8 +210,14 @@ class TeamDetailView(DetailView):
 
 
 class TeamCreateView(LoginRequiredMixin, CreateView):
-    model = Team
-    fields = ['name']
+    model = RaceTeam  # Team
+    form_class = TeamCreateForm
+
+    def get(self, request, *args, **kwargs):
+        team = Team.objects.filter(account=self.request.user).first()
+        if team:
+            return redirect(team.get_absolute_url())
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         championship = get_object_or_404(
@@ -227,6 +233,18 @@ class TeamCreateView(LoginRequiredMixin, CreateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        form.instance.account = self.request.user
-        form.instance.championship = championship
-        return super().form_valid(form)
+        race = Race.objects.get(championship=championship, round=1)
+        team = Team.objects.create(
+            account=self.request.user,
+            championship=championship
+        )
+        form.instance.race = race
+        form.instance.team = team
+        form.instance.token = 16
+        raceteam = form.save()
+        for racedriver in form.cleaned_data['drivers']:
+            RaceTeamDriver.objects.create(
+                raceteam=raceteam,
+                racedriver=racedriver
+            )
+        return redirect(team.get_absolute_url())

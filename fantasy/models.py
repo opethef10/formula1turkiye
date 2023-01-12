@@ -6,6 +6,11 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
+TACTIC_CHOICES = [
+    ("G", "Geçiş"),
+    ("S", "Sıralama"),
+    ("F", "Finiş"),
+]
 JSON_PATH = Path(__file__).parent / "points.json"
 with JSON_PATH.open() as json_file:
     POINTS = json.load(
@@ -162,10 +167,17 @@ class RaceDriver(models.Model):
 class Team(models.Model):
     account = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="teams")
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="teams", null=True)
-    name = models.CharField(max_length=255)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['account', 'championship'], name='unique_championship_account'),
+        ]
 
     def __str__(self):
-        return f"{self.account}'s Team: {self.name}"
+        return f"{self.championship.slug} - {self.name()}"
+
+    def name(self):
+        return f"{self.account.first_name} {self.account.last_name}"
 
     def get_absolute_url(self):
         return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "pk": self.pk})
@@ -176,7 +188,10 @@ class RaceTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='race_instances')
     token = models.IntegerField()
     budget = models.DecimalField(max_digits=4, decimal_places=1)
-    tactic = models.CharField(max_length=8)
+    tactic = models.CharField(
+        max_length=8,
+        choices=TACTIC_CHOICES
+    )
     race_drivers = models.ManyToManyField(RaceDriver, through="RaceTeamDriver", related_name='raceteams', blank=True)
 
     def __str__(self):

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load form_tags widget_tweaks %}
+
+{% block title %}Create Team{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+
+    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Teams</a></li>
+    <li class="breadcrumb-item">Create Team</li>
+{% endblock %}
+
+{% block content %}
+    <h3>ÖNEMLİ!!!</h3>
+    <li>Kadronuzda en fazla 8 pilot olabilir, kadronuzu buna göre oluşturun.</li>
+    <li>Bütçenizi (55₺) aşmayın.</li>
+    <li>Taktik butonu seçimini kurallarda anlatıldığı üzere seçin.</li>
+    <li><del>Yeni bir kadro gönderdiğinizde eskisi silinecektir. Kadro seçimlerinin bitişinden önceki son gönderiniz dikkate alınacaktır.</del></li>
+    <li>İşlemlerinizi 25 Mart Perşembe 17:00'a kadar yapabilirsiniz.</li>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-success">Create</button>
+  </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+$(document).ready(function() {
+    function sumit(){
+        let budget = 55;
+        let sum = 0;
+        $('input[name="drivers"]:checked').each(function() {
+            sum += parseFloat($(this).attr("price"));
+        });
+        $('input[name="budget"]').val(Math.round( ( budget - sum + Number.EPSILON ) * 10 ) / 10);
+    }
+    sumit();
+
+    $('input[name="drivers"]').change(function() {
+        sumit();
+    });
+});
+</script>
+{% endblock %}
