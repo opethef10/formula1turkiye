@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from .forms import *
 from .models import *
+
+BEGINNING_TOKEN = 16
 
 
 class ChampionshipDetailView(DetailView):
@@ -210,41 +212,72 @@ class TeamDetailView(DetailView):
 
 
 class TeamCreateView(LoginRequiredMixin, CreateView):
-    model = RaceTeam  # Team
-    form_class = TeamCreateForm
+    model = RaceTeam
+    form_class = TeamCreateUpdateForm
 
     def get(self, request, *args, **kwargs):
-        team = Team.objects.filter(account=self.request.user).first()
-        if team:
-            return redirect(team.get_absolute_url())
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
         championship = get_object_or_404(
             Championship,
             slug=self.kwargs.get('champ')
         )
+        try:
+            Team.objects.get(
+                account=self.request.user,
+                championship=championship
+            )
+            return redirect(reverse("fantasy:new_team_update", kwargs={"champ": championship.slug}))
+        except Team.DoesNotExist:
+            return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["championship"] = championship
+        context["championship"] = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
         return context
+
+    def get_success_url(self):
+        return self.object.team.get_absolute_url()
 
     def form_valid(self, form):
         championship = get_object_or_404(
             Championship,
             slug=self.kwargs.get('champ')
         )
-        race = Race.objects.get(championship=championship, round=1)
         team = Team.objects.create(
             account=self.request.user,
             championship=championship
         )
+        race = Race.objects.get(championship=championship, round=1)  # TODO: Update this to show current race
         form.instance.race = race
         form.instance.team = team
-        form.instance.token = 16
-        raceteam = form.save()
-        for racedriver in form.cleaned_data['drivers']:
-            RaceTeamDriver.objects.create(
-                raceteam=raceteam,
-                racedriver=racedriver
-            )
-        return redirect(team.get_absolute_url())
+        return super().form_valid(form)
+
+
+class NewTeamUpdateView(LoginRequiredMixin, UpdateView):
+    model = RaceTeam
+    form_class = TeamCreateUpdateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["championship"] = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
+        return context
+
+    def get_object(self):
+        championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
+        race = Race.objects.get(championship=championship, round=1)  # TODO: Update this to show current race
+        return RaceTeam.objects.get(
+            team__account=self.request.user,
+            team__championship=championship,
+            race=race
+        )
+
+    def get_success_url(self):
+        return self.object.team.get_absolute_url()

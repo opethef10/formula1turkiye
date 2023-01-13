@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load form_tags widget_tweaks %}
 
-{% block title %}Create Team{% endblock %}
+{% block title %}New Team{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -9,7 +9,7 @@
 
     <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Teams</a></li>
-    <li class="breadcrumb-item">Create Team</li>
+    <li class="breadcrumb-item">New Team</li>
 {% endblock %}
 
 {% block content %}
@@ -22,24 +22,27 @@
   <form method="post" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
-    <button type="submit" class="btn btn-success">Create</button>
+    <button type="submit" class="btn btn-success">Gönder</button>
+    <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
   </form>
 {% endblock %}
 
 {% block javascript %}
-    <script>
+<script>
 $(document).ready(function() {
     function sumit(){
         let budget = 55;
         let sum = 0;
-        $('input[name="drivers"]:checked').each(function() {
+        let currency = "₺";
+        $('input[name="race_drivers"]:checked').each(function() {
             sum += parseFloat($(this).attr("price"));
         });
-        $('input[name="budget"]').val(Math.round( ( budget - sum + Number.EPSILON ) * 10 ) / 10);
+        budget = Math.round( ( budget - sum + Number.EPSILON ) * 10 ) / 10;
+        $('#id_budget').val(budget + currency);
     }
     sumit();
 
-    $('input[name="drivers"]').change(function() {
+    $('#id_race_drivers').change(function() {
         sumit();
     });
 });
