@@ -174,9 +174,9 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
             name="Firstname Lastname"
         )
         cls.url_name = 'team_detail'
-        cls.url_kwargs = {'champ': cls.championship.slug, "pk": 1}
-        cls.url_kwargs_404 = {'champ': cls.championship.slug, "pk": 9999}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams/{cls.team.pk}"
+        cls.url_kwargs = {'champ': cls.championship.slug, "username": cls.user.username}
+        cls.url_kwargs_404 = {'champ': cls.championship.slug, "username": "arbitrary"}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams/{cls.user.username}"
         cls.template_name = "fantasy/team_detail.html"
         cls.context_variable = 'team'
         cls.view = views.TeamDetailView

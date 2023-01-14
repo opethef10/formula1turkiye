@@ -180,7 +180,7 @@ class Team(models.Model):
         return f"{self.account.first_name} {self.account.last_name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "pk": self.pk})
+        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.account.username})
 
 
 class RaceTeam(models.Model):

@@ -190,7 +190,7 @@ class TeamDetailView(DetailView):
         return get_object_or_404(
             Team,
             championship__slug=self.kwargs.get('champ'),
-            pk=self.kwargs.get('pk')
+            account__username=self.kwargs.get('username')
         )
 
     def get_context_data(self, **kwargs):
