@@ -18,7 +18,7 @@ class CheckboxSelectMultipleWithPrice(forms.CheckboxSelectMultiple):
         return option
 
 
-class TeamCreateUpdateForm(forms.ModelForm):
+class NewTeamForm(forms.ModelForm):
     budget = forms.CharField(disabled=True, required=False)
     token = forms.IntegerField(disabled=True, required=False, initial=BEGINNING_TOKEN)
     race_drivers = RaceDriverMultipleChoiceField(
@@ -28,7 +28,8 @@ class TeamCreateUpdateForm(forms.ModelForm):
                 round=1
             )
         ).order_by(
-            "championship_constructor__garage_order"
+            "championship_constructor__garage_order",
+            "driver__number"
         ),
         widget=CheckboxSelectMultipleWithPrice(),
         help_text="En fazla 8 pilot seçebilirsiniz."

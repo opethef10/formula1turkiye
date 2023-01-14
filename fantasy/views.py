@@ -1,11 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, UpdateView
 
 from .forms import *
 from .models import *
-
-BEGINNING_TOKEN = 16
 
 
 class ChampionshipDetailView(DetailView):
@@ -115,7 +113,11 @@ class RaceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["race_driver_list"] = RaceDriver.objects.filter(race=context["race"]).order_by("championship_constructor__garage_order")
+        context["race_driver_list"] = RaceDriver.objects.filter(
+            race=context["race"]
+        ).order_by(
+            "championship_constructor__garage_order"
+        )
         context["race_team_list"] = RaceTeam.objects.filter(race=context["race"]).order_by("team__name")
         context["tabs"] = {
             "drivers": "Drivers",
@@ -211,73 +213,42 @@ class TeamDetailView(DetailView):
         return context
 
 
-class TeamCreateView(LoginRequiredMixin, CreateView):
+class NewTeamView(LoginRequiredMixin, UpdateView):
     model = RaceTeam
-    form_class = TeamCreateUpdateForm
+    form_class = NewTeamForm
 
-    def get(self, request, *args, **kwargs):
-        championship = get_object_or_404(
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
             Championship,
             slug=self.kwargs.get('champ')
         )
-        try:
-            Team.objects.get(
-                account=self.request.user,
-                championship=championship
-            )
-            return redirect(reverse("fantasy:new_team_update", kwargs={"champ": championship.slug}))
-        except Team.DoesNotExist:
-            return super().get(request, *args, **kwargs)
+        self.race = Race.objects.get(championship=self.championship, round=1)  # TODO: Update this to show current race
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["championship"] = get_object_or_404(
-            Championship,
-            slug=self.kwargs.get('champ')
-        )
+        context["championship"] = self.championship
         return context
-
-    def get_success_url(self):
-        return self.object.team.get_absolute_url()
 
     def form_valid(self, form):
-        championship = get_object_or_404(
-            Championship,
-            slug=self.kwargs.get('champ')
-        )
-        team = Team.objects.create(
+        team, created = Team.objects.get_or_create(
             account=self.request.user,
-            championship=championship
+            championship=self.championship
         )
-        race = Race.objects.get(championship=championship, round=1)  # TODO: Update this to show current race
-        form.instance.race = race
-        form.instance.team = team
+        if created:
+            form.instance.race = self.race
+            form.instance.team = team
         return super().form_valid(form)
 
-
-class NewTeamUpdateView(LoginRequiredMixin, UpdateView):
-    model = RaceTeam
-    form_class = TeamCreateUpdateForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["championship"] = get_object_or_404(
-            Championship,
-            slug=self.kwargs.get('champ')
-        )
-        return context
-
     def get_object(self):
-        championship = get_object_or_404(
-            Championship,
-            slug=self.kwargs.get('champ')
-        )
-        race = Race.objects.get(championship=championship, round=1)  # TODO: Update this to show current race
-        return RaceTeam.objects.get(
-            team__account=self.request.user,
-            team__championship=championship,
-            race=race
-        )
+        try:
+            return RaceTeam.objects.get(
+                team__account=self.request.user,
+                team__championship=self.championship,
+                race=self.race
+            )
+        except RaceTeam.DoesNotExist:
+            return
 
     def get_success_url(self):
         return self.object.team.get_absolute_url()
