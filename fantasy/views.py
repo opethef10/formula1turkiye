@@ -118,7 +118,12 @@ class RaceDetailView(DetailView):
         ).order_by(
             "championship_constructor__garage_order"
         )
-        context["race_team_list"] = RaceTeam.objects.filter(race=context["race"]).order_by("team__name")
+        context["race_team_list"] = RaceTeam.objects.filter(
+            race=context["race"]
+        ).order_by(
+            "team__account__first_name",
+            "team__account__last_name"
+        )
         context["tabs"] = {
             "drivers": "Drivers",
             "teams": "Teams",
