@@ -169,9 +169,8 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
         cls.championship = Championship.objects.create(year=2024, series="Formula 1")
         cls.user = User.objects.create_user(username='test_user', password='12345')
         cls.team = Team.objects.create(
-            account=cls.user,
-            championship=cls.championship,
-            name="Firstname Lastname"
+            user=cls.user,
+            championship=cls.championship
         )
         cls.url_name = 'team_detail'
         cls.url_kwargs = {'champ': cls.championship.slug, "username": cls.user.username}

@@ -121,8 +121,8 @@ class RaceDetailView(DetailView):
         context["race_team_list"] = RaceTeam.objects.filter(
             race=context["race"]
         ).order_by(
-            "team__account__first_name",
-            "team__account__last_name"
+            "team__user__first_name",
+            "team__user__last_name"
         )
         context["tabs"] = {
             "drivers": "Drivers",
@@ -195,7 +195,7 @@ class TeamDetailView(DetailView):
         return get_object_or_404(
             Team,
             championship__slug=self.kwargs.get('champ'),
-            account__username=self.kwargs.get('username')
+            user__username=self.kwargs.get('username')
         )
 
     def get_context_data(self, **kwargs):
@@ -237,7 +237,7 @@ class NewTeamView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         team, created = Team.objects.get_or_create(
-            account=self.request.user,
+            user=self.request.user,
             championship=self.championship
         )
         if created:
@@ -248,7 +248,7 @@ class NewTeamView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         try:
             return RaceTeam.objects.get(
-                team__account=self.request.user,
+                team__user=self.request.user,
                 team__championship=self.championship,
                 race=self.race
             )

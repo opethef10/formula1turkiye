@@ -165,22 +165,22 @@ class RaceDriver(models.Model):
 
 
 class Team(models.Model):
-    account = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="teams")
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="teams")
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="teams", null=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['account', 'championship'], name='unique_championship_account'),
+            models.UniqueConstraint(fields=['user', 'championship'], name='unique_championship_user'),
         ]
 
     def __str__(self):
         return f"{self.championship.slug} - {self.name()}"
 
     def name(self):
-        return f"{self.account.first_name} {self.account.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.account.username})
+        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
 
 
 class RaceTeam(models.Model):
