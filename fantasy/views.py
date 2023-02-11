@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, UpdateView
 
 from .forms import *
@@ -178,10 +178,19 @@ class TeamListView(ListView):
             for team
             in team_list
         }
+        if self.request.user.is_authenticated:
+            team_count = RaceTeam.objects.filter(
+                team__user=self.request.user,
+                team__championship__slug=self.kwargs.get('champ')
+            ).count()
+        else:
+            team_count = None
+
         context = super().get_context_data(**kwargs)
         context["championship"] = championship
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
+        context["race_team_count"] = team_count
         context["tabs"] = {
             "total_point": "Total Points",
         }
@@ -218,9 +227,8 @@ class TeamDetailView(DetailView):
         return context
 
 
-class NewTeamView(LoginRequiredMixin, UpdateView):
+class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
     model = RaceTeam
-    form_class = NewTeamForm
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -228,22 +236,20 @@ class NewTeamView(LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        self.race = Race.objects.get(championship=self.championship, round=1)  # TODO: Update this to show current race
+        self.race = Race.objects.latest("deadline")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
         return context
 
-    def form_valid(self, form):
-        team, created = Team.objects.get_or_create(
-            user=self.request.user,
-            championship=self.championship
-        )
-        if created:
-            form.instance.race = self.race
-            form.instance.team = team
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'request': self.request,
+            'current_race': self.race
+        })
+        return kwargs
 
     def get_object(self):
         try:
@@ -257,3 +263,42 @@ class NewTeamView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return self.object.team.get_absolute_url()
+
+
+class NewTeamView(TeamNewEditBaseView):
+    form_class = NewTeamForm
+
+    def get(self, request, *args, **kwargs):
+        teams = RaceTeam.objects.filter(
+            team__user=self.request.user,
+            team__championship=self.championship
+        )
+        if teams.count() > 1:
+            return redirect(reverse("fantasy:edit_team_form", kwargs={"champ": self.championship.slug}))
+        else:
+            return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        team, created = Team.objects.get_or_create(
+            user=self.request.user,
+            championship=self.championship
+        )
+        if created:
+            form.instance.race = self.race
+            form.instance.team = team
+        return super().form_valid(form)
+
+
+class EditTeamView(TeamNewEditBaseView):
+    form_class = EditTeamForm
+    template_name = "fantasy/edit_team_form.html"
+
+    def get(self, request, *args, **kwargs):
+        teams = RaceTeam.objects.filter(
+            team__user=self.request.user,
+            team__championship=self.championship
+        )
+        if teams.count() <= 1:
+            return redirect(reverse("fantasy:new_team_form", kwargs={"champ": self.championship.slug}))
+        else:
+            return super().get(request, *args, **kwargs)

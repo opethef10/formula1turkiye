@@ -12,6 +12,7 @@ urlpatterns = [
     path('<slug:champ>/races/<int:round>/', views.RaceDetailView.as_view(), name='race_detail'),
     path('<slug:champ>/teams/', views.TeamListView.as_view(), name='team_list'),
     path('<slug:champ>/teams/new/', views.NewTeamView.as_view(), name='new_team_form'),
+    path('<slug:champ>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
     path('<slug:champ>/teams/<str:username>/', views.TeamDetailView.as_view(), name='team_detail'),
     path('drivers/<slug:driver_slug>/', views.DriverDetailView.as_view(), name='driver_detail'),
 ]

@@ -11,6 +11,8 @@ def field_type(bound_field):
 @register.filter
 def input_class(bound_field):
     css_class = ''
+    if bound_field.widget_type == 'checkboxselectmultiplewithprice':
+        return "card p-3 bg-light form-control form-check"
     if bound_field.form.is_bound:
         if bound_field.errors:
             css_class = 'is-invalid'

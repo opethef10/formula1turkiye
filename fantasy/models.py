@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from pathlib import Path
 
 from django.contrib.auth.models import User
@@ -11,6 +12,12 @@ TACTIC_CHOICES = [
     ("S", "Sıralama"),
     ("F", "Finiş"),
 ]
+DISCOUNT_COEFFICIENTS = (
+    Decimal("0.6"),
+    Decimal("0.13"),
+    Decimal("-0.0044"),
+    Decimal("0.000054")
+)
 JSON_PATH = Path(__file__).parent / "points.json"
 with JSON_PATH.open() as json_file:
     POINTS = json.load(
@@ -101,8 +108,8 @@ class Race(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.RESTRICT, related_name='races', null=True)
     round = models.IntegerField()
     circuit = models.ForeignKey(Circuit, null=True, on_delete=models.SET_NULL, related_name='grand_prix')
-    date = models.DateField()
-    time = models.TimeField(blank=True, null=True)
+    datetime = models.DateTimeField()
+    deadline = models.DateTimeField(null=True, blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
     teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 
@@ -159,6 +166,18 @@ class RaceDriver(models.Model):
 
     def total_point(self, tactic=None):
         return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
+
+    def discounted_price(self):
+        if self.discount:
+            return round(
+                self.price - sum(
+                    DISCOUNT_COEFFICIENTS[power] * self.price ** power
+                    for power
+                    in range(4)
+                ),
+                1
+            )
+        return self.price
 
     def __str__(self):
         return f"{self.race}-{self.driver}"

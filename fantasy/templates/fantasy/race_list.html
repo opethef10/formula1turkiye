@@ -25,8 +25,7 @@
           <td>{{ race.round }}</td>
           <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
           <td>{{ race.circuit }}</td>
-          <td>{{ race.date }}</td>
-          <td>{{ race.time|default_if_none:"-" }}</td>
+          <td>{{ race.datetime|default_if_none:"-" }}</td>
         </tr>
       {% endfor %}
     </tbody>
