@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 
 BEGINNING_TOKEN = 32
-STARTING_BUDGET = 55
+STARTING_BUDGET = 50
 MAX_DRIVERS_IN_A_TEAM = 8
 
 

@@ -35,7 +35,7 @@ $(document).ready(function() {
         $(this).attr("class", "")
     });
     function sumit(){
-        let budget = 55;
+        let budget = {{ STARTING_BUDGET }};
         let sum = 0;
         $('input[name="race_drivers"]:checked').each(function() {
             sum += parseFloat($(this).attr("price"));

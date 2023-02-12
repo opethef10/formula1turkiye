@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, UpdateView
+from django.utils import timezone
+from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
@@ -23,7 +24,10 @@ class DriverListView(ListView):
             attended_races__in=Race.objects.filter(
                 championship=championship
             )
-        ).distinct().order_by('race_instances__championship_constructor__garage_order')
+        ).distinct().order_by(
+            'race_instances__championship_constructor__garage_order',
+            "number"
+        )
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -85,7 +89,7 @@ class DriverListView(ListView):
             "overtake_point": "Overtake Points",
             "qualy_point": "Qualifying Points",
             "race_point": "Race Points",
-            "price_with_currency": "Prices",
+            "price": "Prices",
             "instances": "Count",
         }
         return context
@@ -116,7 +120,8 @@ class RaceDetailView(DetailView):
         context["race_driver_list"] = RaceDriver.objects.filter(
             race=context["race"]
         ).order_by(
-            "championship_constructor__garage_order"
+            "championship_constructor__garage_order",
+            "driver__number"
         )
         context["race_team_list"] = RaceTeam.objects.filter(
             race=context["race"]
@@ -134,6 +139,7 @@ class RaceDetailView(DetailView):
 
 class RaceListView(ListView):
     model = Race
+    allow_empty = False
 
     def get_queryset(self):
         races = Race.objects.filter(championship__slug=self.kwargs.get('champ'))
@@ -236,11 +242,25 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        self.race = Race.objects.latest("deadline")
+        try:
+            self.race = Race.objects.filter(
+                championship=self.championship,
+                deadline__gt=timezone.now()
+            ).latest("deadline")
+        except Race.DoesNotExist:
+            self.race = None
+            # raise Http404("İşlem yapma zamanı doldu, bir sonraki yarışta görüşmek üzere.")
+
+    def get(self, request, *args, **kwargs):
+        if self.race is None:
+            return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
+        else:
+            return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
+        context["STARTING_BUDGET"] = STARTING_BUDGET
         return context
 
     def get_form_kwargs(self):

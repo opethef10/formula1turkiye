@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block crumbarea %}
+    <p><p/>
+{% endblock %}
+
+{% block content %}
+    <div class="alert alert-dark" role="alert">
+        <img src="{% static 'img/warning128.png' %}" class="rounded mx-auto d-block">
+        <h2 class="text-center">
+            İşlem yapma zamanı doldu, bir sonraki yarışta görüşmek üzere.
+        </h2>
+    </div>
+{% endblock %}

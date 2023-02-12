@@ -44,16 +44,17 @@
 </nav>
 
   <div class="container">
-    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb my-4">
-      {% block breadcrumb %}
-          <li class="breadcrumb-item">Home</li>
-      {% endblock %}
-    </ol>
-    </nav>
-    {% block content %}
+    {% block crumbarea %}
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb my-4">
+          {% block breadcrumb %}
+          {% endblock %}
+        </ol>
+        </nav>
     {% endblock %}
 
+    {% block content %}
+    {% endblock %}
   </div>
 {% endblock body %}
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>

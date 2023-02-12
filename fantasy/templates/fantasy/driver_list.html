@@ -78,10 +78,14 @@
 
                                 {% for race_driver in race_driver_list %}
                                     <td>
-                                        {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                        {% if tab_id == "price" %}
+                                            {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
+                                        {% else %}
+                                            {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                        {% endif %}
                                     </td>
                                 {% endfor %}
-                                {% if tab_id != "price_with_currency" %}<td></td>{% endif %}
+                                {% if tab_id != "price" %}<td></td>{% endif %}
                             </tr>
                         {% endfor %}
                         {% endif %}
