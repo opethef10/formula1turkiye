@@ -34,9 +34,10 @@
                     <tr>
                         <th>Driver</th>
                         <th>Qualy</th>
+                        <th>Sprint Grid</th>
+                        <th>Sprint</th>
                         <th>Grid</th>
                         <th>Result</th>
-                        <th>Sprint</th>
                         <th>EHT</th>
                         <th>Over</th>
                         <th>Qual</th>
@@ -52,9 +53,10 @@
                                 <small class="text-muted d-block">{{ race_driver.championship_constructor.constructor }}</small>
                             </td>
                             <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
+                            <td>{{ race_driver.grid_sprint|default_if_none:"-" }}</td>
+                            <td>{{ race_driver.sprint|default_if_none:"-" }}</td>
                             <td>{{ race_driver.grid|default_if_none:"-" }}</td>
                             <td>{{ race_driver.result|default_if_none:"-" }}</td>
-                            <td>{{ race_driver.sprint|default_if_none:"-" }}</td>
                             <td>{{ race_driver.fastest_lap|default_if_none:"-" }}</td>
                             <td>{{ race_driver.overtake_point }}</td>
                             <td>{{ race_driver.qualy_point }}</td>

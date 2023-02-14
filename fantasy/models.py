@@ -12,6 +12,21 @@ TACTIC_CHOICES = [
     ("S", "Sıralama"),
     ("F", "Finiş"),
 ]
+TACTIC_COEFFICIENTS = {
+    "Formula 1": {
+        "G": 2.3,
+        "S": 3.0,
+        "F": 1.7
+    },
+    "Formula 2": {
+        "G": 1.8,
+        "S": 5.0,
+        "F": 2.3
+    }
+}
+
+OVERTAKE_DOUBLE_POINT_THRESHOLD = 10
+
 DISCOUNT_COEFFICIENTS = (
     Decimal("0.6"),
     Decimal("0.13"),
@@ -131,52 +146,71 @@ class RaceDriver(models.Model):
     championship_constructor = models.ForeignKey("ChampionshipConstructor", null=True, on_delete=models.SET_NULL, related_name='race_drivers')
     price = models.DecimalField(max_digits=3, decimal_places=1)
     discount = models.BooleanField(default=False)
-    qualy = models.IntegerField(blank=True, null=True)
-    grid = models.IntegerField(blank=True, null=True)
-    result = models.IntegerField(blank=True, null=True)
-    sprint = models.IntegerField(blank=True, null=True)
-    fastest_lap = models.IntegerField(blank=True, null=True)
+    qualy = models.PositiveIntegerField(blank=True, null=True)
+    grid_sprint = models.PositiveIntegerField(blank=True, null=True)
+    sprint = models.PositiveIntegerField(blank=True, null=True)
+    grid = models.PositiveIntegerField(blank=True, null=True)
+    result = models.PositiveIntegerField(blank=True, null=True)
+    fastest_lap = models.PositiveIntegerField(blank=True, null=True)
+
+    def coefficient(self, tactic):
+        return TACTIC_COEFFICIENTS[self.race.championship.series][tactic]
 
     def qualy_point(self, tactic=None):
-        coefficient = 3.0 if tactic == "S" else 1
+        coefficient = self.coefficient(tactic) if tactic == "S" else 1
         return round(POINTS["qualy"].get(self.qualy, 0) * coefficient, 1)
 
     def sprint_point(self, tactic=None):
-        coefficient = 1.7 if tactic == "F" else 1
-        return round(POINTS["f1_sprint"].get(self.sprint, 0) * coefficient, 1)
+        coefficient = self.coefficient(tactic) if tactic == "F" else 1
+        return round(POINTS["sprint"][self.race.championship.series].get(self.sprint, 0) * coefficient, 1)
 
     def race_point(self, tactic=None):
-        coefficient = 1.7 if tactic == "F" else 1
+        coefficient = self.coefficient(tactic) if tactic == "F" else 1
         return round(
             (POINTS["race"].get(self.result, 0) + self.sprint_point() + (self.fastest_lap or 0)) * coefficient,
             1
         )
 
-    def overtake_point(self, tactic=None):
-        coefficient = 2.3 if tactic == "G" else 1
-        if (self.grid is None) or (self.result is None):
+    def sprint_overtake_point(self, tactic=None):
+        coefficient = self.coefficient(tactic) if tactic == "G" else 1
+        if [self.race.championship.series] == "Formula 1":
             return 0
-        elif (0 < self.grid <= 20) and (0 < self.result <= 20) and (self.grid > self.result):
-            raw = (self.grid - self.result)
-            bottom_to_top = (10 - self.result) if self.result < 10 else 0
-            top_to_top = (10 - self.grid) if self.grid < 10 else 0
-            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+        if not self.grid_sprint or not self.sprint:
+            return 0
+        elif self.grid_sprint < self.sprint:
+            return 0
         else:
+            raw = (self.grid_sprint - self.sprint)
+            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
+            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
+            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+
+    def feature_overtake_point(self, tactic=None):
+        coefficient = self.coefficient(tactic) if tactic == "G" else 1
+        if not self.grid or not self.result:
             return 0
+        elif self.grid < self.result:
+            return 0
+        else:
+            raw = (self.grid - self.result)
+            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
+            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
+            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+
+    def overtake_point(self, tactic=None):
+        return round(self.sprint_overtake_point(tactic) + self.feature_overtake_point(tactic), 1)
 
     def total_point(self, tactic=None):
         return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
 
     def discounted_price(self):
         if self.discount:
-            return round(
-                self.price - sum(
-                    DISCOUNT_COEFFICIENTS[power] * self.price ** power
-                    for power
-                    in range(4)
-                ),
-                1
+            discount = sum(
+                DISCOUNT_COEFFICIENTS[power] * self.price ** power
+                for power
+                in range(4)
             )
+            return round(self.price - discount, 1)
         return self.price
 
     def __str__(self):
