@@ -1,2 +1,6 @@
-django
-django-widget-tweaks
+asgiref==3.5.2
+Django==4.1.4
+django-widget-tweaks==1.4.12
+python-dotenv==0.21.1
+sqlparse==0.4.3
+tzdata==2022.7
