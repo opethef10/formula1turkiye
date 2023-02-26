@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
+
+    <li class="breadcrumb-item"><a href="{{ championship.get_tahmin_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item">Races</li>
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead class="thead-inverse">
+      <tr>
+          <th>Round</th>
+          <th>Name</th>
+          <th>Circuit</th>
+          <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for race in race_list %}
+        <tr class="align-middle">
+          <td>{{ race.round }}</td>
+          <td><a href="{{ race.get_tahmin_url }}">{{ race.name }}</a></td>
+          <td>{{ race.circuit }}</td>
+          <td>{{ race.datetime|default_if_none:"-" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

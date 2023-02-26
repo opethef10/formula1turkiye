@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load form_tags widget_tweaks %}
+
+{% block title %}New Team{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Fantasy League</a></li>
+
+    <li class="breadcrumb-item"><a href="{{ championship.get_tahmin_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:team_list' championship.slug %}">Teams</a></li>
+    <li class="breadcrumb-item">Tahmin Yap</li>
+{% endblock %}
+
+{% block content %}
+    <h3>{{ view.race }}</h3>
+    <li>Yeni bir tahmin gönderdiğinizde eskisi silinecektir. Yarış başlangıcından önceki son tahmininiz geçerli sayılacaktır.</li>
+    <li>İşlemlerinizi <b>{{ view.race.datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    <br/>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-success">Gönder</button>
+    <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+  </form>
+{% endblock %}

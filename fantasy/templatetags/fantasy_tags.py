@@ -23,6 +23,6 @@ def index(indexable, i):
 
 @register.filter
 def with_currency(obj, currency="₺"):
-    if not obj:
+    if obj is None:
         return ""
     return f"{obj}{currency}"

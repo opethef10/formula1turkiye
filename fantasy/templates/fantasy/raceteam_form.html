@@ -18,7 +18,7 @@
     <li>Bütçenizi (55₺) aşmayın.</li>
     <li>Taktik butonu seçimini kurallarda anlatıldığı üzere seçin.</li>
     <li><del>Yeni bir kadro gönderdiğinizde eskisi silinecektir. Kadro seçimlerinin bitişinden önceki son gönderiniz dikkate alınacaktır.</del></li>
-    <li>İşlemlerinizi {{ view.race.deadline|default_if_none:"???" }} tarihine kadar yapabilirsiniz.</li>
+    <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     <br/>
   <form method="post" novalidate>
     {% csrf_token %}

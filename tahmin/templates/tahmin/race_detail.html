@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load fantasy_tags %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
+    <li class="breadcrumb-item">
+        <a href="{{ race.championship.get_tahmin_url }}">{{ race.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:race_list' race.championship.slug %}">Races</a></li>
+    <li class="breadcrumb-item">{{ race.name }}</li>
+{% endblock %}
+
+{% block content %}
+    <table id="top10" class="table table-bordered small justify-content-center text-center text-nowrap">
+    <thead class="thead-inverse">
+                        <tr>
+                        <th>#</th>
+                        {% for racedriver in top10 %}
+                            <th>{{ forloop.counter }}</th>
+                        {% endfor %}
+                        <th>11</th>
+                        <th>12</th>
+                        <th>Total</th>
+                        </tr>
+    </thead>
+                <tr>
+                        <td><b>Driver</b></td>
+                        {% for racedriver in top10 %}
+                            <td> <b> {{ racedriver.driver.code|title }} </b></td>
+                        {% endfor %}
+                        <td>X</td>
+                        <td>Z</td>
+                        <td></td>
+                </tr>
+                <tr>
+                        <td><b>Count</b></td>
+                        {% for count in counts %}
+                            <td> {{ count }} </td>
+                        {% endfor %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                </tr>
+                <tr>
+                        <td><b>Point</b></td>
+                        {% for point in points %}
+                            <td> {{ point }} </td>
+                        {% endfor %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                </tr>
+    </table>
+     <table id="table_race_detail" class="table table-bordered small justify-content-center text-center text-nowrap">
+                        <thead class="thead-inverse">
+                        <tr>
+                        <th>Name</th>
+                        {% for racedriver in top10 %}
+                            <th>{{ forloop.counter }}</th>
+                        {% endfor %}
+                        <th>11</th>
+                        <th>12</th>
+                        <th>Total</th>
+                        </tr>
+                        </thead>
+
+                    <tbody>
+                    {% for race_team in race_team_list %}
+                        <tr>
+                            <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a></td>
+                            {% for idx in "123456789" %}
+                                {% with "prediction_"|add:idx as prediction_field %}
+                                    {% with race_team|call_or_get_attr:prediction_field as racedriver %}
+                                    <td>
+                                                {{ racedriver.driver.code|title }}
+                                                <small hidden class="text-muted d-block">
+                                                        {{ racedriver.total_point }}
+                                                </small>
+                                    </td>
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                            <td>
+                                {{ race_team.prediction_10.driver.code|title }}
+                                <small hidden class="text-muted d-block">
+                                        {{ race_team.prediction_10.total_point }}
+                                </small>
+                            </td>
+                            <td>
+                                {{ race_team.question_1 }}
+                                <small hidden class="text-muted d-block">
+                                        {{ race_team.prediction_9.total_point }}
+                                </small>
+                            </td>
+                            <td>
+                                {{ race_team.question_2 }}
+                                <small hidden class="text-muted d-block">
+                                        {{ race_team.prediction_10.total_point }}
+                                </small>
+                            </td>
+                            <td>{{ race_team.total_point }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+                $(document).ready(function() {
+                  $("#table_race_detail").DataTable(
+                      {
+                          paging: false,
+                          "order": [[13, 'desc']],
+                          "info": false,
+                          rowCallback: function(row, data, index) {
+                              for (let i=1; i<13 ; ++i){
+                                  console.log(row, i, data[i])
+                                  $("td", row).eq(i).filter(function() {
+                                      return parseInt($(this).find("small").text(), 10) > 6;
+                                    }).css('background-color','#99ff9c')
+                              }
+
+                          }
+                      }
+                  );
+                });
+
+    </script>
+
+{% endblock %}

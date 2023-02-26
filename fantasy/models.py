@@ -51,6 +51,8 @@ class Championship(models.Model):
             ("Formula E", "Formula E"),
         ]
     )
+    is_fantasy = models.BooleanField(default=True)
+    is_tahmin = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
@@ -63,6 +65,9 @@ class Championship(models.Model):
 
     def get_absolute_url(self):
         return reverse("fantasy:championship_detail", kwargs={'champ': self.slug})
+
+    def get_tahmin_url(self):
+        return reverse("tahmin:championship_detail", kwargs={'champ': self.slug})
 
 
 class Circuit(models.Model):
@@ -117,6 +122,9 @@ class Driver(models.Model):
     def get_absolute_url(self):
         return reverse("fantasy:driver_detail", kwargs={"driver_slug": self.slug})
 
+    def get_tahmin_url(self):
+        return reverse("tahmin:driver_detail", kwargs={"driver_slug": self.slug})
+
 
 class Race(models.Model):
     name = models.CharField(max_length=255)
@@ -138,6 +146,9 @@ class Race(models.Model):
 
     def get_absolute_url(self):
         return reverse("fantasy:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
+
+    def get_tahmin_url(self):
+        return reverse("tahmin:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
 
 
 class RaceDriver(models.Model):
@@ -234,6 +245,9 @@ class Team(models.Model):
 
     def get_absolute_url(self):
         return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
+
+    def get_tahmin_url(self):
+        return reverse("tahmin:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
 
 
 class RaceTeam(models.Model):

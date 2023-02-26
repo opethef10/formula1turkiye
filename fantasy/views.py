@@ -98,6 +98,7 @@ class DriverListView(ListView):
 class ChampionshipListView(ListView):
     model = Championship
     ordering = ["-year", "series"]
+    queryset = Championship.objects.filter(is_fantasy=True)
 
 
 class DriverDetailView(DetailView):

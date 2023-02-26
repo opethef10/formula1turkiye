@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item">Tahmin Ligi</li>
+{% endblock %}
+
+{% block content %}
+  <h5>Championship List</h5>
+  <ul>
+    {% for championship in championship_list %}
+      <li>
+        <a href="{{ championship.get_tahmin_url }}">
+          {{ championship.year }} {{ championship.series }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
