@@ -82,15 +82,15 @@ class DriverListView(ListView):
         context["championship"] = championship
         context["race_list"] = race_list
         context["tabs"] = {
-            "total_point": "Total Points",
-            "qualy": "Qualifying",
+            "total_point": "Toplam Puan",
+            "qualy": "Sıralama",
             "grid": "Grid",
-            "result": "Results",
-            "overtake_point": "Overtake Points",
-            "qualy_point": "Qualifying Points",
-            "race_point": "Race Points",
-            "price": "Prices",
-            "instances": "Count",
+            "result": "Yarış",
+            "overtake_point": "Geçiş Puanı",
+            "qualy_point": "Sıralama Puanı",
+            "race_point": "Yarış Puanı",
+            "price": "Fiyatlar",
+            "instances": "Pilot Alış Sayıları",
         }
         return context
 
@@ -131,8 +131,8 @@ class RaceDetailView(DetailView):
             "team__user__last_name"
         )
         context["tabs"] = {
-            "drivers": "Drivers",
-            "teams": "Teams",
+            "drivers": "Sürücüler",
+            "teams": "Takımlar",
             "kadrolar": "Kadrolar"
         }
         return context
@@ -199,7 +199,7 @@ class TeamListView(ListView):
         context["race_team_dict"] = race_team_dict
         context["race_team_count"] = team_count
         context["tabs"] = {
-            "total_point": "Total Points",
+            "total_point": "Toplam Puan",
         }
         return context
 

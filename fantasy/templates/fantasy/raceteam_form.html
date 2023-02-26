@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
-{% load form_tags widget_tweaks %}
+{% load form_tags widget_tweaks fantasy_tags %}
 
 {% block title %}New Team{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
 
     <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Teams</a></li>
-    <li class="breadcrumb-item">New Team</li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Takımlar</a></li>
+    <li class="breadcrumb-item">Yeni Takım</li>
 {% endblock %}
 
 {% block content %}
     <h3>YENİ TAKIM KUR</h3>
     <li>Kadronuzda en fazla 8 pilot olabilir, kadronuzu buna göre oluşturun.</li>
-    <li>Bütçenizi (55₺) aşmayın.</li>
-    <li>Taktik butonu seçimini kurallarda anlatıldığı üzere seçin.</li>
-    <li><del>Yeni bir kadro gönderdiğinizde eskisi silinecektir. Kadro seçimlerinin bitişinden önceki son gönderiniz dikkate alınacaktır.</del></li>
+    <li>Bütçenizi ({{ STARTING_BUDGET|with_currency }}) aşmayın.</li>
+    <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>
+    <li>Kadronuzu gönderdikten sonra düzenlemek istiyorsanız süresonuna kadar buradan düzenleyebilirsiniz.</li>
     <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     <br/>
   <form method="post" novalidate>

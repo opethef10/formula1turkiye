@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
 <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
 
     <li class="breadcrumb-item"><a href="{{ championship.get_tahmin_url }}">{{ championship }}</a></li>
-    <li class="breadcrumb-item">Races</li>
+    <li class="breadcrumb-item">Yarışlar</li>
 {% endblock %}
 
 {% block content %}
   <table class="table">
     <thead class="thead-inverse">
       <tr>
-          <th>Round</th>
-          <th>Name</th>
-          <th>Circuit</th>
-          <th>Date</th>
+          <th>Ayak</th>
+          <th>Ad</th>
+          <th>Pist</th>
+          <th>Tarih</th>
       </tr>
     </thead>
     <tbody>

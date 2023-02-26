@@ -26,9 +26,11 @@ class NewTeamForm(forms.ModelForm):
 
     def __init__(self, request, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["budget"] = forms.DecimalField(disabled=True, required=False)
-        self.fields["token"] = forms.IntegerField(disabled=True, required=False, initial=BEGINNING_TOKEN)
+        self.fields['tactic'].label = "Taktik"
+        self.fields["budget"] = forms.DecimalField(label="Kalan Bütçe", disabled=True, required=False)
+        self.fields["token"] = forms.IntegerField(label="Kalan Hak", disabled=True, required=False, initial=BEGINNING_TOKEN)
         self.fields["race_drivers"] = RaceDriverMultipleChoiceField(
+            label="Sürücüler",
             queryset=RaceDriver.objects.filter(
                 race=current_race
             ).order_by(

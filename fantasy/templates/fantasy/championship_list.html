@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item">Fantasy League</li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">Fantasy Lig</li>
 {% endblock %}
 
 {% block content %}
-  <h5>Championship List</h5>
+  <h5>Şampiyonalar</h5>
   <ul>
     {% for championship in championship_list %}
       <li>

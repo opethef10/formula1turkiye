@@ -2,11 +2,11 @@
 {% load fantasy_tags %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item">
         <a href="{{ race.championship.get_absolute_url }}">{{ race.championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' race.championship.slug %}">Races</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' race.championship.slug %}">Yarışlar</a></li>
     <li class="breadcrumb-item">{{ race.name }}</li>
 {% endblock %}
 
@@ -32,17 +32,17 @@
                         <thead class="thead-inverse">
                     {% if tab_id == "drivers" %}
                     <tr>
-                        <th>Driver</th>
-                        <th>Qualy</th>
+                        <th>Sürücü</th>
+                        <th>Sıralama</th>
                         <th>Sprint Grid</th>
                         <th>Sprint</th>
                         <th>Grid</th>
-                        <th>Result</th>
+                        <th>Yarış</th>
                         <th>EHT</th>
-                        <th>Over</th>
-                        <th>Qual</th>
-                        <th>Race</th>
-                        <th>Total</th>
+                        <th>Geçiş Puanı</th>
+                        <th>Sıralama Puanı</th>
+                        <th>Yarış Puanı</th>
+                        <th>Toplam Puan</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -137,6 +137,9 @@
                   {% for tab_id in tabs %}
                   $("#table_{{ tab_id }}").DataTable(
                       {
+                          language: {
+                              "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                          },
                           paging: false,
                           "order": [[{% if tab_id == "drivers" %}9 {% else %} 12 {% endif %}, 'desc']],
                           "info": false

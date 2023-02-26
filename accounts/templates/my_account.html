@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}My account{% endblock %}
+{% block title %}Hesabım | Formula 1 Türkiye{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active">My account</li>
+  <li class="breadcrumb-item active">Hesabım</li>
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
       <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Save changes</button>
+        <button type="submit" class="btn btn-success">Değişiklikleri kaydet</button>
       </form>
     </div>
   </div>

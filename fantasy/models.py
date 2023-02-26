@@ -56,7 +56,7 @@ class Championship(models.Model):
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
-        return f"{self.year} {self.series} Championship"
+        return f"{self.year} {self.series} Şampiyonası"
 
     def save(self, *args, **kwargs):
         if not self.slug:

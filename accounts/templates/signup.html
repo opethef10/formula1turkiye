@@ -1,21 +1,21 @@
 {% extends 'base_accounts.html' %}
 
-{% block title %}Sign up to Formula 1 Türkiye{% endblock %}
+{% block title %}Kaydolun | Formula 1 Türkiye{% endblock %}
 
 {% block content %}
   <div class="row justify-content-center">
     <div class="col-lg-8 col-md-10 col-sm-12">
       <div class="card">
         <div class="card-body">
-          <h3 class="card-title">Sign up</h3>
+          <h3 class="card-title">Yeni Üye Kaydı</h3>
           <form method="post" novalidate>
             {% csrf_token %}
             {% include 'includes/form.html' %}
-            <button type="submit" class="btn btn-primary btn-block">Create an account</button>
+            <button type="submit" class="btn btn-primary btn-block">Kaydol</button>
           </form>
         </div>
         <div class="card-footer text-muted text-center">
-          Already have an account? <a href="{% url 'login' %}">Log in</a>
+          Zaten hesabınız var mı? <a href="{% url 'login' %}">Giriş yap</a>
         </div>
       </div>
     </div>

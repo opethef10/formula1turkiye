@@ -4,11 +4,11 @@
 {% block title %}New Team{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
 
     <li class="breadcrumb-item"><a href="{{ championship.get_tahmin_url }}">{{ championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'tahmin:team_list' championship.slug %}">Teams</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:team_list' championship.slug %}">Takımlar</a></li>
     <li class="breadcrumb-item">Tahmin Yap</li>
 {% endblock %}
 

@@ -1,3 +1,5 @@
+from numbers import Number
+
 from django import template
 
 register = template.Library()
@@ -23,6 +25,6 @@ def index(indexable, i):
 
 @register.filter
 def with_currency(obj, currency="₺"):
-    if obj is None:
+    if not isinstance(obj, Number):
         return ""
     return f"{obj}{currency}"

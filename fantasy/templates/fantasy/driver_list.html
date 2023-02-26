@@ -2,10 +2,10 @@
 {% load fantasy_tags %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
-    <li class="breadcrumb-item">Drivers</li>
+    <li class="breadcrumb-item">Sürücüler</li>
 {% endblock %}
 
 {% block content %}
@@ -28,17 +28,17 @@
                     <table id="table_{{ tab_id }}" class="table table-bordered small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>
-                            <th>Driver</th>
+                            <th>Sürücü</th>
                             {% for race in race_list %}
                                 <th>
                                     <a href="{{ race.get_absolute_url }}">{{ race.circuit.country }}</a>
                                 </th>
                             {% endfor %}
                             {% if tab_id in 'qualy,grid,results' %}
-                                <th>Avg</th>
+                                <th>Ortalama</th>
                             {% elif tab_id in "instances,price_with_currency" %}
                             {% else %}
-                                <th>Total</th>
+                                <th>Toplam</th>
                             {% endif %}
                         </tr>
                         </thead>
@@ -109,6 +109,9 @@
                     {% for tab_id in tabs %}
                   $("#table_{{ tab_id }}").DataTable(
                       {
+                          language: {
+                              "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                          },
                           paging: false,
                           "order": [],
                           "info": false,

@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy League</a></li>
-    <li class="breadcrumb-item">Drivers</li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item">Sürücüler</li>
     <li class="breadcrumb-item">{{ driver }}</li>
 {% endblock %}
 
 {% block content %}
 
-<li> Forename: {{ driver.forename }} </li>
-<li> Surname: {{ driver.surname }} </li>
-<li> Code: {{ driver.code }} </li>
-<li> Number: {{ driver.number }} </li>
-<li> Nationality: {{ driver.nationality }} </li>
+<li> Ad: {{ driver.forename }} </li>
+<li> Soyad: {{ driver.surname }} </li>
+<li> Kod: {{ driver.code }} </li>
+<li> Numara: {{ driver.number }} </li>
+<li> Milliyet: {{ driver.nationality }} </li>
 
 {% endblock %}
