@@ -6,14 +6,47 @@
 {% endblock %}
 
 {% block content %}
-  <h5>Şampiyonalar</h5>
+      <h5>Aktif Şampiyonalar</h5>
   <ul>
     {% for championship in championship_list %}
       <li>
-        <a href="{{ championship.get_tahmin_url }}">
-          {{ championship.year }} {{ championship.series }}
+        <a href="{{ championship.get_absolute_url }}">
+          {{ championship.year }} {{ championship.series }} Tahmin Ligi
         </a>
       </li>
     {% endfor %}
   </ul>
+        <h5>Önceki Şampiyonlar</h5>
+    <ul>
+        <li>2017: Emirhan Kızılgün</li>
+        <li>2018: Samet Demirel</li>
+        <li>2019: Yusuf Ahmet Oktay</li>
+        <li>2020: Onur Arıkan</li>
+        <li>2021: Muhittin Erdoğan</li>
+        <li>2022: Semih Boz</li>
+    </ul>
+    <h5>Puan Sistemi</h5>
+    <h6>2018 puan sistemi (ilk 10 için sırasıyla)</h6>
+    <ul><li>9 14 16 18 20 25 23 23 20 25</li></ul>
+    <h6>2019 puan sistemi ( ilk 10 için sırasıyla)</h6>
+    <ul><li>10 11 14 19 23 25 25 25 26 27</li></ul>
+    <h6>2020 puan sistemi</h6>
+<p>Her sıranın belli miktar ödülleri vardır ve bu ödül o sırayı doğru tahmin edilenlere bölüştürülür.
+    Böylece daha az kişi doğru tahminde bulundukça kişi başı pay artacak ve zor tahmin edilen bir şeyi bilme başarısı
+    gösterenler daha büyük bir puanla ödüllendirilecek. Örneğin Hamilton'ın kazanacağını 48 kişi bilirse bu 96/48'den
+    kişi başı 2 puan getirir. Çünkü bunu tahmin etmek kolaydır. Fakat sürpriz ata oynayan az kişinin yazdığı pilot
+    kazandığında, mesela Vettel'in kazanacağını tahmin eden 3 kişi olsa 90/3'ten 30 puanla ödüllendirilirler.</p>
+<p>Her sıra için dağıtılacak toplam ödül şu şekilde:   90 96 108 125 125 118 132 125 105 90</p>
+
+
+<h6>2021 puan sistemi</h6>
+<p>
+Önceki senelerden farklı olarak her sıranın puan getirisi eşit bu yıl. Fakat yine 2020'ye benzer, bir sırayı ne kadar az kişi doğru
+    tahmin ederse, tutturanlar daha çok ödüllendiriliyor. Sadece hesaplanma sistemi farklı. Şöyle ki; bir sırayı (söz gelimi 7. sıra diyelim)
+    doğru tahmin eden kişi sayısı x olsun. Eğer x, 20'den büyük eşitse o sıra için kimse puan alamıyor. Eğer 19 ve daha
+    az bilen varsa, her tutturan kişinin puanı (x-20)^2 / 2 formülü ile hesaplanıyor ve ondalıklı sonuçlar yukarı yuvarlanıyor.
+    (Bakınız: Aşağıdaki tablo)</p>
+
+    <h6>2022 puan sistemi</h6>
+    <p>2021  puan sistemine ek olarak çoktan seçmeli 2 tahmin sorusuna verilecek doğru cevap ile puan alınabiliyor.</p>
 {% endblock %}
