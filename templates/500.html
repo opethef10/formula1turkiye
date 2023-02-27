@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block crumbarea %}
+    <p><p/>
+{% endblock %}
+
+{% block title %}{% translate 'Server error (500)' %}{% endblock %}
+
+{% block content %}
+    <div class="container h-100">
+  <div class="row text-center h-100 justify-content-center align-items-center">
+    <div class="col-12">
+<h1>{% translate 'Server Error <em>(500)</em>' %}</h1>
+<p>{% translate 'There’s been an error. It’s been reported to the site administrators via email and should be fixed shortly. Thanks for your patience.' %}</p>
+</div></div></div>
+
+{% endblock %}
