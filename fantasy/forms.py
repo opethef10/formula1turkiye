@@ -45,14 +45,14 @@ class NewTeamForm(forms.ModelForm):
         cleaned_data = super().clean()
         race_drivers = self.cleaned_data.get('race_drivers')
         if race_drivers is None:
-            raise forms.ValidationError("You should select at least one driver")
+            raise forms.ValidationError("Takımınız en az bir sürücüden oluşmalıdır.")
         if len(race_drivers) > MAX_DRIVERS_IN_A_TEAM:
-            raise forms.ValidationError("You cannot select more than 8 drivers")
+            raise forms.ValidationError("Takımınızda 8'den fazla sürücü olamaz.")
 
         total_price = sum(race_driver.price for race_driver in race_drivers)
         left_budget = STARTING_BUDGET - total_price
         if left_budget < 0:
-            raise forms.ValidationError("Budget left can't be negative")
+            raise forms.ValidationError("Bütçeniz eksi olamaz.")
         cleaned_data['budget'] = left_budget
         cleaned_data['token'] = BEGINNING_TOKEN
         return cleaned_data
@@ -124,7 +124,7 @@ class EditTeamForm(forms.ModelForm):
         token = self.prev_race_team.token
         token -= to_sell.count() + to_buy.count()
         if token < 0:
-            raise forms.ValidationError("Haklarınız bitti")
+            raise forms.ValidationError("Haklarınız eksi olamaz.")
         cleaned_data['token'] = token
         self.instance.token = token
 
