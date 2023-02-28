@@ -14,9 +14,9 @@ TACTIC_CHOICES = [
 ]
 TACTIC_COEFFICIENTS = {
     "Formula 1": {
-        "G": 2.3,
-        "S": 3.0,
-        "F": 1.7
+        "G": 2.2,
+        "S": 3.2,
+        "F": 1.8
     },
     "Formula 2": {
         "G": 1.8,
