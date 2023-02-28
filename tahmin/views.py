@@ -67,6 +67,7 @@ class RaceDetailView(DetailView):
             race=current_race,
             result__isnull=False
         ).order_by("result")[:10]
+        top10 = list(top10) + [None] * (10 - len(top10))
 
         counts = [
             race_tahmins.filter(**{f"prediction_{idx}": race_driver}).count()
@@ -155,11 +156,11 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         try:
             self.race = Race.objects.filter(
                 championship=self.championship,
-                datetime__gt=timezone.now()
+                datetime__gt=timezone.now(),
+                deadline__lt=timezone.now()
             ).latest("deadline")
         except Race.DoesNotExist:
             self.race = None
-            # raise Http404("İşlem yapma zamanı doldu, bir sonraki yarışta görüşmek üzere.")
 
     def get(self, request, *args, **kwargs):
         if self.race is None:
@@ -170,7 +171,6 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
-        # context["STARTING_BUDGET"] = STARTING_BUDGET
         return context
 
     def get_form_kwargs(self):
@@ -198,8 +198,6 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
             user=self.request.user,
             championship=self.championship
         )
-        if created:
-            form.instance.race = self.race
-            form.instance.team = team
+        form.instance.race = self.race
+        form.instance.team = team
         return super().form_valid(form)
-

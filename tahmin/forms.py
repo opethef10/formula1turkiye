@@ -15,10 +15,14 @@ class NewTahminForm(forms.ModelForm):
     def __init__(self, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for idx in range(1, 11):
-            self.fields[f"prediction_{idx}"] = RaceDriverChoiceField(queryset=RaceDriver.objects.filter(
+            self.fields[f"prediction_{idx}"] = RaceDriverChoiceField(
+                label=f"{idx}. Sürücü",
+                queryset=RaceDriver.objects.filter(
                         race=current_race
-                    ).order_by(
+                ).order_by(
                         "championship_constructor__garage_order",
                         "driver__number"
-                    )
+                )
             )
+            self.fields["question_1"].label = "11. Soru"
+            self.fields["question_2"].label = "12. Soru"

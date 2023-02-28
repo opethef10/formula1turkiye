@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from django.test import TestCase
 from django.urls import resolve, reverse
@@ -152,7 +152,7 @@ class RaceDetailViewTests(DetailViewTestMixin, TestCase):
             championship=cls.championship,
             round=1,
             circuit=circuit,
-            date=date.today()
+            datetime=datetime.now()
         )
         cls.url_name = 'race_detail'
         cls.url_kwargs = {'champ': cls.championship.slug, "round": cls.race.round}

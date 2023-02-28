@@ -140,7 +140,6 @@ class RaceDetailView(DetailView):
 
 class RaceListView(ListView):
     model = Race
-    allow_empty = False
 
     def get_queryset(self):
         races = Race.objects.filter(championship__slug=self.kwargs.get('champ'))
