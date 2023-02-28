@@ -58,25 +58,6 @@ class RaceTahmin(models.Model):
     def __str__(self):
         return f"{self.race}-{self.team}"
 
-    def func(self):
-        race_tahmins = RaceTahmin.objects.filter(race=self.race)
-
-
     def total_point(self):
+        # TODO: Tahmin Puanları
         return round(sum(getattr(self, f"prediction_{idx}").total_point() for idx in range(1, 11)), 1)
-
-    def overtake_point(self):
-        return round(sum(race_driver.total_point("G") for race_driver in self.race_drivers.all()), 1)
-
-    def qualy_point(self):
-        return round(sum(race_driver.total_point("S") for race_driver in self.race_drivers.all()), 1)
-
-    def race_point(self):
-        return round(sum(race_driver.total_point("F") for race_driver in self.race_drivers.all()), 1)
-
-    def none_point(self):
-        return round(sum(race_driver.total_point() for race_driver in self.race_drivers.all()), 1)
-
-    def total_worth(self):
-        return round(sum(race_driver.price for race_driver in self.race_drivers.all()) + self.budget, 1)
-

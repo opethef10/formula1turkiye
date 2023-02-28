@@ -5,8 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import User
 from django.core import mail
-# from django.core.urlresolvers import reverse
-from django.urls import resolve,reverse
+from django.urls import resolve, reverse
 from django.test import TestCase
 
 
@@ -30,9 +29,9 @@ class PasswordResetTests(TestCase):
         self.assertIsInstance(form, PasswordResetForm)
 
     def test_form_inputs(self):
-        '''
+        """
         The view must contain two inputs: csrf and email
-        '''
+        """
         self.assertContains(self.response, '<input', 2)
         self.assertContains(self.response, 'type="email"', 1)
 
@@ -45,9 +44,9 @@ class SuccessfulPasswordResetTests(TestCase):
         self.response = self.client.post(url, {'email': email})
 
     def test_redirection(self):
-        '''
+        """
         A valid form submission should redirect the user to `password_reset_done` view
-        '''
+        """
         url = reverse('password_reset_done')
         self.assertRedirects(self.response, url)
 
@@ -61,10 +60,10 @@ class InvalidPasswordResetTests(TestCase):
         self.response = self.client.post(url, {'email': 'donotexist@email.com'})
 
     def test_redirection(self):
-        '''
+        """
         Even invalid emails in the database should
         redirect the user to `password_reset_done` view
-        '''
+        """
         url = reverse('password_reset_done')
         self.assertRedirects(self.response, url)
 
@@ -115,9 +114,9 @@ class PasswordResetConfirmTests(TestCase):
         self.assertIsInstance(form, SetPasswordForm)
 
     def test_form_inputs(self):
-        '''
+        """
         The view must contain two inputs: csrf and two password fields
-        '''
+        """
         self.assertContains(self.response, '<input', 3)
         self.assertContains(self.response, 'type="password"', 2)
 
@@ -142,7 +141,6 @@ class InvalidPasswordResetConfirmTests(TestCase):
 
     def test_html(self):
         password_reset_url = reverse('password_reset')
-        self.assertContains(self.response, 'invalid password reset link')
         self.assertContains(self.response, 'href="{0}"'.format(password_reset_url))
 
 

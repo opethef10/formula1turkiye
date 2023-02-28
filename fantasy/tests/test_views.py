@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from django.test import TestCase
-from django.urls import resolve, reverse
-from django.views.generic.base import TemplateView
+from django.urls import resolve
 
 from ..models import *
 from .. import views

@@ -1,5 +1,5 @@
 """
-ASGI config for project project.
+ASGI config for project Formula 1 Türkiye.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
