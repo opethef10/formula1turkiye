@@ -65,19 +65,19 @@
                     {% endfor %}
                     {% else %}
                         <tr>
-                        <th>Tactic</th>
-                        <th>Token</th>
-                        <th>Budget</th>
-                        <th>Name</th>
+                        <th>Taktik</th>
+                        <th>Hak</th>
+                        <th>Bütçe</th>
+                        <th>Ad</th>
                         {% for idx in "01234567" %}
-                        <th>Driver {{ forloop.counter }}</th>
+                        <th>{{ forloop.counter }}. Sürücü</th>
                         {% endfor %}
-                        <th>Total</th>
+                        <th>Toplam</th>
                         {% if tab_id == "teams" %}
-                        <th>if overtake</th>
-                        <th>if quali</th>
-                        <th>if race</th>
-                        <th>2018</th>
+                        <th>Geçiş taktiği olsaydı</th>
+                        <th>Sıralama taktiği olsaydı</th>
+                        <th>Yarış taktiği olsaydı</th>
+                        <th>Taktiksiz olsaydı</th>
                         {% endif %}
                     </tr>
 
