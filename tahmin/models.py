@@ -59,5 +59,4 @@ class RaceTahmin(models.Model):
         return f"{self.race}-{self.team}"
 
     def total_point(self):
-        # TODO: Tahmin Puanları
-        return round(sum(getattr(self, f"prediction_{idx}").total_point() for idx in range(1, 11)), 1)
+        return round(sum(getattr(self, f"prediction_{idx}").total_point() for idx in range(1, 11)), 1) # TODO: Tahmin Puanları
