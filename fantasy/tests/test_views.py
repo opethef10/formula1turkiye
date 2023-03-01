@@ -90,7 +90,7 @@ class RaceListTests(ViewTestMixin, TestCase):
         cls.url_name = 'race_list'
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.url_kwargs_404 = {'champ': "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/races"
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}"
         cls.template_name = "fantasy/race_list.html"
         cls.context_variable = 'race_list'
         cls.view = views.RaceListView
@@ -128,19 +128,6 @@ class DriverDetailViewTests(DetailViewTestMixin, TestCase):
         cls.view = views.DriverDetailView
 
 
-class ChampionshipDetailViewTests(DetailViewTestMixin, TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2024, series="Formula 1")
-        cls.url_name = 'championship_detail'
-        cls.url_kwargs = {'champ': cls.championship.slug}
-        cls.url_kwargs_404 = {'champ': "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}"
-        cls.template_name = "fantasy/championship_detail.html"
-        cls.context_variable = 'championship'
-        cls.view = views.ChampionshipDetailView
-
-
 class RaceDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -156,7 +143,7 @@ class RaceDetailViewTests(DetailViewTestMixin, TestCase):
         cls.url_name = 'race_detail'
         cls.url_kwargs = {'champ': cls.championship.slug, "round": cls.race.round}
         cls.url_kwargs_404 = {'champ': cls.championship.slug, "round": 99}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/races/{cls.race.round}"
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/{cls.race.round}"
         cls.template_name = "fantasy/race_detail.html"
         cls.context_variable = 'race'
         cls.view = views.RaceDetailView

@@ -3,9 +3,8 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-<li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-
-    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
     <li class="breadcrumb-item">Takımlar</li>
 {% endblock %}
 
@@ -25,15 +24,6 @@
                 <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
                      id="{{ tab_id }}">
                     <br/>
-                    {% if race_team_count > 1 %}
-                        <a href="{% url 'fantasy:edit_team_form' championship.slug %}" class="btn btn-primary ml-2">Alım Satım</a>
-                    {% elif race_team_count == 0 %}
-                        <a href="{% url 'fantasy:new_team_form' championship.slug %}" class="btn btn-primary ml-2">Yeni Takım Kur</a>
-                    {% elif race_team_count == 1  %}
-                        <a href="{% url 'fantasy:edit_team_form' championship.slug %}" class="btn btn-primary ml-2">Takımı Düzenle</a>
-                    {% else %}
-                        <a href="{% url 'fantasy:new_team_form' championship.slug %}" class="btn btn-primary ml-2">Yeni Takım Kur</a>
-                    {% endif %}
                     <table id="table_{{ tab_id }}" class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>

@@ -63,12 +63,6 @@ class Championship(models.Model):
             self.slug = f"{self.year}-f{self.series[-1]}"
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse("fantasy:championship_detail", kwargs={'champ': self.slug})
-
-    def get_tahmin_url(self):
-        return reverse("tahmin:championship_detail", kwargs={'champ': self.slug})
-
 
 class Circuit(models.Model):
     name = models.CharField(max_length=255)

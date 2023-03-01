@@ -6,14 +6,13 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-
-    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Takımlar</a></li>
     <li class="breadcrumb-item">Yeni Takım</li>
 {% endblock %}
 
 {% block content %}
-    <h3>YENİ TAKIM KUR</h3>
+    <h3>YENİ TAKIM KUR - {{ view.race }}</h3>
     <li>Kadronuzda en fazla 8 pilot olabilir, kadronuzu buna göre oluşturun.</li>
     <li>Bütçenizi ({{ STARTING_BUDGET|with_currency }}) aşmayın.</li>
     <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>

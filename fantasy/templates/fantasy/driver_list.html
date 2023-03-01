@@ -4,7 +4,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
     <li class="breadcrumb-item">Sürücüler</li>
 {% endblock %}
 

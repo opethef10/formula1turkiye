@@ -7,11 +7,6 @@ from .forms import *
 from .models import *
 
 
-class ChampionshipDetailView(DetailView):
-    model = Championship
-    slug_url_kwarg = "champ"
-
-
 class DriverListView(ListView):
     model = Driver
 
@@ -147,8 +142,16 @@ class RaceListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        if self.request.user.is_authenticated:
+            team_count = RaceTeam.objects.filter(
+                team__user=self.request.user,
+                team__championship__slug=self.kwargs.get('champ')
+            ).count()
+        else:
+            team_count = None
         context = super().get_context_data(**kwargs)
         context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get('champ'))
+        context["race_team_count"] = team_count
         return context
 
 

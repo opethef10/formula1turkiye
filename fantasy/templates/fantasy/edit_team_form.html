@@ -6,14 +6,13 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-
-    <li class="breadcrumb-item"><a href="{{ championship.get_absolute_url }}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' championship.slug %}">Takımlar</a></li>
     <li class="breadcrumb-item">Alım Satım</li>
 {% endblock %}
 
 {% block content %}
-    <h3>ALIM SATIM</h3>
+    <h3>ALIM SATIM - {{ view.race }}</h3>
     <li>Sadece alım satım yapacaksanız, taktik seçimi yapmanıza gerek yoktur. Taktik seçimi varsayılan olarak geçen yarıştaki seçiminiz olarak görünür.</li>
     <li>Sadece taktik seçimi yapacaksanız, alım satım yapmanıza gerek yoktur.</li>
     <li>Alım satım yaptıktan sonra tekrar değiştirmek istiyorsanız:

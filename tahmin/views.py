@@ -22,12 +22,6 @@ class ChampionshipListView(ListView):
     template_name = "tahmin/championship_list.html"
 
 
-class ChampionshipDetailView(DetailView):
-    model = Championship
-    slug_url_kwarg = "champ"
-    template_name = "tahmin/championship_detail.html"
-
-
 class RaceListView(ListView):
     model = Race
     allow_empty = False
@@ -138,7 +132,7 @@ class TeamListView(ListView):
         context["race_team_dict"] = race_team_dict
         context["race_team_count"] = team_count
         context["tabs"] = {
-            "total_point": "Total Points",
+            "total_point": "Toplam Puan",
         }
         return context
 

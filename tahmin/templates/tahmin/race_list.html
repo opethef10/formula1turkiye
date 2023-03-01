@@ -2,13 +2,17 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-<li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
-
-    <li class="breadcrumb-item"><a href="{{ championship.get_tahmin_url }}">{{ championship }}</a></li>
-    <li class="breadcrumb-item">Yarışlar</li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:race_list' championship.slug %}">{{ championship }}</a></li>
 {% endblock %}
 
 {% block content %}
+    <ul>
+        <li class="fs-5"><a href="{% url 'tahmin:team_list' championship.slug %}"> Takımlar (Genel Klasman) </a></li>
+    </ul>
+    <a href="{% url 'tahmin:new_team_form' championship.slug %}" class="btn btn-primary ml-2">Yeni Tahmin</a>
+    <p></p>
+    <h3>Yarışlar</h3>
   <table class="table">
     <thead class="thead-inverse">
       <tr>
