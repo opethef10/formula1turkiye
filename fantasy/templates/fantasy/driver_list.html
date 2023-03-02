@@ -13,9 +13,10 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             {% for tab_id, title in tabs.items %}
-            <li class="nav-item">
-                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#{{ tab_id }}">{{ title }}</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                       href="#{{ tab_id }}">{{ title }}</a>
+                </li>
             {% endfor %}
         </ul>
         <!-- Tab panes -->
@@ -25,7 +26,8 @@
                      id="{{ tab_id }}">
 
                     <br/>
-                    <table id="table_{{ tab_id }}" class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
+                    <table id="table_{{ tab_id }}"
+                           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>
                             <th>Sürücü</th>
@@ -44,53 +46,54 @@
                         </thead>
                         <tbody>
                         {% if tab_id == "instances" %}
-                        {% for driver, count_list in driver_count_dict.items %}
-                            <tr>
-                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+                            {% for driver, count_list in driver_count_dict.items %}
+                                <tr>
+                                    <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
 
 
-                                {% for count in count_list %}
-                                    <td>
-                                        {{ count|default_if_none:"-" }}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
+                                    {% for count in count_list %}
+                                        <td>
+                                            {{ count|default_if_none:"-" }}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
                             </table>
                             <table class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
 
-                        {% for tactic, count_list in tactic_count_dict.items %}
-                            <tr>
-                                <td>{{ tactic }}</td>
-                                {% for count in count_list %}
-                                    <td>
-                                        {{ count|default_if_none:"-" }}
-                                    </td>
-                                {% endfor %}
-                                <td></td>
-                            </tr>
-                        {% endfor %}
+                            {% for tactic, count_list in tactic_count_dict.items %}
+                                <tr>
+                                    <td>{{ tactic }}</td>
+                                    {% for count in count_list %}
+                                        <td>
+                                            {{ count|default_if_none:"-" }}
+                                        </td>
+                                    {% endfor %}
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
                         {% else %}
-                        {% for driver, race_driver_list in race_driver_dict.items %}
-                            <tr>
-                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+                            {% for driver, race_driver_list in race_driver_dict.items %}
+                                <tr>
+                                    <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
 
 
-                                {% for race_driver in race_driver_list %}
-                                    <td>
-                                        {% if tab_id == "price" %}
-                                            {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
-                                        {% else %}
-                                            {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                                {% if tab_id != "price" %}<td></td>{% endif %}
-                            </tr>
-                        {% endfor %}
+                                    {% for race_driver in race_driver_list %}
+                                        <td>
+                                            {% if tab_id == "price" %}
+                                                {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
+                                            {% else %}
+                                                {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    {% if tab_id != "price" %}
+                                        <td></td>{% endif %}
+                                </tr>
+                            {% endfor %}
                         {% endif %}
                         </tbody>
-                    </table>
+                        </table>
                 </div>
 
             {% endfor %}
@@ -105,46 +108,46 @@
 {% block javascript %}
     <script>
 
-                $(document).ready(function() {
-                    {% for tab_id in tabs %}
-                  $("#table_{{ tab_id }}").DataTable(
-                      {
-                          language: {
-                              "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
-                          },
-                          paging: false,
-                          "order": [],
-                          "info": false,
-                          {% if tab_id not in "instances,price_with_currency" %}
-                          columnDefs: [
-                              {
-                                   render: function (data, type, row) {
-                                       let result = 0;
-                                       let num;
-                                       let nan_count = 0;
-                                       for (let i = 1; i < row.length - 1; i++) {
-                                           num = parseInt(row[i]);
-                                           if (isNaN(num)) {
-                                               num = 0;
-                                               nan_count += 1;
-                                           }
-                                           result += num;
-                                       }
-                                       {% if tab_id in 'qualy,grid,results' %}
-                                           result /= row.length - 2 -nan_count;
-                                           result = isNaN(result) ? "" : result;
-                                       {% endif %}
+        $(document).ready(function () {
+            {% for tab_id in tabs %}
+                $("#table_{{ tab_id }}").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "order": [],
+                        "info": false,
+                        {% if tab_id not in "instances,price_with_currency" %}
+                            columnDefs: [
+                                {
+                                    render: function (data, type, row) {
+                                        let result = 0;
+                                        let num;
+                                        let nan_count = 0;
+                                        for (let i = 1; i < row.length - 1; i++) {
+                                            num = parseInt(row[i]);
+                                            if (isNaN(num)) {
+                                                num = 0;
+                                                nan_count += 1;
+                                            }
+                                            result += num;
+                                        }
+                                        {% if tab_id in 'qualy,grid,results' %}
+                                            result /= row.length - 2 - nan_count;
+                                            result = isNaN(result) ? "" : result;
+                                        {% endif %}
 
-                                       return result;
-                                   },
-                                   targets: -1,
-                               },
-                          ],
+                                        return result;
+                                    },
+                                    targets: -1,
+                                },
+                            ],
                         {% endif %}
-                      }
-                  );
-                  {% endfor %}
-                });
+                    }
+                );
+            {% endfor %}
+        });
 
     </script>
 

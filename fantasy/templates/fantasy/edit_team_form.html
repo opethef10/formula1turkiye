@@ -13,11 +13,15 @@
 
 {% block content %}
     <h3>ALIM SATIM - {{ view.race }}</h3>
-    <li>Sadece alım satım yapacaksanız, taktik seçimi yapmanıza gerek yoktur. Taktik seçimi varsayılan olarak geçen yarıştaki seçiminiz olarak görünür.</li>
+    <li>Sadece alım satım yapacaksanız, taktik seçimi yapmanıza gerek yoktur. Taktik seçimi varsayılan olarak geçen
+        yarıştaki seçiminiz olarak görünür.
+    </li>
     <li>Sadece taktik seçimi yapacaksanız, alım satım yapmanıza gerek yoktur.</li>
     <li>Alım satım yaptıktan sonra tekrar değiştirmek istiyorsanız:
         <ol>
-            <li>Değişiklikleriniz geçen yarışın kadrosu, bütçesi ve hakları üzerinden tekrar yapılacaktır, değiştirdiğiniz kadronuz üzerinden değil</li>
+            <li>Değişiklikleriniz geçen yarışın kadrosu, bütçesi ve hakları üzerinden tekrar yapılacaktır,
+                değiştirdiğiniz kadronuz üzerinden değil
+            </li>
             <li>Yeni alım satımınızla önceki alım satımınız silinecektir</li>
             <li>Yeni alım satımınızı iptal ederseniz önceki alım satım işleminiz hala geçerli olacaktır</li>
         </ol>
@@ -25,51 +29,56 @@
     <li>"Ben kadromda değişiklik yaptım ama geri almak istiyorum?"
         <ol>
             <li>Geçen yarışki kadronuza geri dönmek için boş form gönderin</li>
-            <li>İki farklı alım satımı arka arkaya yaptıysanız 1.'ye geri dönemezsiniz, tekrar kurun o kadroyu bir zahmet</li>
+            <li>İki farklı alım satımı arka arkaya yaptıysanız 1.'ye geri dönemezsiniz, tekrar kurun o kadroyu bir
+                zahmet
+            </li>
         </ol>
     </li>
     <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {% include 'includes/form.html' %}
-    <button type="submit" class="btn btn-success">Gönder</button>
-    <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
-    <button type="button" onclick='location.href="{{ view.get_success_url }}"' class="btn btn-danger">İptal Et</button>
-  </form>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+        <button type="button" onclick='location.href="{{ view.get_success_url }}"' class="btn btn-danger">İptal Et
+        </button>
+    </form>
 {% endblock %}
 
 {% block javascript %}
-<script>
-$(document).ready(function() {
-    let initial_budget = $('#id_budget').val();
-    let initial_token = $('#id_token').val();
-    $('input[name="to_sell"]').each(function() {
-        $(this).attr("class", "")
-    });
-    $('input[name="to_buy"]').each(function() {
-        $(this).attr("class", "")
-    });
-    function sumit(){
-        let budget = initial_budget;
-        let token = initial_token;
-        let sum = 0;
-        $('input[name="to_sell"]:checked').each(function() {
-            sum -= parseFloat($(this).attr("price"));
-            token -=1;
-        });
-        $('input[name="to_buy"]:checked').each(function() {
-            sum += parseFloat($(this).attr("price"));
-            token -=1;
-        });
-        budget = Math.round( ( budget - sum + Number.EPSILON ) * 10 ) / 10;
-        $('#id_budget').val(budget);
-        $('#id_token').val(token);
-    }
-    sumit();
+    <script>
+        $(document).ready(function () {
+            let initial_budget = $('#id_budget').val();
+            let initial_token = $('#id_token').val();
+            $('input[name="to_sell"]').each(function () {
+                $(this).attr("class", "")
+            });
+            $('input[name="to_buy"]').each(function () {
+                $(this).attr("class", "")
+            });
 
-    $('#id_to_sell, #id_to_buy').change(function() {
-        sumit();
-    });
-});
-</script>
+            function sumit() {
+                let budget = initial_budget;
+                let token = initial_token;
+                let sum = 0;
+                $('input[name="to_sell"]:checked').each(function () {
+                    sum -= parseFloat($(this).attr("price"));
+                    token -= 1;
+                });
+                $('input[name="to_buy"]:checked').each(function () {
+                    sum += parseFloat($(this).attr("price"));
+                    token -= 1;
+                });
+                budget = Math.round((budget - sum + Number.EPSILON) * 10) / 10;
+                $('#id_budget').val(budget);
+                $('#id_token').val(token);
+            }
+
+            sumit();
+
+            $('#id_to_sell, #id_to_buy').change(function () {
+                sumit();
+            });
+        });
+    </script>
 {% endblock %}

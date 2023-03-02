@@ -13,24 +13,24 @@
     <a href="{% url 'tahmin:new_team_form' championship.slug %}" class="btn btn-primary ml-2">Yeni Tahmin</a>
     <p></p>
     <h3>Yarışlar</h3>
-  <table class="table">
-    <thead class="thead-inverse">
-      <tr>
-          <th>Ayak</th>
-          <th>Ad</th>
-          <th>Pist</th>
-          <th>Tarih</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for race in race_list %}
-        <tr class="align-middle">
-          <td>{{ race.round }}</td>
-          <td><a href="{{ race.get_tahmin_url }}">{{ race.name }}</a></td>
-          <td>{{ race.circuit }}</td>
-          <td>{{ race.datetime|default_if_none:"-" }}</td>
+    <table class="table">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Ayak</th>
+            <th>Ad</th>
+            <th>Pist</th>
+            <th>Tarih</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+        {% for race in race_list %}
+            <tr class="align-middle">
+                <td>{{ race.round }}</td>
+                <td><a href="{{ race.get_tahmin_url }}">{{ race.name }}</a></td>
+                <td>{{ race.circuit }}</td>
+                <td>{{ race.datetime|default_if_none:"-" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

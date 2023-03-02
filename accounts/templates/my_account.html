@@ -3,17 +3,17 @@
 {% block title %}Hesabım | Formula 1 Türkiye{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active">Hesabım</li>
+    <li class="breadcrumb-item active">Hesabım</li>
 {% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-lg-6 col-md-8 col-sm-10">
-      <form method="post" novalidate>
-        {% csrf_token %}
-        {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Değişiklikleri kaydet</button>
-      </form>
+    <div class="row">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include 'includes/form.html' %}
+                <button type="submit" class="btn btn-success">Değişiklikleri kaydet</button>
+            </form>
+        </div>
     </div>
-  </div>
 {% endblock %}

@@ -13,9 +13,10 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             {% for tab_id, title in tabs.items %}
-            <li class="nav-item">
-                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#{{ tab_id }}">{{ title }}</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                       href="#{{ tab_id }}">{{ title }}</a>
+                </li>
             {% endfor %}
         </ul>
         <!-- Tab panes -->
@@ -24,7 +25,8 @@
                 <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
                      id="{{ tab_id }}">
                     <br/>
-                    <table id="table_{{ tab_id }}" class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
+                    <table id="table_{{ tab_id }}"
+                           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
                         <thead class="thead-inverse">
                         <tr>
                             <th>Sıra</th>
@@ -67,45 +69,45 @@
 {% block javascript %}
     <script>
 
-                $(document).ready(function() {
-                    {% for tab_id in tabs %}
-                  $("#table_{{ tab_id }}").DataTable(
-                      {
-                          language: {
-                              "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
-                          },
-                          paging: false,
-                          "order": [],
-                          "info": false,
+        $(document).ready(function () {
+            {% for tab_id in tabs %}
+                $("#table_{{ tab_id }}").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "order": [],
+                        "info": false,
 
-                          columnDefs: [
-                              {
-                                   render: function (data, type, row) {
-                                       let result = 0.0;
-                                       let num;
-                                       let nan_count = 0;
-                                       for (let i = 1; i < row.length - 1; i++) {
-                                           num = parseFloat(row[i].replace(',','.'));
-                                           if (isNaN(num)) {
-                                               num = 0.0;
-                                               nan_count += 1;
-                                           }
-                                           result += num;
-                                       }
-                                       {% if tab_id in 'qualy,grid,results' %}
-                                           result /= row.length - 2 -nan_count;
-                                           result = isNaN(result) ? "" : result;
-                                       {% endif %}
+                        columnDefs: [
+                            {
+                                render: function (data, type, row) {
+                                    let result = 0.0;
+                                    let num;
+                                    let nan_count = 0;
+                                    for (let i = 1; i < row.length - 1; i++) {
+                                        num = parseFloat(row[i].replace(',', '.'));
+                                        if (isNaN(num)) {
+                                            num = 0.0;
+                                            nan_count += 1;
+                                        }
+                                        result += num;
+                                    }
+                                    {% if tab_id in 'qualy,grid,results' %}
+                                        result /= row.length - 2 - nan_count;
+                                        result = isNaN(result) ? "" : result;
+                                    {% endif %}
 
-                                       return result;
-                                   },
-                                   targets: -1,
-                               }
-                          ]
-                      }
-                  );
-                  {% endfor %}
-                });
+                                    return result;
+                                },
+                                targets: -1,
+                            }
+                        ]
+                    }
+                );
+            {% endfor %}
+        });
 
     </script>
 

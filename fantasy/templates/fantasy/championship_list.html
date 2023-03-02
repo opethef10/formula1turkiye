@@ -7,52 +7,63 @@
 
 {% block content %}
     <h5>Aktif Şampiyonalar</h5>
-  <ul>
-    {% for championship in championship_list %}
-      <li>
-        <a href="{% url 'fantasy:race_list' championship.slug %}">
-          {{ championship.year }} {{ championship.series }} Fantasy Lig
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+    <ul>
+        {% for championship in championship_list %}
+            <li>
+                <a href="{% url 'fantasy:race_list' championship.slug %}">
+                    {{ championship.year }} {{ championship.series }} Fantasy Lig
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
     <h4>FANTASY LİG</h4>
-    <p class="text-justify">Fantasy Lig fikri, Nico Rosberg'in şampiyonluğundan bir gün önce, 26 Kasım 2016'da bir go kart sürüşü sonrasında
+    <p class="text-justify">Fantasy Lig fikri, Nico Rosberg'in şampiyonluğundan bir gün önce, 26 Kasım 2016'da bir go
+        kart sürüşü sonrasında
         Adminnoiki (Semih Boz) ve Adminnoüç (Onur Arıkan) tarafından ortaya atıldı. 2017 sezonunda 100'ün üzerinde
-        katılımcıyla başlayan ligimiz 6 sezonu devirdi ve 7. sezonumuzu bu kez kendi site altyapımızla sunmaya karar verdik.
-        Bu fikir ortaya atıldığında henüz F1'in resmi fantezi ligi yayınlanmamıştı. Ancak samimi ve yıllardır bir arada bulunan
-        kitlesiyle Formula 1 Türkiye fantezi ligleri, basit ancak rekabete müsait kuralları ve puanlama sistemiyle her sezon
-        üyeler arası çekişmeyi son yarışlara kadar sürdürebildi ve üyelerimiz bazında F1'in resmi fantezi ligine kıyasla daha
+        katılımcıyla başlayan ligimiz 6 sezonu devirdi ve 7. sezonumuzu bu kez kendi site altyapımızla sunmaya karar
+        verdik.
+        Bu fikir ortaya atıldığında henüz F1'in resmi fantezi ligi yayınlanmamıştı. Ancak samimi ve yıllardır bir arada
+        bulunan
+        kitlesiyle Formula 1 Türkiye fantezi ligleri, basit ancak rekabete müsait kuralları ve puanlama sistemiyle her
+        sezon
+        üyeler arası çekişmeyi son yarışlara kadar sürdürebildi ve üyelerimiz bazında F1'in resmi fantezi ligine kıyasla
+        daha
         ilgi çekici oldu.
     </p>
     <p class="text-justify">
-        İlk sezonunda sade alım satıma dayalı kurallarıyla başlayan Formula 1 Türkiye Fantasy Lig, ikinci sezonunda gelen
-        3 farklı taktik seçeneği ve haftanın indirimi olarak da anılan "Tanzim pilotları", artan alım satım hakları ile daha
-        çekişmeli bir düzeye geldi. 2018'de eklenen F2 ligi ise, alt serileri takip edenler için yeni bir heyecan daha yarattı.
+        İlk sezonunda sade alım satıma dayalı kurallarıyla başlayan Formula 1 Türkiye Fantasy Lig, ikinci sezonunda
+        gelen
+        3 farklı taktik seçeneği ve haftanın indirimi olarak da anılan "Tanzim pilotları", artan alım satım hakları ile
+        daha
+        çekişmeli bir düzeye geldi. 2018'de eklenen F2 ligi ise, alt serileri takip edenler için yeni bir heyecan daha
+        yarattı.
         F1 liginin yanı sıra bu sezon Fantasy F2 liginin de 6. sezonu hazırlığı içerisindeyiz.
     </p>
     <h5>Önceki Şampiyonlar</h5>
     <ul>
-        <li> <b>Fantasy F1</b>
-        <ul style="list-style-type: none;">
-            <li>2017: Berker Yıldırım</li>
-            <li>2018: Mustafa Yıldırım</li>
-            <li>2019: Utku Güdüloğlu</li>
-            <li>2020: Tunahan Saylan</li>
-            <li>2021: Onur Arıkan</li>
-            <li>2022: Buğra Karışmaz</li>
-        </ul></li>
-        <li> <b>Fantasy F2</b>
-        <ul style="list-style-type: '- ';">
-            <li>2018: Onur Arıkan</li>
-            <li>2019: Semih Boz</li>
-            <li>2020: Onur Zengin</li>
-            <li>2021: Onur Zengin</li>
-            <li>2022: Tunahan Saylan</li>
-        </ul></li>
+        <li><b>Fantasy F1</b>
+            <ul style="list-style-type: none;">
+                <li>2017: Berker Yıldırım</li>
+                <li>2018: Mustafa Yıldırım</li>
+                <li>2019: Utku Güdüloğlu</li>
+                <li>2020: Tunahan Saylan</li>
+                <li>2021: Onur Arıkan</li>
+                <li>2022: Buğra Karışmaz</li>
+            </ul>
+        </li>
+        <li><b>Fantasy F2</b>
+            <ul style="list-style-type: none;">
+                <li>2018: Onur Arıkan</li>
+                <li>2019: Semih Boz</li>
+                <li>2020: Onur Zengin</li>
+                <li>2021: Onur Zengin</li>
+                <li>2022: Tunahan Saylan</li>
+            </ul>
+        </li>
 
     </ul>
     <h5>FANTASY F1 NEDİR? NASIL OYNANIR? KURALLAR!</h5>
-    <iframe height="1789" width="839" allowfullscreen style="border:none;" src="https://docs.google.com/document/d/e/2PACX-1vSsF-Bp6YYK1Q5kxJIRSOWk8PbPpHKUCw-MmR5ArthQHYsiINl4b8IvY6WbrrtQEXw4OeNJjZbkCOcU/pub?embedded=true"></iframe>
+    <iframe height="1789" width="839" allowfullscreen style="border:none;"
+            src="https://docs.google.com/document/d/e/2PACX-1vSsF-Bp6YYK1Q5kxJIRSOWk8PbPpHKUCw-MmR5ArthQHYsiINl4b8IvY6WbrrtQEXw4OeNJjZbkCOcU/pub?embedded=true"></iframe>
 
 {% endblock %}
