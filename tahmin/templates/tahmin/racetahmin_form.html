@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load form_tags widget_tweaks %}
+{% load static form_tags widget_tweaks %}
 
 {% block title %}Yeni Tahmin | Formula 1 Türkiye{% endblock %}
 
@@ -13,15 +13,51 @@
 
 {% block content %}
     <h3>{{ view.race }}</h3>
-    <li>Yeni bir tahmin gönderdiğinizde eskisi silinecektir. Yarış başlangıcından önceki son tahmininiz geçerli
-        sayılacaktır.
-    </li>
-    <li>İşlemlerinizi <b>{{ view.race.datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
-    <br/>
+    <ul>
+        <li>Tahmininizi gönderdikten sonra aynı sayfadan yarış saatine kadar tekrar değiştirebilirsiniz.</li>
+        <li>Yarış başlangıcından önceki son tahmininiz geçerli sayılacaktır.</li>
+        <li>Aynı pilotu birden fazla sıra için seçmekte serbestsiniz. Bunun doğuracağı garanti/risk dengesini ayarlamak
+            size kalmış.
+        </li>
+        <li>Her doğru tahmin edilen sıradan kazanılan puan, aşağıdaki tabloda da görüleceği üzere, onu tahmin eden kişi
+            sayısıyla ters orantılıdır.
+        </li>
+        <li>Çoktan seçmeli sorularda bazı şıkların değeri diğerlerinden yüksek olabilir, bu da o durumun gerçekleşme
+            olasılığına göre değişkenlik gösterebilir.
+        </li>
+        <li>Burada stratejik olarak düşük puanlı şıkka oynamak yerine gerçekleşmesi zor sürpriz şıkka oynayıp
+            çok puan kazanmayı hedefleyebilirsiniz.
+        </li>
+        <li>Ancak unutmayın ki, sıra tahminlerinin aksine kaç kişi bilirse bilsin, çoktan seçmeli sorulardan sabit puan
+            alacağınızı unutmayın.
+        </li>
+        <li>İşlemlerinizi <b>{{ view.race.datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    </ul>
+
+    <h4>Puan Tablosu<h4/>
+    <img src="{% static 'img/tahmin2023puanları.jpg' %}"
+         alt="Tahmin ligi 2023 puanları!">
+    <h4> Grid </h4>
+    <ul>
+        <li>
+            Olası cezalardan ötürü görünen grid dizilimin güncel olmayabileceğini unutmayın.
+        </li>
+    </ul>
+    <iframe src="https://en.wikipedia.org/wiki/2023_Bahrain_Grand_Prix#Qualifying_classification" scrolling="no"
+            width="700px" height="630px"></iframe>
+    <h4> Tahmin Formu </h4>
     <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
         <button type="submit" class="btn btn-success">Gönder</button>
         <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
     </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('input[name^="question"]').attr("class", "");
+        })
+    </script>
 {% endblock %}

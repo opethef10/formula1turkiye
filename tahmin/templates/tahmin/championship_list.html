@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -61,4 +62,6 @@
     <h6>2022 puan sistemi</h6>
     <p class="text-justify">2021 puan sistemine ek olarak çoktan seçmeli 2 tahmin sorusuna verilecek doğru cevap ile
         puan alınabiliyor.</p>
+    <img src="{% static 'img/tahmin2023puanları.jpg' %}" class="rounded mx-auto d-block"
+         alt="Tahmin ligi 2023 puanları!">
 {% endblock %}

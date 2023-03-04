@@ -44,7 +44,7 @@
                         {% for tahminteam, race_team_list in race_team_dict.items %}
                             <tr>
                                 <td></td>
-                                <td><a href="{{ tahminteam.get_absolute_url }}">{{ tahminteam.name }}</a></td>
+                                <td>{{ tahminteam.name }}</td>
 
 
                                 {% for race_team in race_team_list %}

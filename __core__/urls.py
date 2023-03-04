@@ -25,4 +25,5 @@ urlpatterns = [
     path("fantasy/", include("fantasy.urls")),
     path("tahmin/", include("tahmin.urls")),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('sent/', TemplateView.as_view(template_name='sent.html'), name='sent'),
 ]

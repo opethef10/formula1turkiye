@@ -69,7 +69,6 @@ class RaceDetailView(DetailView):
             in enumerate(top10, 1)
         ]
         points = [tahmin_score(count) for count in counts]
-
         context = super().get_context_data(**kwargs)
         context["race_driver_list"] = RaceDriver.objects.filter(
             race=current_race
@@ -81,6 +80,7 @@ class RaceDetailView(DetailView):
         context["top10"] = top10
         context["counts"] = counts
         context["points"] = points
+        context["before_race"] = current_race.datetime > timezone.now()
 
         return context
 
@@ -185,7 +185,7 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
             return
 
     def get_success_url(self):
-        return self.race.get_tahmin_url()
+        return reverse('sent')
 
     def form_valid(self, form):
         team, created = TahminTeam.objects.get_or_create(

@@ -24,5 +24,22 @@ class NewTahminForm(forms.ModelForm):
                         "driver__number"
                 )
             )
-            self.fields["question_1"].label = "11. Soru"
-            self.fields["question_2"].label = "12. Soru"
+            self.fields["question_1"] = forms.ChoiceField(
+                label=(
+                    "11. Podyuma Red Bull veya Ferrari pilotlarından başka çıkan olur mu?\n\n"
+                    "A) Evet [90 puan]\n"
+                    "B) Hayır [60 puan]"
+                ),
+                widget=forms.RadioSelect,
+                choices=QUESTION_CHOICES[:2],
+            )
+            self.fields["question_2"] = forms.ChoiceField(
+                label=(
+                    "12. Albon, Tsunoda, Gasly üçlüsünden hangisi yarışı önde tamamlar?\n\n"
+                    "A) Albon [60 puan]\n"
+                    "B) Tsunoda [60 puan]\n"
+                    "C) Gasly [65 puan]"
+                ),
+                widget=forms.RadioSelect,
+                choices=QUESTION_CHOICES,
+            )

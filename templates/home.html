@@ -25,11 +25,11 @@
                         <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 7. sezonunda bütün hızıyla
                             devam ediyor!</p>
                         <li class="list-group-item list-group-item-action">
-                            <a href="{% url "fantasy:home" %}" class="card-link">Fantasy Lig Anasayfası &
+                            <a href="{% url "fantasy:home" %}" class="card-link">Fantasy Lig Nedir &
                                 Kurallar</a></li>
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "fantasy:race_list" "2023-f1" %}" class="card-link">Fantasy F1 2023
-                            Anasayfa</a></li>
+                            Anasayfası</a></li>
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "fantasy:new_team_form" "2023-f1" %}" class="card-link">Yeni Takım Kur (Üye
                             olmanız gerekir)</a></li>
@@ -57,10 +57,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">F1 Tahmin Ligi 2023</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Çok Yakında!</h6>
-                        <p class="card-text">İlk yarış Bahreyn GP'sinden önce Tahmin Ligi formu açılacaktır.</p>
-                        {#                      <li class="list-group-item list-group-item-action"><a href="{% url "tahmin:home" %}" class="card-link">Tahmin Ligi Anasayfası & Kurallar</a></li>#}
-                        {#                      <li class="list-group-item list-group-item-action"><a href="{% url "tahmin:new_team_form" "2023-f1" %}" class="card-link">Tahmin yap (Üye olmanız gerekir)</a></li>#}
+                        <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
+                        <p class="card-text">Sıralama turlarından sonra açılacak form ile tahminlerinizi
+                            yapabilirsiniz.</p>
+                        <li class="list-group-item list-group-item-action"><a href="{% url "tahmin:home" %}"
+                                                                              class="card-link">Tahmin Ligi Nedir &
+                            Kurallar</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "tahmin:race_list" "2023-f1" %}" class="card-link">2023 F1 Tahmin Ligi
+                            Anasayfası</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "tahmin:new_team_form" "2023-f1" %}" class="card-link">Tahmin yap (Üye
+                            olmanız gerekir)</a></li>
                     </div>
                 </div>
             </div>
