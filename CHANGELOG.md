@@ -5,14 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2023-03-01
+## [1.2.1] - 2023-03-06
 ### Added
+- HTML minifying
+- Question model to database
 ### Changed
-- Password validators removed
+- Prediction league results are ready for users
+- Tahmin forms are now automated
 ### Deprecated
 ### Removed
 ### Fixed
+- HTML minifying
 ### Security
+
+## [1.2.0] - 2023-03-05
+### Added
+- Sent page after sending prediction forms
+- Prediction scoring system picture
+### Changed
+- Prediction league interface is made ready
+- Predictions aren't visible to public until race begins
+- Page bottom margin increased
+### Removed
+- Prediction team absolute urls as they don't exist
+
+## [1.1.1] - 2023-03-01
+### Changed
+- Password validators removed
 
 ## [1.1.0] - 2023-03-01
 ### Changed

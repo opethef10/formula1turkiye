@@ -5,3 +5,4 @@ python-dotenv==0.21.1
 sqlparse==0.4.3
 tzdata==2022.7
 python-decouple==3.7
+django-minify-html==1.5.0

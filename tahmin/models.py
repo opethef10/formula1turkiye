@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 
 from fantasy.models import Race, Driver, RaceDriver, Championship
 
@@ -58,5 +59,53 @@ class RaceTahmin(models.Model):
     def __str__(self):
         return f"{self.race}-{self.team}"
 
+    @cached_property
+    def prediction_point(self):
+        top10 = self.race.top10
+        points = self.race.tahmin_points
+        questions = self.race.questions.all()[:2]
+        result = []
+        for position in range(1, 11):
+            predicted_driver = getattr(self, f"prediction_{position}")
+            resulting_racedriver = top10[position-1]
+            position_point = points[position-1]
+            if predicted_driver == resulting_racedriver:
+                result.append(position_point)
+            else:
+                result.append(None)
+        for idx in {1, 2}:
+            predicted_answer = getattr(self, f"question_{idx}")
+            actual_answer = questions[idx-1].answer
+            question_point = questions[idx-1].point
+            if predicted_answer == actual_answer:
+                result.append(question_point)
+            else:
+                result.append(None)
+        return result
+
     def total_point(self):
-        return round(sum(getattr(self, f"prediction_{idx}").total_point() for idx in range(1, 11)), 1)  # TODO: Tahmin Puanları
+        return round(sum(point for point in self.prediction_point if point is not None), 1)
+
+
+class Question(models.Model):
+    race = models.ForeignKey(Race, on_delete=models.RESTRICT, related_name='questions', null=True)
+    text = models.TextField()
+    choice_A = models.CharField(max_length=64)
+    point_A = models.PositiveSmallIntegerField()
+    choice_B = models.CharField(max_length=64)
+    point_B = models.PositiveSmallIntegerField()
+    choice_C = models.CharField(null=True, blank=True, max_length=64)
+    point_C = models.PositiveSmallIntegerField(null=True, blank=True)
+    answer = models.CharField(
+        max_length=1,
+        choices=QUESTION_CHOICES,
+        null=True,
+        blank=True
+    )
+    point = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        result = f"{self.text}\n\nA) {self.choice_A} [{self.point_A} puan]\nB) {self.choice_B} [{self.point_B} puan]"
+        if self.choice_C:
+            result += f"\nC) {self.choice_C} [{self.point_C} puan]"
+        return result

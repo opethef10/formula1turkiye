@@ -31,12 +31,12 @@
                         <tr>
                             <th>Sıra</th>
                             <th>Üye</th>
+                            <th>Toplam</th>
                             {% for race in race_list %}
                                 <th>
                                     <a href="{{ race.get_tahmin_url }}">{{ race.circuit.country }}</a>
                                 </th>
                             {% endfor %}
-                            <th>Toplam</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -45,15 +45,13 @@
                             <tr>
                                 <td></td>
                                 <td>{{ tahminteam.name }}</td>
-
+                                <td></td>
 
                                 {% for race_team in race_team_list %}
                                     <td>
                                         {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
                                     </td>
                                 {% endfor %}
-                                <td></td>
-
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -77,7 +75,7 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [],
+                        "order": [[2, 'desc']],
                         "info": false,
 
                         columnDefs: [
@@ -86,7 +84,7 @@
                                     let result = 0.0;
                                     let num;
                                     let nan_count = 0;
-                                    for (let i = 1; i < row.length - 1; i++) {
+                                    for (let i = 2; i < row.length; i++) {
                                         num = parseFloat(row[i].replace(',', '.'));
                                         if (isNaN(num)) {
                                             num = 0.0;
@@ -101,7 +99,7 @@
 
                                     return result;
                                 },
-                                targets: -1,
+                                targets: 2,
                             }
                         ]
                     }

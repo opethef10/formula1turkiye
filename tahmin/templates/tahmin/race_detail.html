@@ -38,8 +38,8 @@
             {% for racedriver in top10 %}
                 <td><b> {{ racedriver.driver.code|title }} </b></td>
             {% endfor %}
-            <td>X</td>
-            <td>Z</td>
+            <td>{{ race.questions.all.0.answer }}</td>
+            <td>{{ race.questions.all.1.answer }}</td>
             <td></td>
         </tr>
         <tr>
@@ -56,8 +56,8 @@
             {% for point in points %}
                 <td> {{ point }} </td>
             {% endfor %}
-            <td></td>
-            <td></td>
+            <td>{{ race.questions.all.0.point }}</td>
+            <td>{{ race.questions.all.1.point }}</td>
             <td></td>
         </tr>
     </table>
@@ -78,14 +78,14 @@
         <tbody>
         {% for race_team in race_team_list %}
             <tr>
-                <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a></td>
+                <td>{{ race_team.team.name }}</td>
                 {% for idx in "123456789" %}
                     {% with "prediction_"|add:idx as prediction_field %}
                         {% with race_team|call_or_get_attr:prediction_field as racedriver %}
                             <td>
                                 {{ racedriver.driver.code|title }}
-                                <small hidden class="text-muted d-block">
-                                    {{ racedriver.total_point }}
+                                <small hidden>
+                                    {{ race_team.prediction_point|index:forloop.counter0|default_if_none:"" }}
                                 </small>
                             </td>
                         {% endwith %}
@@ -93,20 +93,20 @@
                 {% endfor %}
                 <td>
                     {{ race_team.prediction_10.driver.code|title }}
-                    <small hidden class="text-muted d-block">
-                        {{ race_team.prediction_10.total_point }}
+                    <small hidden>
+                        {{ race_team.prediction_point.9|default_if_none:"" }}
                     </small>
                 </td>
                 <td>
                     {{ race_team.question_1 }}
-                    <small hidden class="text-muted d-block">
-                        {{ race_team.prediction_9.total_point }}
+                    <small hidden>
+                        {{ race_team.prediction_point.10|default_if_none:"" }}
                     </small>
                 </td>
                 <td>
                     {{ race_team.question_2 }}
-                    <small hidden class="text-muted d-block">
-                        {{ race_team.prediction_10.total_point }}
+                    <small hidden>
+                        {{ race_team.prediction_point.11|default_if_none:"" }}
                     </small>
                 </td>
                 <td>{{ race_team.total_point }}</td>
@@ -134,7 +134,7 @@
                         for (let i = 1; i < 13; ++i) {
                             console.log(row, i, data[i])
                             $("td", row).eq(i).filter(function () {
-                                return parseInt($(this).find("small").text(), 10) > 6;
+                                return parseInt($(this).find("small").text(), 10) >= 0;
                             }).css('background-color', '#99ff9c')
                         }
 

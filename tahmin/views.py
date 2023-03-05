@@ -1,5 +1,3 @@
-from math import ceil
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -7,12 +5,6 @@ from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
-
-
-def tahmin_score(count):
-    if not 0 < count < 20:
-        return 0
-    return ceil((20 - count) ** 2 / 2)
 
 
 class ChampionshipListView(ListView):
@@ -57,18 +49,6 @@ class RaceDetailView(DetailView):
             "team__user__first_name",
             "team__user__last_name"
         )
-        top10 = RaceDriver.objects.filter(
-            race=current_race,
-            result__isnull=False
-        ).order_by("result")[:10]
-        top10 = list(top10) + [None] * (10 - len(top10))
-
-        counts = [
-            race_tahmins.filter(**{f"prediction_{idx}": race_driver}).count()
-            for idx, race_driver
-            in enumerate(top10, 1)
-        ]
-        points = [tahmin_score(count) for count in counts]
         context = super().get_context_data(**kwargs)
         context["race_driver_list"] = RaceDriver.objects.filter(
             race=current_race
@@ -77,9 +57,9 @@ class RaceDetailView(DetailView):
             "driver__number"
         )
         context["race_team_list"] = race_tahmins
-        context["top10"] = top10
-        context["counts"] = counts
-        context["points"] = points
+        context["top10"] = current_race.top10
+        context["counts"] = current_race.tahmin_counts
+        context["points"] = current_race.tahmin_points
         context["before_race"] = current_race.datetime > timezone.now()
 
         return context
