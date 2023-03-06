@@ -71,10 +71,10 @@
                                 <th>Hak</th>
                                 <th>Bütçe</th>
                                 <th>Ad</th>
+                                <th>Toplam</th>
                                 {% for idx in "01234567" %}
                                     <th>{{ forloop.counter }}. Sürücü</th>
                                 {% endfor %}
-                                <th>Toplam</th>
                                 {% if tab_id == "teams" %}
                                     <th>Geçiş taktiği olsaydı</th>
                                     <th>Sıralama taktiği olsaydı</th>
@@ -91,7 +91,11 @@
                                     <td>{{ race_team.budget|with_currency }}</td>
                                     <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a>
                                     </td>
-
+                                    {% if tab_id == "teams" %}
+                                        <td><b>{{ race_team.total_point }}</b></td>
+                                    {% elif tab_id == "kadrolar" %}
+                                        <td><b>{{ race_team.total_worth|with_currency }}</b></td>
+                                    {% endif %}
 
                                     {% with race_team.raceteamdrivers.all as trd_list %}
                                         {% for idx in "01234567" %}
@@ -110,13 +114,10 @@
                                         {% endfor %}
                                     {% endwith %}
                                     {% if tab_id == "teams" %}
-                                        <td>{{ race_team.total_point }}</td>
                                         <td>{{ race_team.overtake_point }}</td>
                                         <td>{{ race_team.qualy_point }}</td>
                                         <td>{{ race_team.race_point }}</td>
                                         <td>{{ race_team.none_point }}</td>
-                                    {% elif tab_id == "kadrolar" %}
-                                        <td>{{ race_team.total_worth|with_currency }}</td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -143,7 +144,7 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [[{% if tab_id == "drivers" %}9 {% else %} 12 {% endif %}, 'desc']],
+                        "order": [[{% if tab_id == "drivers" %}10 {% else %} 4 {% endif %}, 'desc']],
                         "info": false
                     }
                 );

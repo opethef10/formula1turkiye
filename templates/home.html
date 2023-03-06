@@ -33,9 +33,13 @@
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "fantasy:new_team_form" "2023-f1" %}" class="card-link">Yeni Takım Kur (Üye
                             olmanız gerekir)</a></li>
-                        {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:edit_team_form" "2023-f1" %}" class="card-link">Alım Satım (Üye olmanız gerekir)</a></li>#}
-                        {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>#}
-                        {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Son Yarış</a></li>#}
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "fantasy:edit_team_form" "2023-f1" %}"
+                                class="card-link">Alım Satım (Üye olmanız gerekir)</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "fantasy:race_detail" "2023-f1" 1 %}" class="card-link">Son Yarış</a></li>
                     </div>
                 </div>
             </div>
@@ -69,6 +73,10 @@
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "tahmin:new_team_form" "2023-f1" %}" class="card-link">Tahmin yap (Üye
                             olmanız gerekir)</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "tahmin:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
+                        <li class="list-group-item list-group-item-action"><a
+                                href="{% url "tahmin:race_detail" "2023-f1" 1 %}" class="card-link">Son Yarış</a></li>
                     </div>
                 </div>
             </div>

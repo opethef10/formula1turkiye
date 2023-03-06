@@ -30,7 +30,6 @@
             {% endfor %}
             <th>11</th>
             <th>12</th>
-            <th>Toplam</th>
         </tr>
         </thead>
         <tr>
@@ -40,14 +39,12 @@
             {% endfor %}
             <td>{{ race.questions.all.0.answer }}</td>
             <td>{{ race.questions.all.1.answer }}</td>
-            <td></td>
         </tr>
         <tr>
             <td><b>Doğru Tahmin Sayısı</b></td>
             {% for count in counts %}
                 <td> {{ count }} </td>
             {% endfor %}
-            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -58,7 +55,6 @@
             {% endfor %}
             <td>{{ race.questions.all.0.point }}</td>
             <td>{{ race.questions.all.1.point }}</td>
-            <td></td>
         </tr>
     </table>
     <table id="table_race_detail"
