@@ -16,7 +16,7 @@
                     </form>
                 </div>
                 <div class="card-footer text-muted text-center">
-                    Üye değil misiniz? <a href="{% url 'signup' %}">Kaydolun</a>
+                    Üye değil misiniz? <a href="{% url 'signup' %}{% if next %}?next={{ next }}{% endif %}">Kaydolun</a>
                 </div>
             </div>
             <div class="text-center py-2">

@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
@@ -120,6 +121,7 @@ class TeamListView(ListView):
 class NewTahminView(LoginRequiredMixin, UpdateView):
     model = RaceTahmin
     form_class = NewTahminForm
+    success_url = reverse_lazy('sent')
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -163,9 +165,6 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
             )
         except RaceTahmin.DoesNotExist:
             return
-
-    def get_success_url(self):
-        return reverse('sent')
 
     def form_valid(self, form):
         team, created = TahminTeam.objects.get_or_create(
