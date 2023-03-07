@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - HTML minifying
 - Question model to database
+- Meta OG tags
 ### Changed
 - Prediction league results are ready for users
 - Tahmin forms are now automated
