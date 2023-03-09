@@ -184,7 +184,7 @@ class RaceDriver(models.Model):
     fastest_lap = models.PositiveIntegerField(blank=True, null=True)
 
     def coefficient(self, tactic):
-        return TACTIC_COEFFICIENTS[self.race.championship.series][tactic]
+        return TACTIC_COEFFICIENTS["Formula 1"][tactic]  # TODO: optimize "self.race.championship.series"
 
     def qualy_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "S" else 1
@@ -192,7 +192,7 @@ class RaceDriver(models.Model):
 
     def sprint_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
-        return round(POINTS["sprint"][self.race.championship.series].get(self.sprint, 0) * coefficient, 1)
+        return round(POINTS["sprint"]["Formula 1"].get(self.sprint, 0) * coefficient, 1)
 
     def race_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
@@ -203,17 +203,18 @@ class RaceDriver(models.Model):
 
     def sprint_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1
-        if [self.race.championship.series] == "Formula 1":
-            return 0
-        if not self.grid_sprint or not self.sprint:
-            return 0
-        elif self.grid_sprint < self.sprint:
-            return 0
-        else:
-            raw = (self.grid_sprint - self.sprint)
-            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
-            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
-            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+        return 0
+        # if [self.race.championship.series] == "Formula 1":
+        #     return 0
+        # if not self.grid_sprint or not self.sprint:
+        #     return 0
+        # elif self.grid_sprint < self.sprint:
+        #     return 0
+        # else:
+        #     raw = (self.grid_sprint - self.sprint)
+        #     bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
+        #     top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
+        #     return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
 
     def feature_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1
@@ -283,6 +284,7 @@ class RaceTeam(models.Model):
     def __str__(self):
         return f"{self.race}-{self.team}"
 
+    @cached_property
     def total_point(self):
         return round(sum(race_driver.total_point(self.tactic) for race_driver in self.race_drivers.all()), 1)
 
