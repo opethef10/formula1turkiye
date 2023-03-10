@@ -128,6 +128,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / "staticroot"
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = config("DJANGO_MEDIA_ROOT", cast=Path)
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

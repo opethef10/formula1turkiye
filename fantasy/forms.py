@@ -37,7 +37,7 @@ class NewTeamForm(forms.ModelForm):
         self.fields["token"] = forms.IntegerField(label="Kalan Hak", disabled=True, required=False, initial=BEGINNING_TOKEN)
         self.fields["race_drivers"] = RaceDriverMultipleChoiceField(
             label="Sürücüler",
-            queryset=RaceDriver.objects.filter(
+            queryset=RaceDriver.objects.select_related("driver").filter(
                 race=current_race
             ).order_by(
                 "championship_constructor__garage_order",
@@ -73,7 +73,7 @@ class EditTeamForm(forms.ModelForm):
     def __init__(self, request, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
         prev_race = current_race.get_previous_by_datetime()
-        current_racedrivers = RaceDriver.objects.filter(
+        current_racedrivers = RaceDriver.objects.select_related("driver").filter(
             race=current_race
         )
         prv_drivers = Driver.objects.filter(
@@ -91,9 +91,9 @@ class EditTeamForm(forms.ModelForm):
             driver__in=prv_drivers
         )
 
-        self.fields["tactic"] = forms.ChoiceField(choices=TACTIC_CHOICES, initial=self.prev_race_team.tactic)
-        self.fields["token"] = forms.IntegerField(disabled=True, required=False, initial=self.prev_race_team.token)
-        self.fields["budget"] = forms.DecimalField(disabled=True, required=False, initial=self.prev_race_team.budget)
+        self.fields["tactic"] = forms.ChoiceField(label="Taktik", choices=TACTIC_CHOICES, initial=self.prev_race_team.tactic)
+        self.fields["token"] = forms.IntegerField(label="Kalan Hak", disabled=True, required=False, initial=self.prev_race_team.token)
+        self.fields["budget"] = forms.DecimalField(label="Kalan Bütçe", disabled=True, required=False, initial=self.prev_race_team.budget)
         self.fields["race_drivers"] = RaceDriverMultipleChoiceField(
             label="",
             queryset=current_racedrivers,
