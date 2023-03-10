@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block crumbarea %}
 {% endblock %}
@@ -7,15 +7,11 @@
 {% block title %}{% translate 'Server error (500)' %}{% endblock %}
 
 {% block content %}
-    <div class="container h-100">
-        <div class="row text-center h-100 justify-content-center align-items-center">
-            <div class="col-12">
-                <h1>{% translate 'Server Error <em>(500)</em>' %}</h1>
-                <p>Bizden kaynaklı bir hata oluştu. Yöneticilere mesaj ya da <a
+    <div class="alert my-4" role="alert">
+        <img src="{% static 'img/500.jpg' %}" class="rounded mx-auto my-3 d-block" alt="404!">
+        <h2 class="text-center">{% translate 'Server Error <em>(500)</em>' %}</h2>
+        <p class="text-center">Bizden kaynaklı bir hata oluştu. Yöneticilere mesaj ya da <a
                         href="mailto:formula1turkiyef1t@gmail.com">e-posta</a>
                     atarsanız en kısa zamanda düzeltmeye çalışacağız.</p>
-            </div>
-        </div>
     </div>
-
 {% endblock %}

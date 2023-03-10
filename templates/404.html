@@ -1,16 +1,13 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{% translate 'Page not found' %}{% endblock %}
 {% block crumbarea %}
 {% endblock %}
 {% block content %}
-    <div class="container h-100">
-        <div class="row text-center h-100 justify-content-center align-items-center">
-            <div class="col-12">
-                <h2 class="text-center">404: {% translate 'Page not found' %}</h2>
-                <p>{% translate 'We’re sorry, but the requested page could not be found.' %}</p>
-            </div>
-        </div>
+    <div class="alert my-4" role="alert">
+        <img src="{% static 'img/404.png' %}" class="rounded mx-auto my-3 d-block" alt="404!">
+        <h2 class="text-center">404: {% translate 'Page not found' %}</h2>
+        <p class="text-center">Olmayan bir sayfaya ulaşmaya çalıştınız</p>
     </div>
 {% endblock %}
