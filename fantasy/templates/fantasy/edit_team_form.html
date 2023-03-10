@@ -37,7 +37,7 @@
         </li>
         <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     </ul>
-    <img src="{% static 'img/fiyatlar.png' %}" style="width: 33%; height: 33%"
+    <img src="{{ view.race.price_img.url }}" width="410px" height="480px"
          alt="Fantasy fiyatlar">
     <form method="post" novalidate>
         {% csrf_token %}

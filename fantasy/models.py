@@ -130,6 +130,7 @@ class Race(models.Model):
     datetime = models.DateTimeField()
     deadline = models.DateTimeField(null=True, blank=True)
     wikilink = models.URLField(blank=True)
+    price_img = models.FileField(null=True, blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
     teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 
