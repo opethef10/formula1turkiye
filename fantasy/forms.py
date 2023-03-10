@@ -11,10 +11,16 @@ class RaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):
         return f"{racedriver.driver}: {racedriver.price}₺"
 
 
+class DiscountedRaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, racedriver):
+        return f"{racedriver.driver}: {racedriver.discounted_price()}₺"
+
+
 class CheckboxSelectMultipleWithPrice(forms.CheckboxSelectMultiple):
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         option = super().create_option(name, value, label, selected, index, subindex, attrs)
         option['attrs']['price'] = value.instance.price
+        option['attrs']['discounted_price'] = value.instance.discounted_price()
         return option
 
 
@@ -100,7 +106,7 @@ class EditTeamForm(forms.ModelForm):
             queryset=self.old_race_drivers,
             widget=CheckboxSelectMultipleWithPrice()
         )
-        self.fields["to_buy"] = RaceDriverMultipleChoiceField(
+        self.fields["to_buy"] = DiscountedRaceDriverMultipleChoiceField(
             label="Alıyorum",
             required=False,
             queryset=prev_to_buy,

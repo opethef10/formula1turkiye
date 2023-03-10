@@ -129,6 +129,7 @@ class Race(models.Model):
     circuit = models.ForeignKey(Circuit, null=True, on_delete=models.SET_NULL, related_name='grand_prix')
     datetime = models.DateTimeField()
     deadline = models.DateTimeField(null=True, blank=True)
+    wikilink = models.URLField(blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
     teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 

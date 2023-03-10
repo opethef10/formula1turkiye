@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -173,3 +174,7 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         form.instance.race = self.race
         form.instance.team = team
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!")
+        return super().form_invalid(form)
