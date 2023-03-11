@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default="localhost, 127.0.0.1", cast=Csv())
 
 # Application definition
 
@@ -137,12 +137,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config("DJANGO_EMAIL_HOST")
-EMAIL_PORT = config("DJANGO_EMAIL_PORT", cast=int)
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config("DJANGO_EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("DJANGO_EMAIL_HOST_PASSWORD")
+ADMINS = [('Onur Arıkan', 'altimuray@gmail.com'), ('Semih Boz', 'semih.boz0@gmail.com')]
+EMAIL_BACKEND = config("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+SERVER_EMAIL = config("DJANGO_SERVER_EMAIL", default="root@localhost")
+EMAIL_HOST = config("DJANGO_EMAIL_HOST", default="localhost")
+EMAIL_PORT = config("DJANGO_EMAIL_PORT", default=25, cast=int)
+EMAIL_USE_TLS = config("DJANGO_EMAIL_USE_TLS", default=False, cast=bool)
+EMAIL_HOST_USER = config("DJANGO_EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("DJANGO_EMAIL_HOST_PASSWORD", default="")
+EMAIL_SUBJECT_PREFIX = "[Formula 1 Türkiye] "
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',

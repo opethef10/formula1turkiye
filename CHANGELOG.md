@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2023-03-11
+### Added
+- Team radio error messages
+- Price images now can be uploaded from admin page
+- Admin e-mail interface for server errors
+### Changed
+### Deprecated
+### Removed
+### Fixed
+- Alım satım Javascript error for discounted drivers
+### Security
+
 ## [1.2.1] - 2023-03-06
 ### Added
 - HTML minifying
@@ -13,11 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Prediction league results are ready for users
 - Tahmin forms are now automated
-### Deprecated
-### Removed
 ### Fixed
 - HTML minifying
-### Security
 
 ## [1.2.0] - 2023-03-05
 ### Added
