@@ -9,6 +9,7 @@ QUESTION_CHOICES = [
     ("A", "A"),
     ("B", "B"),
     ("C", "C"),
+    ("D", "D"),
 ]
 
 
@@ -96,6 +97,8 @@ class Question(models.Model):
     point_B = models.PositiveSmallIntegerField()
     choice_C = models.CharField(null=True, blank=True, max_length=64)
     point_C = models.PositiveSmallIntegerField(null=True, blank=True)
+    choice_D = models.CharField(null=True, blank=True, max_length=64)
+    point_D = models.PositiveSmallIntegerField(null=True, blank=True)
     answer = models.CharField(
         max_length=1,
         choices=QUESTION_CHOICES,
@@ -105,7 +108,10 @@ class Question(models.Model):
     point = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
-        result = f"{self.text}\n\nA) {self.choice_A} [{self.point_A} puan]\nB) {self.choice_B} [{self.point_B} puan]"
-        if self.choice_C:
-            result += f"\nC) {self.choice_C} [{self.point_C} puan]"
+        result = f"{self.text}\n"
+        for char, _ in QUESTION_CHOICES:
+            choice = getattr(self, f"choice_{char}")
+            point = getattr(self, f"point_{char}")
+            if choice:
+                result += f"\n{char}) {choice} [{point} puan]"
         return result
