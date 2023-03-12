@@ -37,8 +37,8 @@
             {% for racedriver in top10 %}
                 <td><b> {{ racedriver.driver.code|title }} </b></td>
             {% endfor %}
-            <td>{{ race.questions.all.0.answer }}</td>
-            <td>{{ race.questions.all.1.answer }}</td>
+            <td>{{ race.questions.all.0.answer|default_if_none:"N/A" }}</td>
+            <td>{{ race.questions.all.1.answer|default_if_none:"N/A" }}</td>
         </tr>
         <tr>
             <td><b>Doğru Tahmin Sayısı</b></td>
@@ -53,8 +53,8 @@
             {% for point in points %}
                 <td> {{ point }} </td>
             {% endfor %}
-            <td>{{ race.questions.all.0.point }}</td>
-            <td>{{ race.questions.all.1.point }}</td>
+            <td>{{ race.questions.all.0.point|default_if_none:"-" }}</td>
+            <td>{{ race.questions.all.1.point|default_if_none:"-" }}</td>
         </tr>
     </table>
     <table id="table_race_detail"
