@@ -10,7 +10,10 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if user.is_staff %}
+        <a href="{% url 'fantasy:race_edit' race.championship.slug race.round %}" class="btn btn-primary ml-2">Sonuç / Fiyat Gir</a>
+        <p></p>
+    {% endif %}
     <div class="container">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">

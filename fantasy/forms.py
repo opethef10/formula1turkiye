@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import modelformset_factory
+
 from .models import *
 
 BEGINNING_TOKEN = 18
@@ -147,3 +149,19 @@ class EditTeamForm(forms.ModelForm):
         self.instance.budget = left_budget
 
         return cleaned_data
+
+
+class RaceDriverEditForm(forms.ModelForm):
+    class Meta:
+        model = RaceDriver
+        fields = ["driver", "price", "discount", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap"]
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+
+RaceDriverFormSet = modelformset_factory(
+    RaceDriver,
+    fields=["driver", "price", "discount", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap"],
+    extra=0
+)

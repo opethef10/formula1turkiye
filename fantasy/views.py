@@ -1,12 +1,11 @@
 import logging
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count
 from django.db.models.query import QuerySet
-from django.forms import inlineformset_factory, modelformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
@@ -349,3 +348,44 @@ class EditTeamView(TeamNewEditBaseView):
             return redirect(reverse("fantasy:new_team_form", kwargs={"champ": self.championship.slug}))
         else:
             return super().get(request, *args, **kwargs)
+
+
+class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
+    model = RaceDriver
+    form_class = RaceDriverEditForm
+    template_name = "fantasy/race_edit.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = RaceDriverFormSet(
+            queryset=RaceDriver.objects.filter(
+                race__championship__slug=self.kwargs.get('champ'),
+                race__round=self.kwargs.get('round')
+            )
+        )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        formset = RaceDriverFormSet(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+        else:
+            return self.form_invalid(formset)
+
+    def form_valid(self, formset):
+        self.object = self.get_object()
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Race.objects.select_related("championship"),
+            championship__slug=self.kwargs.get('champ'),
+            round=self.kwargs.get('round')
+        )
+
+    def test_func(self):
+        return self.request.user.is_staff
