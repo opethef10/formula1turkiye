@@ -107,10 +107,21 @@ LOGGING = {
             'filename': config('ALIM_SATIM_LOG', default=os.devnull, cast=Path),
             'formatter': 'verbose',
         },
+        'signupfile': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': config('SIGNUP_LOG', default=os.devnull, cast=Path),
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'f1tform': {
             'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'f1tsignup': {
+            'handlers': ['signupfile'],
             'level': 'INFO',
             'propagate': False,
         },

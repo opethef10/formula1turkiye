@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -7,6 +9,8 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView
 
 from .forms import SignUpForm
+
+logger = logging.getLogger("f1tsignup")
 
 
 class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -34,4 +38,5 @@ class SignUpView(SuccessMessageMixin, RedirectURLMixin, CreateView):
         username, password = form.cleaned_data.get('username'), form.cleaned_data.get('password1')
         new_user = authenticate(username=username, password=password)
         login(self.request, new_user)
+        logger.info(f"NEW USER: {username} - {form.cleaned_data.get('first_name')} {form.cleaned_data.get('last_name')}")
         return valid
