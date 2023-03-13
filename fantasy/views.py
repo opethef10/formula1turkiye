@@ -1,9 +1,9 @@
 import logging
-logger = logging.getLogger(__name__)
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
+from django.db.models.query import QuerySet
 from django.forms import inlineformset_factory, modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -12,6 +12,8 @@ from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
+
+logger = logging.getLogger("f1tform")
 
 
 class DriverListView(ListView):
@@ -294,13 +296,19 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, "Form başarıyla gönderildi!")
-        logger.info(f"{self.request.user.get_full_name()}: {form.cleaned_data}")
+        for key, value in form.cleaned_data.items():
+            if isinstance(value, QuerySet):
+                form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
+        logger.info(f"FANTASY: {self.request.user.get_full_name()}: {form.cleaned_data}")
         return response
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
         messages.error(self.request, "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!")
-        logger.warning(f"FORM NOT SENT: {self.request.user.get_full_name()}: {form.cleaned_data}")
+        for key, value in form.cleaned_data.items():
+            if isinstance(value, QuerySet):
+                form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
+        logger.warning(f"FANTASY: {self.request.user.get_full_name()}: {form.cleaned_data} ERRORS: {form.errors!r}")
         return response
 
 

@@ -49,18 +49,20 @@ class NewTeamForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        race_drivers = self.cleaned_data.get('race_drivers')
-        if race_drivers is None:
-            raise forms.ValidationError("Takımınız en az bir sürücüden oluşmalıdır.")
+        race_drivers = self.cleaned_data.get('race_drivers', RaceDriver.objects.none())
+        cleaned_data["tactic"] = self.cleaned_data.get('tactic', "")
+        cleaned_data['token'] = BEGINNING_TOKEN
+        cleaned_data['budget'] = STARTING_BUDGET
+        if len(race_drivers) == 0:
+            self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
         if len(race_drivers) > MAX_DRIVERS_IN_A_TEAM:
-            raise forms.ValidationError("Takımınızda 8'den fazla sürücü olamaz.")
+            self.add_error(None, "Takımınızda 8'den fazla sürücü olamaz.")
 
         total_price = sum(race_driver.price for race_driver in race_drivers)
         left_budget = STARTING_BUDGET - total_price
         if left_budget < 0:
-            raise forms.ValidationError("Bütçeniz eksi olamaz.")
+            self.add_error("budget", "Bütçeniz eksi olamaz.")
         cleaned_data['budget'] = left_budget
-        cleaned_data['token'] = BEGINNING_TOKEN
         return cleaned_data
 
 
@@ -121,16 +123,16 @@ class EditTeamForm(forms.ModelForm):
         to_buy = cleaned_data.get("to_buy", RaceDriver.objects.none())
         race_drivers = self.old_race_drivers.difference(to_sell).union(to_buy)
         if not race_drivers:
-            raise forms.ValidationError("Takımınız en az bir sürücüden oluşmalıdır.")
+            self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
         if len(race_drivers) > MAX_DRIVERS_IN_A_TEAM:
-            raise forms.ValidationError("Takımınızda 8'den fazla sürücü olamaz.")
+            self.add_error(None, "Takımınızda 8'den fazla sürücü olamaz.")
         cleaned_data["race_drivers"] = race_drivers
 
         # Clean token
         token = self.prev_race_team.token
         token -= to_sell.count() + to_buy.count()
         if token < 0:
-            raise forms.ValidationError("Haklarınız eksi olamaz.")
+            self.add_error("token", "Haklarınız eksi olamaz.")
         cleaned_data['token'] = token
         self.instance.token = token
 
@@ -140,7 +142,7 @@ class EditTeamForm(forms.ModelForm):
         withdraw = sum(race_driver.discounted_price() for race_driver in to_buy)
         left_budget += deposit - withdraw
         if left_budget < 0:
-            raise forms.ValidationError("Bütçeniz eksi olamaz.")
+            self.add_error("budget", "Bütçeniz eksi olamaz.")
         cleaned_data['budget'] = left_budget
         self.instance.budget = left_budget
 

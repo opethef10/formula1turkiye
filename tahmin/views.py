@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -7,6 +9,8 @@ from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
+
+logger = logging.getLogger("f1tform")
 
 
 class ChampionshipListView(ListView):
@@ -173,8 +177,19 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         )
         form.instance.race = self.race
         form.instance.team = team
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        for key, value in form.cleaned_data.items():
+            if key.startswith("prediction"):
+                form.cleaned_data[key] = str(value.driver)
+        logger.info(f"TAHMİN: {self.request.user.get_full_name()}: {form.cleaned_data}")
+        return response
 
     def form_invalid(self, form):
+        response = super().form_invalid(form)
         messages.error(self.request, "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!")
-        return super().form_invalid(form)
+        for key, value in form.cleaned_data.items():
+            if key.startswith("prediction"):
+                form.cleaned_data[key] = str(value.driver)
+        logger.warning(f"TAHMİN: {self.request.user.get_full_name()}: {form.cleaned_data} ERRORS: {form.errors!r}")
+        return response

@@ -93,8 +93,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': "[%(asctime)s] %(levelname)s [%(filename)s:%(lineno)s] %(message)s",
-            'datefmt': "%Y/%m/%d %H:%M:%S"
+            'format': "[%(asctime)s] (%(levelname)s) %(message)s",
+            'datefmt': "%Y/%m/%d %H:%M:%S %z"
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -109,10 +109,10 @@ LOGGING = {
         },
     },
     'loggers': {
-        'fantasy.views': {
+        'f1tform': {
             'handlers': ['file'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
         },
     },
 }
