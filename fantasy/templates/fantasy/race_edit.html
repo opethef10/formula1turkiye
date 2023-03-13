@@ -1,29 +1,41 @@
 {% extends 'base.html' %}
 {% load static form_tags widget_tweaks %}
 
-{% block title %}Yeni Tahmin | Formula 1 Türkiye{% endblock %}
+{% block title %}Yarışı Düzenle | Formula 1 Türkiye{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'fantasy:race_list' object.championship.slug %}">{{ object.championship }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'fantasy:race_detail' object.championship.slug object.round%}">{{ object.name }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        Yarışı Düzenle
+    </li>
 {% endblock %}
 
 
 {% block content %}
     {{ form.errors }}
+    <iframe src="{{ object.wikilink }}#Race_classification" scrolling="no"
+            width="700px" height="680px"></iframe>
+    <h3 class="my-2">{{ object }}</h3>
     <form class="form form-horizontal" method="post" novalidate>
         {% csrf_token %}
         {{ formset.management_form }}
         <div class="form-group row">
-            <div class="col-lg-2">Driver</div>
-            <div class="col-lg-1">Price</div>
-            <div class="col-lg-1">Discount</div>
-            <div class="col-lg-1">Qualy</div>
-            <div class="col-lg-1">Grid sprint</div>
-            <div class="col-lg-1">Sprint</div>
-            <div class="col-lg-1">Grid</div>
-            <div class="col-lg-1">Result</div>
-            <div class="col-lg-1">Fastest Lap</div>
+            <div class="col-lg-2"><b>Sürücü</b></div>
+            <div class="col-lg-1"><b>Fiyat</b></div>
+            <div class="col-lg-1"><b>Tanzim</b></div>
+            <div class="col-lg-1"><b>Sıralama</b></div>
+            <div class="col-lg-1"><b>Spr.grid</b></div>
+            <div class="col-lg-1"><b>Sprint</b></div>
+            <div class="col-lg-1"><b>Grid</b></div>
+            <div class="col-lg-1"><b>Yarış</b></div>
+            <div class="col-lg-1"><b>EHT</b></div>
         </div>
         {% for form in formset %}
             {% if form.non_field_errors %}
