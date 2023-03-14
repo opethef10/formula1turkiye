@@ -28,7 +28,9 @@ urlpatterns = [
     path("tahmin/", include("tahmin.urls")),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('sent/', TemplateView.as_view(template_name='sent.html'), name='sent'),
-    path('elo/', TemplateView.as_view(template_name='elo.html'), name='sent'),
+    path('elo/', TemplateView.as_view(template_name='elo.html'), name='elo'),
+    path('puanla/', TemplateView.as_view(template_name='puanla.html'), name='puanla'),
+    path('quiz/', TemplateView.as_view(template_name='quiz.html'), name='quiz'),
 ]
 
 if settings.DEBUG:

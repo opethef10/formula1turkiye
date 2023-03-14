@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Yarışı Puanla | Formula 1 Türkiye{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">Yarışı Puanla</li>
+{% endblock %}
+
+{% block content %}
+    <h2 class="my-3">YARIŞI PUANLA NEDİR?</h2>
+    <ul>
+        <li>Formula 1 Türkiye üyeleri olarak, 2016'dan beri her yarış sonrasında Facebook grubumuzda yaptığımız
+            oylamalarla her yarışın puanını belirliyoruz. Böylece, gittikçe büyüyen bir arşiv yaratıp son yılların
+            en güzel ya da en sıkıcı yarışlarını sıralamış oluyoruz.
+        </li>
+        <li>
+            Aşağıdaki tabloda alt sekmelerden seçerek; genel sıralamayı, yıllara göre sıralamaları ve kronolojik sıraya
+            göre
+            yarışların puanlarını görebilirsiniz.
+        </li>
+        <li>Not: Yarışı Puanla 2016 Bahreyn GP'si ile başladığından, 2016'nın ilk yarışı olan Avustralya GP'sinin puanı
+            yoktur.
+        </li>
+        <li>
+            Adminlerin yıllık iznine denk geldiğinden ötürü 2019 Fransa GP'si için Yarışı Puanla anketi yapılmamıştır.
+        </li>
+        <li>
+            2021 Belçika GP'si de göstermelik olarak yapıldığı için değerlendirmeye alınmamıştır.
+        </li>
+    </ul>
+    <iframe height="720" width="1120" allowfullscreen style="border:none;"
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTxzbNFqxAuWgWz5LTCimj5u5Bztag65p66xA1ZlrbBMl0acPz90-67yZME9DKeqrvCvHdGl8mNcPBC/pubhtml"></iframe>
+{% endblock %}
