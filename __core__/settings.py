@@ -202,6 +202,7 @@ SITE_ID = 1
 
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
+    INSTALLED_APPS.append('django_extensions')
     MIDDLEWARE.insert(4, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = [
         # ...
