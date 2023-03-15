@@ -20,5 +20,6 @@ class HomeView(TemplateView):
             ).latest("datetime")
             context[f"last_race_fantasy_f{championship.series[-1]}"] = prev_race_fantasy
             context[f"last_race_tahmin_f{championship.series[-1]}"] = prev_race_tahmin
-            context[f"is_fantasy_team_f{championship.series[-1]}"] = bool(championship.teams.filter(user=user))
+            if user.is_authenticated:
+                context[f"is_fantasy_team_f{championship.series[-1]}"] = bool(championship.teams.filter(user=user))
         return context
