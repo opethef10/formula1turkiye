@@ -28,9 +28,10 @@ urlpatterns = [
     path("fantasy/", include("fantasy.urls")),
     path("tahmin/", include("tahmin.urls")),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    re_path(r'^(?P<url>.*/)$', views.flatpage),
 ]
 
 if settings.DEBUG:
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+
+urlpatterns.append(re_path(r'^(?P<url>.*/)$', views.flatpage))
