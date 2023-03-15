@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'fantasy',
     'tahmin',
     "django_minify_html",
+    "django_extensions",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -202,12 +203,9 @@ SITE_ID = 1
 
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
-    INSTALLED_APPS.append('django_extensions')
     MIDDLEWARE.insert(4, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = [
-        # ...
         "127.0.0.1",
-        # ...
     ]
 
     import mimetypes
