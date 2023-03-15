@@ -119,6 +119,7 @@ class EditTeamForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        self.instance.tactic = cleaned_data['tactic']
 
         # Clean race drivers
         to_sell = cleaned_data.get("to_sell", RaceDriver.objects.none())
