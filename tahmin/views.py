@@ -125,7 +125,7 @@ class TeamListView(ListView):
 class NewTahminView(LoginRequiredMixin, UpdateView):
     model = RaceTahmin
     form_class = NewTahminForm
-    success_url = reverse_lazy('sent')
+    success_url = "/sent/"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)

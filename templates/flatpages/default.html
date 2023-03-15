@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{{ flatpage.title }} | Formula 1 Türkiye{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">{{ flatpage.title }}</li>
+{% endblock %}
+
+{% block content %}
+    {{ flatpage.content }}
+{% endblock %}

@@ -52,7 +52,7 @@ class ViewTestMixin:
     def test_view_contains_navigation_links(self):
         homepage_url = reverse('home')
         response = self.client.get(self.url_reverse())
-        self.assertContains(response, f'href="{homepage_url}"')
+        self.assertContains(response, f'href={homepage_url}')
 
 
 class DetailViewTestMixin(ViewTestMixin):

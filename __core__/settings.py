@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'widget_tweaks'
 ]
 
@@ -196,6 +198,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+SITE_ID = 1
+
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(4, "debug_toolbar.middleware.DebugToolbarMiddleware")
@@ -210,5 +214,5 @@ if DEBUG:
 
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
-        'SHOW_TOOLBAR_CALLBACK': lambda _request: DEBUG
+        # 'SHOW_TOOLBAR_CALLBACK': lambda _request: DEBUG
     }
