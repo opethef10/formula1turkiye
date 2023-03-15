@@ -70,7 +70,12 @@
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
                         <li class="list-group-item list-group-item-action"><a
-                                href="{% url "fantasy:race_detail" "2023-f1" 1 %}" class="card-link">Son Yarış</a></li>
+                                href="{{ last_race_fantasy_f1.get_absolute_url }}" class="card-link">Son Yarış</a></li>
+                        {% if user.is_authenticated and is_fantasy_team_f1 %}
+                        <li class="list-group-item list-group-item-action"><a
+                            href="{% url "fantasy:team_detail" "2023-f1" user.username %}" class="card-link">Fantasy Lig
+                        Profil Sayfanız</a></li>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -85,6 +90,13 @@
                         {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:new_team_form" "2023-f2" %}" class="card-link">Yeni Takım Kur (Üye olmanız gerekir)</a></li>#}
                         {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:edit_team_form" "2023-f2" %}" class="card-link">Alım Satım (Üye olmanız gerekir)</a></li>#}
                         {#                      <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:team_list" "2023-f2" %}" class="card-link">Genel Klasman</a></li>#}
+                        {#                      <li class="list-group-item list-group-item-action"><a#}
+                        {#                              href="{{ last_race_fantasy_f2.get_absolute_url }}" class="card-link">Son Yarış</a></li>#}
+                        {#                      {% if user.is_authenticated and is_fantasy_team_f2 %}#}
+                        {#                      <li class="list-group-item list-group-item-action"><a#}
+                        {#                          href="{% url "fantasy:team_detail" "2023-f2" user.username %}" class="card-link">Fantasy Lig#}
+                        {#                      Profil Sayfanız</a></li>#}
+                        {#                      {% endif %}#}
                     </div>
                 </div>
             </div>
@@ -107,7 +119,7 @@
                         <li class="list-group-item list-group-item-action"><a
                                 href="{% url "tahmin:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
                         <li class="list-group-item list-group-item-action"><a
-                                href="{% url "tahmin:race_detail" "2023-f1" 1 %}" class="card-link">Son Yarış</a></li>
+                                href="{{ last_race_tahmin_f1.get_tahmin_url }}" class="card-link">Son Yarış</a></li>
                     </div>
                 </div>
             </div>

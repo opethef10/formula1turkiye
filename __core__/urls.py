@@ -18,7 +18,9 @@ from django.urls import path, include, re_path
 from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.flatpages import views
+from django.contrib.flatpages.views import flatpage
+
+from .views import HomeView
 
 
 urlpatterns = [
@@ -27,11 +29,11 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("fantasy/", include("fantasy.urls")),
     path("tahmin/", include("tahmin.urls")),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', HomeView.as_view(), name='home'),
 ]
 
 if settings.DEBUG:
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 
-urlpatterns.append(re_path(r'^(?P<url>.*/)$', views.flatpage))
+urlpatterns.append(re_path(r'^(?P<url>.*/)$', flatpage))
