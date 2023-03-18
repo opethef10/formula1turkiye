@@ -5,6 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
@@ -39,16 +41,28 @@ class RaceDetailView(DetailView):
     model = Race
     template_name = "tahmin/race_detail.html"
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
+
     def get_object(self):
         return get_object_or_404(
-            Race,
-            championship__slug=self.kwargs.get('champ'),
+            Race.objects.prefetch_related("questions", "driver_instances", "driver_instances__driver").select_related("championship"),
+            championship=self.championship,
             round=self.kwargs.get('round')
         )
 
     def get_context_data(self, **kwargs):
         current_race = self.get_object()
-        race_tahmins = RaceTahmin.objects.select_related(
+        race_tahmins = RaceTahmin.objects.prefetch_related(
+            *(f"prediction_{idx}__driver" for idx in range(1, 11)), "team__user",
+            "race__driver_instances",
+            "race__tahmin_team_instances",
+            "race__questions"
+        ).select_related(
             "team", *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
         ).filter(
             race=current_race
@@ -72,6 +86,7 @@ class RaceDetailView(DetailView):
         return context
 
 
+@method_decorator(cache_page(60 * 60 * 2), name='dispatch')
 class TeamListView(ListView):
     model = TahminTeam
     template_name = "tahmin/team_list.html"
@@ -91,14 +106,22 @@ class TeamListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        race_list = Race.objects.select_related("circuit", "championship").prefetch_related("tahmin_team_instances").filter(
+        race_list = Race.objects.select_related("circuit", "championship").prefetch_related(
+            "tahmin_team_instances",
+            "questions", "driver_instances", "driver_instances__driver"
+        ).filter(
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
         team_list = self.get_queryset()
-        race_team_list = RaceTahmin.objects.select_related(
+        race_team_list = RaceTahmin.objects.prefetch_related(
+            *(f"prediction_{idx}__driver" for idx in range(1, 11)), "team__user",
+            "race__tahmin_team_instances", "race__questions", "race__driver_instances",
+            "race__championship",
+        ).select_related(
             "team",
-            "race"
+            "race",
+            *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
         ).filter(
             race__championship=self.championship
         )

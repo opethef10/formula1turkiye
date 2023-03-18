@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
@@ -378,6 +379,7 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
         instances = formset.save(commit=False)
         for instance in instances:
             instance.save()
+        cache.clear()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_object(self, queryset=None):
