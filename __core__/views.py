@@ -1,9 +1,17 @@
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import TemplateView
 
 from fantasy.models import Championship, Race
 
+SECONDS = 1
+MINUTES = 60 * SECONDS
+HOURS = 60 * MINUTES
 
+
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class HomeView(TemplateView):
     template_name = "home.html"
 

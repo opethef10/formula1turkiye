@@ -8,14 +8,21 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
 
 logger = logging.getLogger("f1tform")
+SECONDS = 1
+MINUTES = 60 * SECONDS
+HOURS = 60 * MINUTES
 
 
+@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class DriverListView(ListView):
     model = Driver
 
@@ -87,17 +94,20 @@ class DriverListView(ListView):
         return context
 
 
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
     model = Championship
     ordering = ["-year", "series"]
     queryset = Championship.objects.filter(is_fantasy=True).only("series", "year")
 
 
+@method_decorator([vary_on_cookie,cache_page(24 * HOURS)], name='dispatch')
 class DriverDetailView(DetailView):
     model = Driver
     slug_url_kwarg = "driver_slug"
 
 
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
 
@@ -137,6 +147,7 @@ class RaceDetailView(DetailView):
         return context
 
 
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceListView(ListView):
     model = Race
 
@@ -160,6 +171,7 @@ class RaceListView(ListView):
         return context
 
 
+@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class TeamListView(ListView):
     model = Team
 

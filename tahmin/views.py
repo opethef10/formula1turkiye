@@ -7,14 +7,19 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
 from .forms import *
 from .models import *
 
 logger = logging.getLogger("f1tform")
+SECONDS = 1
+MINUTES = 60 * SECONDS
+HOURS = 60 * MINUTES
 
 
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
     model = Championship
     ordering = ["-year", "series"]
@@ -22,6 +27,7 @@ class ChampionshipListView(ListView):
     template_name = "tahmin/championship_list.html"
 
 
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceListView(ListView):
     model = Race
     template_name = "tahmin/race_list.html"
@@ -37,6 +43,7 @@ class RaceListView(ListView):
         return context
 
 
+@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
     template_name = "tahmin/race_detail.html"
@@ -86,7 +93,7 @@ class RaceDetailView(DetailView):
         return context
 
 
-@method_decorator(cache_page(60 * 60 * 2), name='dispatch')
+@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class TeamListView(ListView):
     model = TahminTeam
     template_name = "tahmin/team_list.html"
