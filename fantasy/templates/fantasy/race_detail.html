@@ -70,6 +70,7 @@
                             {% endfor %}
                             {% else %}
                             <tr>
+                                <th>#</th>
                                 <th>Taktik</th>
                                 <th>Hak</th>
                                 <th>Bütçe</th>
@@ -89,6 +90,7 @@
                             <tbody>
                             {% for race_team in race_team_list %}
                                 <tr>
+                                    <td></td>
                                     <td>{{ race_team.tactic }}</td>
                                     <td>{{ race_team.token }}</td>
                                     <td>{{ race_team.budget|with_currency }}</td>
@@ -141,16 +143,31 @@
 
         $(document).ready(function () {
             {% for tab_id in tabs %}
-                $("#table_{{ tab_id }}").DataTable(
+                var {{ tab_id }} = $("#table_{{ tab_id }}").DataTable(
                     {
                         language: {
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [[{% if tab_id == "drivers" %}10 {% else %} 4 {% endif %}, 'desc']],
-                        "info": false
+                        "order": [[{% if tab_id == "drivers" %}10 {% else %} 5 {% endif %}, 'desc']],
+                        "info": false,
+                        columnDefs: [
+                            {
+                                searchable: false,
+                                {#orderable: false,#}
+                                targets: 0,
+                            }
+                        ]
                     }
                 );
+                {% if not tab_id == "drivers" %}
+                    {{ tab_id }}.on('init.dt', function () {
+                        let i = 1;
+                        {{ tab_id }}.cells(null, 0, {search: 'applied'}).every(function (cell) {
+                            this.data("<b>"+ i++ +"</b>");
+                        });
+                    }).draw();
+                {% endif %}
             {% endfor %}
         });
 

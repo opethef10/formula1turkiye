@@ -61,6 +61,7 @@
            class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
         <tr>
+            <th>#</th>
             <th>Üye</th>
             {% for racedriver in top10 %}
                 <th>{{ forloop.counter }}</th>
@@ -74,7 +75,8 @@
         <tbody>
         {% for race_team in race_team_list %}
             <tr>
-                <td>{{ race_team.team.name }}</td>
+                <td></td>
+                <td><a href=""#>{{ race_team.team.name }}</a></td>
                 {% for idx in "123456789" %}
                     {% with "prediction_"|add:idx as prediction_field %}
                         {% with race_team|call_or_get_attr:prediction_field as racedriver %}
@@ -105,7 +107,7 @@
                         {{ race_team.prediction_point.11|default_if_none:"" }}
                     </small>
                 </td>
-                <td>{{ race_team.total_point }}</td>
+                <td><b>{{ race_team.total_point }}</b></td>
             </tr>
         {% endfor %}
 
@@ -118,16 +120,23 @@
     <script>
 
         $(document).ready(function () {
-            $("#table_race_detail").DataTable(
+            var table = $("#table_race_detail").DataTable(
                 {
                     language: {
                         "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                     },
                     paging: false,
-                    "order": [[13, 'desc']],
+                    "order": [[14, 'desc']],
                     "info": false,
+                    "columnDefs": [
+                        {
+                                searchable: false,
+                                orderable: false,
+                                targets: 0,
+                            },
+                    ],
                     rowCallback: function (row, data, index) {
-                        for (let i = 1; i < 13; ++i) {
+                        for (let i = 2; i < 14; ++i) {
                             console.log(row, i, data[i])
                             $("td", row).eq(i).filter(function () {
                                 return parseInt($(this).find("small").text(), 10) >= 0;
@@ -137,6 +146,12 @@
                     }
                 }
             );
+            table.on('init.dt', function () {
+                    let i = 1;
+                    table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                        this.data("<b>"+ i++ +"</b>");
+                    });
+                }).draw();
         });
 
     </script>

@@ -44,7 +44,7 @@
                         {% for tahminteam, race_team_list in race_team_dict.items %}
                             <tr>
                                 <td></td>
-                                <td>{{ tahminteam.name }}</td>
+                                <td><a href="#">{{ tahminteam.name }}</a></td>
                                 <td></td>
 
                                 {% for race_team in race_team_list %}
@@ -69,7 +69,7 @@
 
         $(document).ready(function () {
             {% for tab_id in tabs %}
-                $("#table_{{ tab_id }}").DataTable(
+                var {{ tab_id }} = $("#table_{{ tab_id }}").DataTable(
                     {
                         language: {
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
@@ -79,6 +79,11 @@
                         "info": false,
 
                         columnDefs: [
+                            {
+                                searchable: false,
+                                orderable: false,
+                                targets: 0,
+                            },
                             {
                                 render: function (data, type, row) {
                                     let result = 0.0;
@@ -97,13 +102,19 @@
                                         result = isNaN(result) ? "" : result;
                                     {% endif %}
 
-                                    return result;
+                                    return "<b>" + result + "</b>";
                                 },
                                 targets: 2,
                             }
                         ]
                     }
                 );
+                {{ tab_id }}.on('init.dt', function () {
+                    let i = 1;
+                    {{ tab_id }}.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                        this.data("<b>"+ i++ +"</b>");
+                    });
+                }).draw();
             {% endfor %}
         });
 
