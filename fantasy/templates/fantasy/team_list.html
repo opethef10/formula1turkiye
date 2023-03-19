@@ -101,7 +101,7 @@
                                         result = isNaN(result) ? "" : result;
                                     {% endif %}
 
-                                    return "<b>" + result + "</b>";
+                                    return "<b>" + result.toFixed(1) + "</b>";
                                 },
                                 targets: 2,
                             }
