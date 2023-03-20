@@ -9,9 +9,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("series", choices=['f1', 'f2'])
+        parser.add_argument("--budget", action='store_true', help="Increase budget by 5₺")
+        parser.add_argument("--token", action='store_true', help="Adjust token to 16")
+    
 
     def handle(self, *args, **options):
         series = options["series"]
+        increase_budget = options["budget"]
+        set_token = options["token"]
         championship_slug = f"2023-{series}"
         prev_race = Race.objects.filter(
             championship__slug=championship_slug,
@@ -35,8 +40,8 @@ class Command(BaseCommand):
             nrt, created = RaceTeam.objects.get_or_create(
                 race=next_race,
                 team=prt.team,
-                token=prt.token,
-                budget=prt.budget,
+                token=16 if set_token else prt.token,
+                budget=prt.budget + 5 if increase_budget else prt.budget,
                 tactic=prt.tactic
             )
             if created:

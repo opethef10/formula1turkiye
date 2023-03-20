@@ -5,16 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - 2023-03-15
+## [1.3.1] - 2023-03-19
 ### Added
+- Rank for result pages
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
-- Tactic choice bug
 ### Security
 
-## [1.3.0] - 2023-03-15
+## [1.3.1] - 2023-03-15
+### Fixed
+- Tactic choice bug
+
+## [1.3.0] - 2023-03-15 (Flatpages)
 ### Added
 - Flatpages such as elo, puanla, quiz
 ### Changed
@@ -39,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - HTML minifying
 
-## [1.2.0] - 2023-03-05
+## [1.2.0] - 2023-03-05 (Tahmin Ligi)
 ### Added
 - Sent page after sending prediction forms
 - Prediction scoring system picture
@@ -54,10 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Password validators removed
 
-## [1.1.0] - 2023-03-01
+## [1.1.0] - 2023-03-01 (New Page Structure)
 ### Changed
 - Changed page structure
 
-## [1.0.0] - 2023-02-28
+## [1.0.0] - 2023-02-28 (F1T)
 ### Added
 - Formula 1 Türkiye website is open for visitors
