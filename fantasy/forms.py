@@ -76,7 +76,10 @@ class EditTeamForm(forms.ModelForm):
 
     def __init__(self, request, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        prev_race = current_race.get_previous_by_datetime()
+        prev_race = Race.objects.get(
+            championship=current_race.championship,
+            round=current_race.round - 1
+        )
         current_racedrivers = RaceDriver.objects.select_related("driver").filter(
             race=current_race
         )
