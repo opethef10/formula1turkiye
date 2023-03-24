@@ -34,7 +34,7 @@ class PasswordChangeTests(TestCase):
         The view must contain four inputs: csrf, old_password, new_password1, new_password2
         """
         self.assertContains(self.response, '<input', 4)
-        self.assertContains(self.response, 'type="password"', 3)
+        self.assertContains(self.response, 'type=password', 3)
 
 
 class LoginRequiredPasswordChangeTests(TestCase):

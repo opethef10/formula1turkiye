@@ -33,7 +33,7 @@ class PasswordResetTests(TestCase):
         The view must contain two inputs: csrf and email
         """
         self.assertContains(self.response, '<input', 2)
-        self.assertContains(self.response, 'type="email"', 1)
+        self.assertContains(self.response, 'type=email', 1)
 
 
 class SuccessfulPasswordResetTests(TestCase):
@@ -118,7 +118,7 @@ class PasswordResetConfirmTests(TestCase):
         The view must contain two inputs: csrf and two password fields
         """
         self.assertContains(self.response, '<input', 3)
-        self.assertContains(self.response, 'type="password"', 2)
+        self.assertContains(self.response, 'type=password', 2)
 
 
 class InvalidPasswordResetConfirmTests(TestCase):
@@ -141,7 +141,7 @@ class InvalidPasswordResetConfirmTests(TestCase):
 
     def test_html(self):
         password_reset_url = reverse('password_reset')
-        self.assertContains(self.response, 'href="{0}"'.format(password_reset_url))
+        self.assertContains(self.response, f'href={password_reset_url}')
 
 
 class PasswordResetCompleteTests(TestCase):
