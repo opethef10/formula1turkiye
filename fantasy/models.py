@@ -21,9 +21,9 @@ TACTIC_COEFFICIENTS = {
         "F": 1.8
     },
     "Formula 2": {
-        "G": 1.8,
-        "S": 5.0,
-        "F": 2.3
+        "G": 1.6,
+        "S": 5.8,
+        "F": 2
     }
 }
 
@@ -186,7 +186,7 @@ class RaceDriver(models.Model):
     fastest_lap = models.PositiveIntegerField(blank=True, null=True)
 
     def coefficient(self, tactic):
-        return TACTIC_COEFFICIENTS["Formula 1"][tactic]  # TODO: optimize "self.race.championship.series"
+        return TACTIC_COEFFICIENTS[self.race.championship.series][tactic]
 
     def qualy_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "S" else 1
@@ -205,18 +205,17 @@ class RaceDriver(models.Model):
 
     def sprint_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1
-        return 0
-        # if [self.race.championship.series] == "Formula 1":
-        #     return 0
-        # if not self.grid_sprint or not self.sprint:
-        #     return 0
-        # elif self.grid_sprint < self.sprint:
-        #     return 0
-        # else:
-        #     raw = (self.grid_sprint - self.sprint)
-        #     bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
-        #     top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
-        #     return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+        if [self.race.championship.series] == "Formula 1":
+            return 0
+        if not self.grid_sprint or not self.sprint:
+            return 0
+        elif self.grid_sprint < self.sprint:
+            return 0
+        else:
+            raw = (self.grid_sprint - self.sprint)
+            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
+            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
+            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
 
     def feature_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1

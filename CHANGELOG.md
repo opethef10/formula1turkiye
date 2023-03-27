@@ -5,14 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - 2023-03-19
+## [1.4.0] - 2023-03-27 (Fantasy F2)
 ### Added
-- Rank for result pages
+- Fantasy F2 Season
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
+- Different coefficients for different series
 ### Security
+
+## [1.3.2] - 2023-03-19
+### Added
+- Rank for result pages
 
 ## [1.3.1] - 2023-03-15
 ### Fixed

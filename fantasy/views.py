@@ -120,8 +120,10 @@ class RaceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["race_driver_list"] = RaceDriver.objects.select_related(
-            "championship_constructor", "driver", "race", "championship_constructor__constructor"
+        context["race_driver_list"] = RaceDriver.objects.prefetch_related(
+            "race__championship"
+        ).select_related(
+            "championship_constructor", "driver", "race", "championship_constructor__constructor", "race__championship"
         ).filter(
             race=context["race"]
         ).order_by(
@@ -130,7 +132,8 @@ class RaceDetailView(DetailView):
         )
         context["race_team_list"] = RaceTeam.objects.prefetch_related(
             "raceteamdrivers", "race_drivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
-            "team__user", "team__championship"
+            "team__user", "team__championship", "race_drivers__race__championship",
+            "raceteamdrivers__racedriver__race__championship"
         ).select_related(
             "team",
         ).filter(
@@ -270,7 +273,6 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
             ).latest("deadline")
         except Race.DoesNotExist:
             self.race = None
-            # raise Http404("İşlem yapma zamanı doldu, bir sonraki yarışta görüşmek üzere.")
 
     def get(self, request, *args, **kwargs):
         if self.race is None:
@@ -281,7 +283,7 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
-        context["STARTING_BUDGET"] = STARTING_BUDGET
+        context["STARTING_BUDGET"] = STARTING_BUDGET[self.championship.series]
         return context
 
     def get_form_kwargs(self):
