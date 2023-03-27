@@ -189,7 +189,7 @@ class RaceDriver(models.Model):
 
     def sprint_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
-        return round(POINTS["sprint"]["Formula 1"].get(self.sprint, 0) * coefficient, 1)
+        return round(POINTS["sprint"][self.race.championship.series].get(self.sprint, 0) * coefficient, 1)
 
     def race_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
