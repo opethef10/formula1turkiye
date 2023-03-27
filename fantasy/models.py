@@ -14,21 +14,7 @@ TACTIC_CHOICES = [
     ("S", "Sıralama"),
     ("F", "Finiş"),
 ]
-TACTIC_COEFFICIENTS = {
-    "Formula 1": {
-        "G": 2.2,
-        "S": 3.2,
-        "F": 1.8
-    },
-    "Formula 2": {
-        "G": 1.6,
-        "S": 5.8,
-        "F": 2
-    }
-}
-
 OVERTAKE_DOUBLE_POINT_THRESHOLD = 10
-
 DISCOUNT_COEFFICIENTS = (
     Decimal("0.6"),
     Decimal("0.13"),
@@ -55,6 +41,9 @@ class Championship(models.Model):
     )
     is_fantasy = models.BooleanField(default=True)
     is_tahmin = models.BooleanField(default=True)
+    overtake_coefficient = models.FloatField()
+    qualifying_coefficient = models.FloatField()
+    finish_coefficient = models.FloatField()
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
@@ -186,7 +175,13 @@ class RaceDriver(models.Model):
     fastest_lap = models.PositiveIntegerField(blank=True, null=True)
 
     def coefficient(self, tactic):
-        return TACTIC_COEFFICIENTS[self.race.championship.series][tactic]
+        championship = self.race.championship
+        if tactic == "G":
+            return championship.overtake_coefficient
+        elif tactic == "S":
+            return championship.qualifying_coefficient
+        elif tactic == "F":
+            return championship.finish_coefficient
 
     def qualy_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "S" else 1

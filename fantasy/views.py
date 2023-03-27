@@ -199,7 +199,7 @@ class TeamListView(ListView):
         race_count = race_list.count()
         team_list = self.get_queryset()
         race_team_list = RaceTeam.objects.prefetch_related(
-            "race_drivers"
+            "race_drivers", "race_drivers__race__championship"
         ).select_related(
             "team",
             "race"
