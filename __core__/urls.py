@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.flatpages.views import flatpage
@@ -39,4 +38,4 @@ if settings.DEBUG:
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 
-urlpatterns.append(re_path(r'^(?P<url>.*/)$', cache_page(60 * 60 * 24)(vary_on_cookie(flatpage))))
+urlpatterns.append(re_path(r'^(?P<url>.*/)$', cache_page(24 * settings.HOURS)(vary_on_cookie(flatpage))))

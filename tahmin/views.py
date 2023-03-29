@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -14,9 +15,7 @@ from .forms import *
 from .models import *
 
 logger = logging.getLogger("f1tform")
-SECONDS = 1
-MINUTES = 60 * SECONDS
-HOURS = 60 * MINUTES
+HOURS = settings.HOURS
 
 
 @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')

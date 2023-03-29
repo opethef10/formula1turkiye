@@ -202,6 +202,10 @@ MESSAGE_TAGS = {
 
 SITE_ID = 1
 
+SECONDS = 1
+MINUTES = 60 * SECONDS
+HOURS = 60 * MINUTES
+
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(4, "debug_toolbar.middleware.DebugToolbarMiddleware")

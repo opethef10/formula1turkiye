@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.cache import cache
@@ -17,9 +18,7 @@ from .forms import *
 from .models import *
 
 logger = logging.getLogger("f1tform")
-SECONDS = 1
-MINUTES = 60 * SECONDS
-HOURS = 60 * MINUTES
+HOURS = settings.HOURS
 
 
 @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
@@ -71,7 +70,9 @@ class DriverListView(ListView):
         tactic_count_dict = {tactic: [None] * race_count for tactic in {"Finiş", "Geçiş", "Sıralama"}}
 
         for race in race_list:
-            race_tactic_sum_dict = dict(race.team_instances.order_by("tactic").values_list("tactic").annotate(tactic_count=Count("tactic")))
+            race_tactic_sum_dict = dict(
+                race.team_instances.order_by("tactic").values_list("tactic").annotate(tactic_count=Count("tactic"))
+            )
             for tactic in {"Finiş", "Geçiş", "Sıralama"}:
                 tactic_count_dict[tactic][race.round - 1] = race_tactic_sum_dict.get(tactic[0])
 
@@ -101,7 +102,7 @@ class ChampionshipListView(ListView):
     queryset = Championship.objects.filter(is_fantasy=True).only("series", "year")
 
 
-@method_decorator([vary_on_cookie,cache_page(24 * HOURS)], name='dispatch')
+@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class DriverDetailView(DetailView):
     model = Driver
     slug_url_kwarg = "driver_slug"
@@ -313,7 +314,9 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
         for key, value in form.cleaned_data.items():
             if isinstance(value, QuerySet):
                 form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
-        logger.info(f"FANTASY: {self.request.user.get_full_name()}: {form.cleaned_data}")
+        logger.info(
+            f"FANTASY {self.championship.series.upper()}: {self.request.user.get_full_name()}: {form.cleaned_data}"
+        )
         return response
 
     def form_invalid(self, form):
@@ -322,7 +325,9 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
         for key, value in form.cleaned_data.items():
             if isinstance(value, QuerySet):
                 form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
-        logger.warning(f"FANTASY: {self.request.user.get_full_name()}: {form.cleaned_data} ERRORS: {form.errors!r}")
+        logger.warning(
+            f"FANTASY {self.championship.series.upper()}: {self.request.user.get_full_name()}: {form.cleaned_data} ERRORS: {form.errors!r}"
+        )
         return response
 
 
