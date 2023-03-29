@@ -12,7 +12,7 @@
         {% for championship in championship_list %}
             <li>
                 <a href="{% url 'tahmin:race_list' championship.slug %}">
-                    {{ championship.year }} {{ championship.series }} Tahmin Ligi
+                    {{ championship.year }} {{ championship.get_series_display }} Tahmin Ligi
                 </a>
             </li>
         {% endfor %}

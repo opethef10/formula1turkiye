@@ -11,7 +11,7 @@
         {% for championship in championship_list %}
             <li>
                 <a href="{% url 'fantasy:race_list' championship.slug %}">
-                    {{ championship.year }} {{ championship.series }} Fantasy Lig
+                    {{ championship.year }} {{ championship.get_series_display }} Fantasy Lig
                 </a>
             </li>
         {% endfor %}

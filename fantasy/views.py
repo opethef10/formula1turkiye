@@ -284,7 +284,7 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
-        context["STARTING_BUDGET"] = STARTING_BUDGET[self.championship.series]
+        context["STARTING_BUDGET"] = self.championship.starting_budget
         return context
 
     def get_form_kwargs(self):

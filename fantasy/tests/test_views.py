@@ -5,6 +5,16 @@ from django.utils import timezone
 from ..models import *
 from .. import views
 
+CHAMPIONSHIP_TEST_DATA = dict(
+    year=2022,
+    series="f1",
+    overtake_coefficient=2.1,
+    qualifying_coefficient=3.2,
+    finish_coefficient=1.8,
+    beginning_token=18,
+    starting_budget=Decimal("50.0")
+)
+
 
 class ViewTestMixin:
     app_name_prefix = "fantasy:"
@@ -73,7 +83,7 @@ class HomeTests(ViewTestMixin, TestCase):
 class DriverListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2022, series="Formula 1", overtake_coefficient=2.1, qualifying_coefficient=3.2, finish_coefficient=1.8)
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'driver_list'
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/drivers"
@@ -85,7 +95,7 @@ class DriverListTests(ViewTestMixin, TestCase):
 class RaceListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2022, series="Formula 1", overtake_coefficient=2.1, qualifying_coefficient=3.2, finish_coefficient=1.8)
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'race_list'
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.url_kwargs_404 = {'champ': "arbitrary"}
@@ -102,7 +112,7 @@ class RaceListTests(ViewTestMixin, TestCase):
 class TeamListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2022, series="Formula 1", overtake_coefficient=2.1, qualifying_coefficient=3.2, finish_coefficient=1.8)
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'team_list'
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.url_kwargs_404 = {'champ': "arbitrary"}
@@ -130,7 +140,7 @@ class DriverDetailViewTests(DetailViewTestMixin, TestCase):
 class RaceDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2024, series="Formula 1", overtake_coefficient=2.1, qualifying_coefficient=3.2, finish_coefficient=1.8)
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         circuit = Circuit.objects.create(name="İstanbul Park", country="Turkey")
         cls.race = Race.objects.create(
             name="Turkish GP",
@@ -151,7 +161,7 @@ class RaceDetailViewTests(DetailViewTestMixin, TestCase):
 class TeamDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.championship = Championship.objects.create(year=2024, series="Formula 1", overtake_coefficient=2.1, qualifying_coefficient=3.2, finish_coefficient=1.8)
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.user = User.objects.create_user(username='test_user', password='12345')
         cls.team = Team.objects.create(
             user=cls.user,

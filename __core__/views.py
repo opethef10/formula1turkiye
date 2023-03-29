@@ -25,8 +25,8 @@ class HomeView(TemplateView):
             prev_race_tahmin = championship.races.filter(
                 datetime__lt=timezone.now()
             ).latest("datetime")
-            context[f"last_race_fantasy_f{championship.series[-1]}"] = prev_race_fantasy
-            context[f"last_race_tahmin_f{championship.series[-1]}"] = prev_race_tahmin
+            context[f"last_race_fantasy_{championship.series}"] = prev_race_fantasy
+            context[f"last_race_tahmin_{championship.series}"] = prev_race_tahmin
             if user.is_authenticated:
-                context[f"is_fantasy_team_f{championship.series[-1]}"] = bool(championship.teams.filter(user=user))
+                context[f"is_fantasy_team_{championship.series}"] = bool(championship.teams.filter(user=user))
         return context

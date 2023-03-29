@@ -3,10 +3,6 @@ from django.forms import modelformset_factory
 
 from .models import *
 
-BEGINNING_TOKEN = {"Formula 1": 18, "Formula 2": 999}
-STARTING_BUDGET = {"Formula 1": 50, "Formula 2": 70}
-MAX_DRIVERS_IN_A_TEAM = 8
-
 
 class RaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, racedriver):
@@ -34,9 +30,9 @@ class NewTeamForm(forms.ModelForm):
 
     def __init__(self, request, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.current_race = current_race
-        self.starting_budget = STARTING_BUDGET[current_race.championship.series]
-        self.beginning_token = BEGINNING_TOKEN[current_race.championship.series]
+        self.starting_budget = current_race.championship.starting_budget
+        self.beginning_token = current_race.championship.beginning_token
+        self.max_drivers_in_a_team = current_race.championship.max_drivers_in_team
         self.fields['tactic'].label = "Taktik"
         self.fields["budget"] = forms.DecimalField(label="Kalan Bütçe", disabled=True, required=False)
         self.fields["token"] = forms.IntegerField(label="Kalan Hak", disabled=True, required=False, initial=self.beginning_token)
@@ -60,8 +56,8 @@ class NewTeamForm(forms.ModelForm):
         cleaned_data['budget'] = self.starting_budget
         if len(race_drivers) == 0:
             self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
-        if len(race_drivers) > MAX_DRIVERS_IN_A_TEAM:
-            self.add_error(None, f"Takımınızda en fazla {MAX_DRIVERS_IN_A_TEAM} sürücü olabilir.")
+        if len(race_drivers) > self.max_drivers_in_a_team:
+            self.add_error(None, f"Takımınızda en fazla {self.max_drivers_in_a_team} sürücü olabilir.")
 
         total_price = sum(race_driver.price for race_driver in race_drivers)
         left_budget = self.starting_budget - total_price
@@ -79,6 +75,7 @@ class EditTeamForm(forms.ModelForm):
 
     def __init__(self, request, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.max_drivers_in_a_team = current_race.championship.max_drivers_in_team
         prev_race = current_race.get_previous_by_datetime(championship=current_race.championship)
         current_racedrivers = RaceDriver.objects.select_related("driver").filter(
             race=current_race
@@ -130,8 +127,8 @@ class EditTeamForm(forms.ModelForm):
         race_drivers = self.old_race_drivers.difference(to_sell).union(to_buy)
         if not race_drivers:
             self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
-        if len(race_drivers) > MAX_DRIVERS_IN_A_TEAM:
-            self.add_error(None, f"Takımınızda en fazla {MAX_DRIVERS_IN_A_TEAM} sürücü olabilir.")
+        if len(race_drivers) > self.max_drivers_in_a_team:
+            self.add_error(None, f"Takımınızda en fazla {self.max_drivers_in_a_team} sürücü olabilir.")
         cleaned_data["race_drivers"] = race_drivers
 
         # Clean token

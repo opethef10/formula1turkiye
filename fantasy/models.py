@@ -14,6 +14,11 @@ TACTIC_CHOICES = [
     ("S", "Sıralama"),
     ("F", "Finiş"),
 ]
+CHAMPIONSHIP_CHOICES = [
+    ("f1", "Formula 1"),
+    ("f2", "Formula 2"),
+    ("fe", "Formula E"),
+]
 OVERTAKE_DOUBLE_POINT_THRESHOLD = 10
 DISCOUNT_COEFFICIENTS = (
     Decimal("0.6"),
@@ -33,25 +38,24 @@ class Championship(models.Model):
     year = models.IntegerField()
     series = models.CharField(
         max_length=255,
-        choices=[
-            ("Formula 1", "Formula 1"),
-            ("Formula 2", "Formula 2"),
-            ("Formula E", "Formula E"),
-        ]
+        choices=CHAMPIONSHIP_CHOICES
     )
-    is_fantasy = models.BooleanField(default=True)
-    is_tahmin = models.BooleanField(default=True)
+    is_fantasy = models.BooleanField(default=False)
+    is_tahmin = models.BooleanField(default=False)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
+    beginning_token = models.PositiveSmallIntegerField()
+    starting_budget = models.DecimalField(max_digits=3, decimal_places=1)
+    max_drivers_in_team = models.PositiveSmallIntegerField(default=8)
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
-        return f"{self.year} {self.series} Şampiyonası"
+        return f"{self.year} {self.get_series_display()} Şampiyonası"
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.year}-f{self.series[-1]}"
+            self.slug = f"{self.year}-{self.series}"
         super().save(*args, **kwargs)
 
 
@@ -189,7 +193,7 @@ class RaceDriver(models.Model):
 
     def sprint_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
-        return round(POINTS["sprint"][self.race.championship.series].get(self.sprint, 0) * coefficient, 1)
+        return round(POINTS["sprint"][self.race.championship.get_series_display()].get(self.sprint, 0) * coefficient, 1)
 
     def race_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "F" else 1
@@ -200,7 +204,7 @@ class RaceDriver(models.Model):
 
     def sprint_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1
-        if [self.race.championship.series] == "Formula 1":
+        if self.race.championship.get_series_display() == "Formula 1":
             return 0
         if not self.grid_sprint or not self.sprint:
             return 0
