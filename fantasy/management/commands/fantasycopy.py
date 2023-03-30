@@ -11,18 +11,16 @@ class Command(BaseCommand):
         parser.add_argument("series", choices=['f1', 'f2'])
         parser.add_argument("--budget", action='store_true', help="Increase budget by 5₺")
         parser.add_argument("--token", action='store_true', help="Adjust token to 16")
-    
 
     def handle(self, *args, **options):
         series = options["series"]
         increase_budget = options["budget"]
         set_token = options["token"]
-        championship_slug = f"2023-{series}"
         prev_race = Race.objects.filter(
-            championship__slug=championship_slug,
+            championship__slug=f"2023-{series}",
             datetime__lt=timezone.now()
         ).latest("datetime")
-        next_race = prev_race.get_next_by_datetime(championship__slug=championship_slug)
+        next_race = prev_race.next()
         prev_race_drivers = prev_race.driver_instances.all()
         prev_raceteams = prev_race.team_instances.all()
         

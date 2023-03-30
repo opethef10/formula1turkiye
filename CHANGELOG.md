@@ -5,15 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2023-03-27 (Fantasy F2)
+## [1.4.1] - 2023-03-30
 ### Added
-- Fantasy F2 Season
+- Previous/next races buttons in race results
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
-- Different coefficients for different series
 ### Security
+
+## [1.4.0] - 2023-03-27 (Fantasy F2)
+### Added
+- Fantasy F2 Season
+### Fixed
+- Different coefficients for different series
 
 ## [1.3.2] - 2023-03-19
 ### Added

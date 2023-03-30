@@ -141,6 +141,18 @@ class Race(models.Model):
     def get_tahmin_url(self):
         return reverse("tahmin:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
 
+    def next(self):
+        try:
+            return self.get_next_by_datetime(championship=self.championship)
+        except Race.DoesNotExist:
+            return None
+
+    def previous(self):
+        try:
+            return self.get_previous_by_datetime(championship=self.championship)
+        except Race.DoesNotExist:
+            return None
+
     @cached_property
     def top10(self):
         top10_drivers = self.driver_instances.filter(
