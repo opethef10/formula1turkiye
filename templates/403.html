@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block crumbarea %}
+{% endblock %}
+
+{% block title %}403 Forbidden{% endblock %}
+
+{% block content %}
+    <div class="alert my-4" role="alert">
+        <img src="{% static 'img/403.jpg' %}" class="rounded mx-auto my-3 d-block" alt="403!">
+        <h2 class="text-center">403 Forbidden</h2>
+        <p class="text-center">
+            İzniniz olmayan bir sayfaya erişmeye çalıştınız.
+            Bu sayfa yalnızca yöneticilere veya onların yetkilendirdiği kullanıcılara açıktır.
+        </p>
+    </div>
+{% endblock %}
