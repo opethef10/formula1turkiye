@@ -10,6 +10,12 @@
 {% endblock %}
 
 {% block content %}
+    <div class="d-flex justify-content-between text-center my-4">
+        <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{{ race.previous.get_tahmin_url }}">&larr; {{ race.previous|default_if_none:"" }}</a>
+        <h3 class="text-center">{{ race }}</h3>
+        <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{{ race.next.get_tahmin_url }}">{{ race.next|default_if_none:"" }} &rarr;</a>
+    </div>
+
     {% if before_race %}
         <div class="alert alert-warning" role="alert">
             <h2 class="text-center">
