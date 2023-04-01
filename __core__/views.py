@@ -19,6 +19,15 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         for championship in Championship.objects.filter(year=2023):
+            if user.is_authenticated:
+                team = user.teams.filter(championship=championship).first()
+                if team is None:
+                    team_count = 0
+                else:
+                    team_count = team.race_instances.count()
+            else:
+                team = None
+                team_count = None
             prev_race_fantasy = championship.races.filter(
                 deadline__lt=timezone.now()
             ).latest("deadline")
@@ -27,6 +36,7 @@ class HomeView(TemplateView):
             ).latest("datetime")
             context[f"last_race_fantasy_{championship.series}"] = prev_race_fantasy
             context[f"last_race_tahmin_{championship.series}"] = prev_race_tahmin
-            if user.is_authenticated:
-                context[f"is_fantasy_team_{championship.series}"] = bool(championship.teams.filter(user=user))
+            context[f"fantasy_team_{championship.series}"] = team
+            context[f"race_team_count_{championship.series}"] = team_count
+
         return context
