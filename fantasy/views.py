@@ -52,6 +52,7 @@ class DriverListView(ListView):
         race_count = race_list.count()
         driver_list = self.get_queryset()
         race_driver_list = RaceDriver.objects.prefetch_related(
+            "race__championship",
             "raceteamdrivers"
         ).select_related(
             "driver",

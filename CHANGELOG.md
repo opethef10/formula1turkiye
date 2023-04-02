@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Circuit in race list
 ### Removed
 ### Fixed
+- Total points column sometimes without decimal point
 ### Security
 
 ## [1.4.1] - 2023-03-30

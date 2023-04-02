@@ -221,9 +221,9 @@ class RaceDriver(models.Model):
         if self.race.championship.get_series_display() == "Formula 1":
             return 0
         if not self.grid_sprint or not self.sprint:
-            return 0
+            return 0 * coefficient
         elif self.grid_sprint < self.sprint:
-            return 0
+            return 0 * coefficient
         else:
             raw = (self.grid_sprint - self.sprint)
             bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
@@ -233,9 +233,9 @@ class RaceDriver(models.Model):
     def feature_overtake_point(self, tactic=None):
         coefficient = self.coefficient(tactic) if tactic == "G" else 1
         if not self.grid or not self.result:
-            return 0
+            return 0 * coefficient
         elif self.grid < self.result:
-            return 0
+            return 0 * coefficient
         else:
             raw = (self.grid - self.result)
             bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
