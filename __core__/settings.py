@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'tahmin',
     "django_minify_html",
     "django_extensions",
+    "django_countries",
     'clearcache',
     'django.contrib.admin',
     'django.contrib.auth',

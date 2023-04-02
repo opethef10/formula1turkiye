@@ -8,6 +8,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.text import slugify
+from django_countries.fields import CountryField
 
 TACTIC_CHOICES = [
     ("G", "Geçiş"),
@@ -119,6 +120,7 @@ class Race(models.Model):
     name = models.CharField(max_length=255)
     championship = models.ForeignKey(Championship, on_delete=models.RESTRICT, related_name='races', null=True)
     round = models.IntegerField()
+    country = CountryField()
     circuit = models.ForeignKey(Circuit, null=True, on_delete=models.SET_NULL, related_name='grand_prix')
     datetime = models.DateTimeField()
     deadline = models.DateTimeField(null=True, blank=True)
