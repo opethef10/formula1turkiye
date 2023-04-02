@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% load fantasy_tags %}
+{% load static fantasy_tags %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -33,7 +37,7 @@
                             <th>Sürücü</th>
                             {% for race in race_list %}
                                 <th>
-                                    <a href="{{ race.get_absolute_url }}">{{ race.circuit.country }}</a>
+                                    <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
                                 </th>
                             {% endfor %}
                             {% if tab_id in 'qualy,grid,results' %}
