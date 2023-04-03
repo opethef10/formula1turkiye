@@ -21,7 +21,7 @@ logger = logging.getLogger("f1tform")
 HOURS = settings.HOURS
 
 
-@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class DriverListView(ListView):
     model = Driver
 
@@ -109,7 +109,7 @@ class DriverDetailView(DetailView):
     slug_url_kwarg = "driver_slug"
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
 
