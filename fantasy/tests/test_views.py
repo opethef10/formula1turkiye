@@ -126,7 +126,7 @@ class DriverDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.driver = Driver.objects.create(
-            forename='Sebastian', surname="Vettel", number=5, code="VET", nationality="German"
+            forename='Sebastian', surname="Vettel", number=5, code="VET"
         )
         cls.url_name = 'driver_detail'
         cls.url_kwargs = {'driver_slug': cls.driver.slug}
