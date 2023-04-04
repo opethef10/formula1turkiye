@@ -49,6 +49,7 @@ class Championship(models.Model):
     beginning_token = models.PositiveSmallIntegerField()
     starting_budget = models.DecimalField(max_digits=3, decimal_places=1)
     max_drivers_in_team = models.PositiveSmallIntegerField(default=8)
+    price_img = models.FileField(null=True, blank=True)
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
@@ -123,7 +124,6 @@ class Race(models.Model):
     datetime = models.DateTimeField()
     deadline = models.DateTimeField(null=True, blank=True)
     wikilink = models.URLField(blank=True)
-    price_img = models.FileField(null=True, blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
     teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 
