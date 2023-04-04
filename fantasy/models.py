@@ -77,7 +77,6 @@ class Circuit(models.Model):
 class Constructor(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, editable=False)
-    nationality = models.CharField(max_length=255, blank=True, null=True)
     championship = models.ManyToManyField(Championship, through='ChampionshipConstructor', related_name='constructors')
 
     def __str__(self):
@@ -95,7 +94,6 @@ class Driver(models.Model):
     slug = models.SlugField(unique=True, editable=False)
     number = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=3, blank=True, null=True)
-    nationality = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
