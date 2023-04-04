@@ -105,9 +105,11 @@ class Question(models.Model):
         null=True,
         blank=True
     )
-    point = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
+        return f"{self.race} - {self.form_str()}"
+
+    def form_str(self):
         result = f"{self.text}\n"
         for char, _ in QUESTION_CHOICES:
             choice = getattr(self, f"choice_{char}")
@@ -115,3 +117,7 @@ class Question(models.Model):
             if choice:
                 result += f"\n{char}) {choice} [{point} puan]"
         return result
+
+    @cached_property
+    def point(self):
+        return getattr(self, f"point_{self.answer}")
