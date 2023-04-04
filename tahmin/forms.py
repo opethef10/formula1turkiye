@@ -31,7 +31,7 @@ class NewTahminForm(forms.ModelForm):
 
         for idx, question in enumerate(current_race.questions.all()[:2], 1):
             self.fields[f"question_{idx}"] = forms.ChoiceField(
-                label=f"1{idx}. {question}",
+                label=f"1{idx}. {question.form_str()}",
                 widget=forms.RadioSelect,
-                choices=QUESTION_CHOICES[:3 if question.choice_C else 2],
+                choices=QUESTION_CHOICES[:4 if question.choice_D else (3 if question.choice_C else 2)],
             )
