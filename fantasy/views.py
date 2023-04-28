@@ -268,13 +268,7 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        try:
-            self.race = Race.objects.filter(
-                championship=self.championship,
-                deadline__gt=timezone.now()
-            ).latest("deadline")
-        except Race.DoesNotExist:
-            self.race = None
+        self.race = self.championship.next_race("fantasy")
 
     def get(self, request, *args, **kwargs):
         if self.race is None:

@@ -6,6 +6,7 @@ from pathlib import Path
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django_countries.fields import CountryField
@@ -59,6 +60,28 @@ class Championship(models.Model):
         if not self.slug:
             self.slug = f"{self.year}-{self.series}"
         super().save(*args, **kwargs)
+
+    def latest_race(self):
+        try:
+            return self.races.filter(
+                datetime__lt=timezone.now()
+            ).latest("datetime")
+        except Race.DoesNotExist:
+            return None
+
+    def next_race(self, league):
+        try:
+            if league == "fantasy":
+                return self.races.filter(
+                    deadline__gt=timezone.now()
+                ).latest("deadline")
+            elif league == "tahmin":
+                return self.races.filter(
+                    datetime__gt=timezone.now(),
+                    deadline__lt=timezone.now()
+                ).latest("deadline")
+        except Race.DoesNotExist:
+            return None
 
 
 class Circuit(models.Model):
