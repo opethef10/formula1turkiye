@@ -16,10 +16,8 @@ class Command(BaseCommand):
         series = options["series"]
         increase_budget = options["budget"]
         set_token = options["token"]
-        prev_race = Race.objects.filter(
-            championship__slug=f"2023-{series}",
-            datetime__lt=timezone.now()
-        ).latest("datetime")
+        championship = Championship.objects.get(series=series)
+        prev_race = championship.latest_race()
         next_race = prev_race.next()
         prev_race_drivers = prev_race.driver_instances.all()
         prev_raceteams = prev_race.team_instances.all()

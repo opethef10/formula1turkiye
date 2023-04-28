@@ -28,14 +28,8 @@ class HomeView(TemplateView):
             else:
                 team = None
                 team_count = None
-            prev_race_fantasy = championship.races.filter(
-                deadline__lt=timezone.now()
-            ).latest("deadline")
-            prev_race_tahmin = championship.races.filter(
-                datetime__lt=timezone.now()
-            ).latest("datetime")
-            context[f"last_race_fantasy_{championship.series}"] = prev_race_fantasy
-            context[f"last_race_tahmin_{championship.series}"] = prev_race_tahmin
+            prev_race = championship.latest_race()
+            context[f"last_race_{championship.series}"] = prev_race
             context[f"fantasy_team_{championship.series}"] = team
             context[f"race_team_count_{championship.series}"] = team_count
 
