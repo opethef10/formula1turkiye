@@ -120,4 +120,4 @@ class Question(models.Model):
 
     @cached_property
     def point(self):
-        return getattr(self, f"point_{self.answer}")
+        return getattr(self, f"point_{self.answer}", 0)
