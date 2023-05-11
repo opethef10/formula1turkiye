@@ -5,15 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## [1.4.7] - 2023-04-30
+## [1.5.0] - 2023-05-11 (Compact Datatables)
 ### Added
+- Tanzim driver statistic
+- Sprint race result and grid statistics
 ### Changed
+- Made datatables compact, striped, hovered
+- Container is now 86% of the page width
+- Search box aligned to left side
 ### Deprecated
 ### Removed
 ### Fixed
-- Attribute error point_None
 ### Security
+
+## [1.4.7] - 2023-04-30
+### Fixed
+- Attribute error point_None
 
 ## [1.4.6] - 2023-04-28
 ### Added

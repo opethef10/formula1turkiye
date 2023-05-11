@@ -18,127 +18,123 @@
     {% if user.is_staff %}
         <a href="{% url 'fantasy:race_edit' race.championship.slug race.round %}" class="btn btn-primary mb-4">Sonuç / Fiyat Gir</a>
     {% endif %}
-    <div class="container">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
-            {% for tab_id, title in tabs.items %}
-                <li class="nav-item">
-                    <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
-                       href="#{{ tab_id }}">{{ title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            {% for tab_id in tabs %}
-                <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
-                     id="{{ tab_id }}">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                   href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        {% for tab_id in tabs %}
+            <div class="tab-pane {% if forloop.first %}show active{% else %}fade{% endif %}"
+                 id="{{ tab_id }}">
 
-                    <br/>
-                    <table id="table_{{ tab_id }}"
-                           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
-                        <thead class="thead-inverse">
-                        {% if tab_id == "drivers" %}
+                <br/>
+                <table id="table_{{ tab_id }}"
+                       class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    {% if tab_id == "drivers" %}
+                        <tr>
+                            <th>Sürücü</th>
+                            <th>Sıralama</th>
+                            <th>Spr. Grid</th>
+                            <th>Sprint</th>
+                            <th>Grid</th>
+                            <th>Yarış</th>
+                            <th>EHT</th>
+                            <th>Geçiş</th>
+                            <th>Sıralama</th>
+                            <th>Finiş</th>
+                            <th>Toplam</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for race_driver in race_driver_list %}
                             <tr>
-                                <th>Sürücü</th>
-                                <th>Sıralama</th>
-                                <th>Sprint Grid</th>
-                                <th>Sprint</th>
-                                <th>Grid</th>
-                                <th>Yarış</th>
-                                <th>EHT</th>
-                                <th>Geçiş Puanı</th>
-                                <th>Sıralama Puanı</th>
-                                <th>Yarış Puanı</th>
-                                <th>Toplam Puan</th>
+                                <td>
+                                    <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
+                                    <small class="text-muted d-block">{{ race_driver.championship_constructor.constructor }}</small>
+                                </td>
+                                <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.grid_sprint|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.sprint|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.grid|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.result|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.fastest_lap|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.overtake_point }}</td>
+                                <td>{{ race_driver.qualy_point }}</td>
+                                <td>{{ race_driver.race_point }}</td>
+                                <td><b>{{ race_driver.total_point }}</b></td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for race_driver in race_driver_list %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
-                                        <small class="text-muted d-block">{{ race_driver.championship_constructor.constructor }}</small>
-                                    </td>
-                                    <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.grid_sprint|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.sprint|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.grid|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.result|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.fastest_lap|default_if_none:"-" }}</td>
-                                    <td>{{ race_driver.overtake_point }}</td>
-                                    <td>{{ race_driver.qualy_point }}</td>
-                                    <td>{{ race_driver.race_point }}</td>
-                                    <td><b>{{ race_driver.total_point }}</b></td>
-                                </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <th>#</th>
+                            <th>Taktik</th>
+                            <th>Hak</th>
+                            <th>Bütçe</th>
+                            <th>Ad</th>
+                            <th>Toplam</th>
+                            {% for idx in "01234567" %}
+                                <th>{{ forloop.counter }}. Sürücü</th>
                             {% endfor %}
-                            {% else %}
+                            {% if tab_id == "teams" %}
+                                <th>Geçiş</th>
+                                <th>Sıralama</th>
+                                <th>Yarış</th>
+                                <th>Taktiksiz</th>
+                            {% endif %}
+                        </tr>
+
+                        <tbody>
+                        {% for race_team in race_team_list %}
                             <tr>
-                                <th>#</th>
-                                <th>Taktik</th>
-                                <th>Hak</th>
-                                <th>Bütçe</th>
-                                <th>Ad</th>
-                                <th>Toplam</th>
-                                {% for idx in "01234567" %}
-                                    <th>{{ forloop.counter }}. Sürücü</th>
-                                {% endfor %}
+                                <td></td>
+                                <td>{{ race_team.tactic }}</td>
+                                <td>{{ race_team.token }}</td>
+                                <td>{{ race_team.budget|with_currency }}</td>
+                                <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a>
+                                </td>
                                 {% if tab_id == "teams" %}
-                                    <th>Geçiş taktiği olsaydı</th>
-                                    <th>Sıralama taktiği olsaydı</th>
-                                    <th>Yarış taktiği olsaydı</th>
-                                    <th>Taktiksiz olsaydı</th>
+                                    <td><b>{{ race_team.total_point }}</b></td>
+                                {% elif tab_id == "kadrolar" %}
+                                    <td><b>{{ race_team.total_worth|with_currency }}</b></td>
+                                {% endif %}
+
+                                {% with race_team.raceteamdrivers.all as trd_list %}
+                                    {% for idx in "01234567" %}
+                                        {% with trd_list|index:forloop.counter0 as raceteamdriver %}
+                                            <td>
+                                                {{ raceteamdriver.racedriver.driver.surname }}
+                                                <small class="text-muted d-block">
+                                                    {% if tab_id == "teams" %}
+                                                        {{ raceteamdriver.total_point }}
+                                                    {% elif tab_id == "kadrolar" %}
+                                                        {{ raceteamdriver.racedriver.price|with_currency }}
+                                                    {% endif %}
+                                                </small>
+                                            </td>
+                                        {% endwith %}
+                                    {% endfor %}
+                                {% endwith %}
+                                {% if tab_id == "teams" %}
+                                    <td>{{ race_team.overtake_point }}</td>
+                                    <td>{{ race_team.qualy_point }}</td>
+                                    <td>{{ race_team.race_point }}</td>
+                                    <td>{{ race_team.none_point }}</td>
                                 {% endif %}
                             </tr>
-
-                            <tbody>
-                            {% for race_team in race_team_list %}
-                                <tr>
-                                    <td></td>
-                                    <td>{{ race_team.tactic }}</td>
-                                    <td>{{ race_team.token }}</td>
-                                    <td>{{ race_team.budget|with_currency }}</td>
-                                    <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a>
-                                    </td>
-                                    {% if tab_id == "teams" %}
-                                        <td><b>{{ race_team.total_point }}</b></td>
-                                    {% elif tab_id == "kadrolar" %}
-                                        <td><b>{{ race_team.total_worth|with_currency }}</b></td>
-                                    {% endif %}
-
-                                    {% with race_team.raceteamdrivers.all as trd_list %}
-                                        {% for idx in "01234567" %}
-                                            {% with trd_list|index:forloop.counter0 as raceteamdriver %}
-                                                <td>
-                                                    {{ raceteamdriver.racedriver.driver.surname }}
-                                                    <small class="text-muted d-block">
-                                                        {% if tab_id == "teams" %}
-                                                            {{ raceteamdriver.total_point }}
-                                                        {% elif tab_id == "kadrolar" %}
-                                                            {{ raceteamdriver.racedriver.price|with_currency }}
-                                                        {% endif %}
-                                                    </small>
-                                                </td>
-                                            {% endwith %}
-                                        {% endfor %}
-                                    {% endwith %}
-                                    {% if tab_id == "teams" %}
-                                        <td>{{ race_team.overtake_point }}</td>
-                                        <td>{{ race_team.qualy_point }}</td>
-                                        <td>{{ race_team.race_point }}</td>
-                                        <td>{{ race_team.none_point }}</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        </tbody>
-                    </table>
-                </div>
-            {% endfor %}
-        </div>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
     </div>
-
 
 {% endblock %}
 
@@ -157,9 +153,17 @@
                         "info": false,
                         columnDefs: [
                             {
+                                className: "dt-center",
+                                targets: "_all"
+                            },
+                            {
                                 searchable: false,
-                                {#orderable: false,#}
-                                targets: 0,
+                                {% if tab_id == "drivers" %}
+                                    targets: 0,
+                                {% else %}
+                                    orderable: false,
+                                    targets: [0,1,6,7,8,9,10,11,12,13],
+                                {% endif %}
                             }
                         ]
                     }
