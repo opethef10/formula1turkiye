@@ -1,3 +1,11 @@
 .navbar-brand {
-  font-family: 'Peralta', cursive;
+    font-family: 'Peralta', cursive;
+}
+
+.container {
+    max-width: 86%;
+}
+
+.dataTables_filter {
+    float: left !important;
 }
