@@ -13,99 +13,97 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
-            {% for tab_id, title in tabs.items %}
-                <li class="nav-item">
-                    <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
-                       href="#{{ tab_id }}">{{ title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            {% for tab_id in tabs %}
-                <div class="tab-pane container {% if forloop.first %}show active{% else %}fade{% endif %}"
-                     id="{{ tab_id }}">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                   href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        {% for tab_id in tabs %}
+            <div class="tab-pane {% if forloop.first %}show active{% else %}fade{% endif %}"
+                 id="{{ tab_id }}">
 
-                    <br/>
-                    <table id="table_{{ tab_id }}"
-                           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
-                        <thead class="thead-inverse">
-                        <tr>
-                            <th>Sürücü</th>
-                            {% for race in race_list %}
-                                <th>
-                                    <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
-                                </th>
-                            {% endfor %}
-                            {% if tab_id in 'qualy,grid,results' %}
-                                <th>Ortalama</th>
-                            {% elif tab_id in "instances,price_with_currency" %}
-                            {% else %}
-                                <th>Toplam</th>
-                            {% endif %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% if tab_id == "instances" %}
-                            {% for driver, count_list in driver_count_dict.items %}
-                                <tr>
-                                    <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
-
-
-                                    {% for count in count_list %}
-                                        <td>
-                                            {{ count|default_if_none:"-" }}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                            </table>
-                            <table class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
-
-                            {% for tactic, count_list in tactic_count_dict.items %}
-                                <tr>
-                                    <td>{{ tactic }}</td>
-                                    {% for count in count_list %}
-                                        <td>
-                                            {{ count|default_if_none:"-" }}
-                                        </td>
-                                    {% endfor %}
-                                    <td></td>
-                                </tr>
-                            {% endfor %}
+                <br/>
+                <table id="table_{{ tab_id }}"
+                       class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Sürücü</th>
+                        {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                            <th>Ortalama</th>
+                        {% elif tab_id in "instances,price,discount" %}
                         {% else %}
-                            {% for driver, race_driver_list in race_driver_dict.items %}
-                                <tr>
-                                    <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
-
-
-                                    {% for race_driver in race_driver_list %}
-                                        <td>
-                                            {% if tab_id == "price" %}
-                                                {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
-                                            {% else %}
-                                                {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                    {% if tab_id != "price" %}
-                                        <td></td>{% endif %}
-                                </tr>
-                            {% endfor %}
+                            <th>Toplam</th>
                         {% endif %}
-                        </tbody>
+                        {% for race in race_list %}
+                            <th>
+                                <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
+                            </th>
+                        {% endfor %}
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if tab_id == "instances" %}
+                        {% for driver, count_list in driver_count_dict.items %}
+                            <tr>
+                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+
+
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
                         </table>
-                </div>
+                        <table class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
 
-            {% endfor %}
-        </div>
+                        {% for tactic, count_list in tactic_count_dict.items %}
+                            <tr>
+                                <td>{{ tactic }}</td>
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for driver, race_driver_list in race_driver_dict.items %}
+                            <tr>
+                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+                                {% if tab_id not in "price,discount" %}
+                                    <td></td>
+                                {% endif %}
+
+                                {% for race_driver in race_driver_list %}
+                                    <td>
+                                        {% if tab_id == "price" %}
+                                            {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
+                                        {% elif tab_id == "discount" %}
+                                            {{ race_driver|call_or_get_attr:tab_id|yesno:"1,," }}
+                                        {% else %}
+                                            {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                    </table>
+            </div>
+
+        {% endfor %}
     </div>
-
-
-
 
 {% endblock %}
 
@@ -120,10 +118,15 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [],
                         "info": false,
-                        {% if tab_id not in "instances,price_with_currency" %}
+                        {% if tab_id in "instances,price,discount" %}
+                            order: [],
+                        {% else %}
                             columnDefs: [
+                                {
+                                    className: "dt-center",
+                                    targets: "_all"
+                                },
                                 {
                                     render: function (data, type, row) {
                                         let result = 0;
@@ -137,16 +140,21 @@
                                             }
                                             result += num;
                                         }
-                                        {% if tab_id in 'qualy,grid,results' %}
+                                        {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
                                             result /= row.length - 2 - nan_count;
-                                            result = isNaN(result) ? "" : result;
+                                            result = isNaN(result) ? 22 : result;
                                         {% endif %}
 
-                                        return result;
+                                        return "<b>" + result.toFixed(1) + "</b>";
                                     },
-                                    targets: -1,
+                                    targets: 1,
                                 },
                             ],
+                            {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                                "order": [[1, 'asc']],
+                            {% else %}
+                                "order": [[1, 'desc']],
+                            {% endif %}
                         {% endif %}
                     }
                 );

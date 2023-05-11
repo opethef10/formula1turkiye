@@ -27,7 +27,7 @@
         </div>
     {% else %}
     <table id="top10"
-           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
+           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
         <tr>
             <th>#</th>
@@ -64,7 +64,7 @@
         </tr>
     </table>
     <table id="table_race_detail"
-           class="table table-bordered table-responsive small justify-content-center text-center text-nowrap">
+           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
         <tr>
             <th>#</th>
@@ -134,12 +134,16 @@
                     paging: false,
                     "order": [[14, 'desc']],
                     "info": false,
-                    "columnDefs": [
+                    columnDefs: [
                         {
-                                searchable: false,
-                                orderable: false,
-                                targets: 0,
-                            },
+                            className: "dt-center",
+                            targets: "_all"
+                        },
+                        {
+                            searchable: false,
+                            orderable: false,
+                            targets: 0,
+                        },
                     ],
                     rowCallback: function (row, data, index) {
                         for (let i = 2; i < 14; ++i) {

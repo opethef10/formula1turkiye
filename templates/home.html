@@ -15,129 +15,124 @@
         <li><a href="https://www.facebook.com/groups/FormulaETurkiye/">F2 + FE Türkiye 🔗</a></li>
     </ul>
     <h4 class="my-3">Ürünlerimiz</h4>
-    <div class="container">
-        <div class="row">
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="/elo/" class="card-link">Elo Sıralama Projesi</a></h5>
-                        <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
-                            pilotları listesini hazırladık.</p>
-                    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="/elo/" class="card-link">Elo Sıralama Projesi</a></h5>
+                    <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
+                        pilotları listesini hazırladık.</p>
                 </div>
             </div>
-            <div class="col-4 ">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="/puanla/" class="card-link">Yarışı Puanla</a></h5>
-                        <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
-                            puanını belirliyoruz.</p>
-                    </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="/puanla/" class="card-link">Yarışı Puanla</a></h5>
+                    <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
+                        puanını belirliyoruz.</p>
                 </div>
             </div>
-            <div class="col-4 ">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="/quiz/" class="card-link">Quiz Night</a></h5>
-                        <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
-                    </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="/quiz/" class="card-link">Quiz Night</a></h5>
+                    <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
                 </div>
             </div>
         </div>
     </div>
     <h4 class="my-3">Liglerimiz</h4>
-    <div class="container">
-        <div class="row">
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url "fantasy:race_list" "2023-f1" %}" class="card-link">F1 Fantasy Lig 2023</a>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                        <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 7. sezonunda bütün hızıyla
-                            devam ediyor!</p>
-                        <li class="list-group-item list-group-item-action">
-                            <a href="{% url "fantasy:home" %}" class="card-link">Fantasy Lig Nedir &
-                                Kurallar</a></li>
-                        <li class="list-group-item list-group-item-action">
-                        {% if race_team_count_f1 > 1 %}
-                            <a href="{% url 'fantasy:edit_team_form' "2023-f1" %}" class="card-link">Alım Satım</a>
-                        {% elif race_team_count_f1 == 0 %}
-                            <a href="{% url 'fantasy:new_team_form' "2023-f1" %}" class="card-link">Yeni Takım Kur</a>
-                        {% elif race_team_count_f1 == 1 %}
-                            <a href="{% url 'fantasy:edit_team_form' "2023-f1" %}" class="card-link">Takımı Düzenle</a>
-                        {% else %}
-                            <a href="{% url 'fantasy:new_team_form' "2023-f1" %}" class="card-link">Yeni Takım / Alım
-                                Satım (Giriş Yapınız)</a>
-                        {% endif %}
-                        </li>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url "fantasy:race_list" "2023-f1" %}" class="card-link">F1 Fantasy Lig 2023</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
+                    <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 7. sezonunda bütün hızıyla
+                        devam ediyor!</p>
+                    <li class="list-group-item list-group-item-action">
+                        <a href="{% url "fantasy:home" %}" class="card-link">Fantasy Lig Nedir & Kurallar</a></li>
+                    <li class="list-group-item list-group-item-action">
+                    {% if race_team_count_f1 > 1 %}
+                        <a href="{% url 'fantasy:edit_team_form' "2023-f1" %}" class="card-link">Alım Satım</a>
+                    {% elif race_team_count_f1 == 0 %}
+                        <a href="{% url 'fantasy:new_team_form' "2023-f1" %}" class="card-link">Yeni Takım Kur</a>
+                    {% elif race_team_count_f1 == 1 %}
+                        <a href="{% url 'fantasy:edit_team_form' "2023-f1" %}" class="card-link">Takımı Düzenle</a>
+                    {% else %}
+                        <a href="{% url 'fantasy:new_team_form' "2023-f1" %}" class="card-link">Yeni Takım / Alım
+                            Satım (Giriş Yapınız)</a>
+                    {% endif %}
+                    </li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{{ last_race_f1.get_absolute_url }}" class="card-link">Son Yarış</a></li>
+                    {% if fantasy_team_f1 %}
                         <li class="list-group-item list-group-item-action"><a
-                                href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
-                        <li class="list-group-item list-group-item-action"><a
-                                href="{{ last_race_f1.get_absolute_url }}" class="card-link">Son Yarış</a></li>
-                        {% if fantasy_team_f1 %}
-                            <li class="list-group-item list-group-item-action"><a
-                                href="{{ fantasy_team_f1.get_absolute_url }}" class="card-link">Profil Sayfanız</a></li>
-                        {% endif %}
-                    </div>
+                            href="{{ fantasy_team_f1.get_absolute_url }}" class="card-link">Profil Sayfanız</a></li>
+                    {% endif %}
                 </div>
             </div>
-            <div class="col-4 ">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url "fantasy:race_list" "2023-f2" %}" class="card-link">F2 Fantasy Lig 2023</a>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                        <p class="card-text">2018'de başladığımız Fantasy F2 ligi heyecanı, 6. sezonunda bütün hızıyla devam ediyor!</p>
-                        <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:home" %}"
-                                                                              class="card-link">Fantasy Lig Nedir &
-                            Kurallar</a></li>
-                        <li class="list-group-item list-group-item-action">
-                        {% if race_team_count_f2 > 1 %}
-                            <a href="{% url 'fantasy:edit_team_form' "2023-f2" %}" class="card-link">Alım Satım</a>
-                        {% elif race_team_count_f2 == 0 %}
-                            <a href="{% url 'fantasy:new_team_form' "2023-f2" %}" class="card-link">Yeni Takım Kur</a>
-                        {% elif race_team_count_f2 == 1 %}
-                            <a href="{% url 'fantasy:edit_team_form' "2023-f2" %}" class="card-link">Takımı Düzenle</a>
-                        {% else %}
-                            <a href="{% url 'fantasy:new_team_form' "2023-f2" %}" class="card-link">Yeni Takım / Alım
-                                Satım (Giriş Yapınız)</a>
-                        {% endif %}
-                        </li>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url "fantasy:race_list" "2023-f2" %}" class="card-link">F2 Fantasy Lig 2023</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
+                    <p class="card-text">2018'de başladığımız Fantasy F2 ligi heyecanı, 6. sezonunda bütün hızıyla devam ediyor!</p>
+                    <li class="list-group-item list-group-item-action"><a href="{% url "fantasy:home" %}"
+                                                                          class="card-link">Fantasy Lig Nedir &
+                        Kurallar</a></li>
+                    <li class="list-group-item list-group-item-action">
+                    {% if race_team_count_f2 > 1 %}
+                        <a href="{% url 'fantasy:edit_team_form' "2023-f2" %}" class="card-link">Alım Satım</a>
+                    {% elif race_team_count_f2 == 0 %}
+                        <a href="{% url 'fantasy:new_team_form' "2023-f2" %}" class="card-link">Yeni Takım Kur</a>
+                    {% elif race_team_count_f2 == 1 %}
+                        <a href="{% url 'fantasy:edit_team_form' "2023-f2" %}" class="card-link">Takımı Düzenle</a>
+                    {% else %}
+                        <a href="{% url 'fantasy:new_team_form' "2023-f2" %}" class="card-link">Yeni Takım / Alım
+                            Satım (Giriş Yapınız)</a>
+                    {% endif %}
+                    </li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "fantasy:team_list" "2023-f2" %}" class="card-link">Genel Klasman</a></li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{{ last_race_f2.get_absolute_url }}" class="card-link">Son Yarış</a></li>
+                    {% if fantasy_team_f2 %}
                         <li class="list-group-item list-group-item-action"><a
-                                href="{% url "fantasy:team_list" "2023-f2" %}" class="card-link">Genel Klasman</a></li>
-                        <li class="list-group-item list-group-item-action"><a
-                                href="{{ last_race_f2.get_absolute_url }}" class="card-link">Son Yarış</a></li>
-                        {% if fantasy_team_f2 %}
-                            <li class="list-group-item list-group-item-action"><a
-                                href="{{ fantasy_team_f2.get_absolute_url }}" class="card-link">Profil Sayfanız</a></li>
-                        {% endif %}
-                    </div>
+                            href="{{ fantasy_team_f2.get_absolute_url }}" class="card-link">Profil Sayfanız</a></li>
+                    {% endif %}
                 </div>
             </div>
-            <div class="col-4 ">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url "tahmin:race_list" "2023-f1" %}" class="card-link">F1 Tahmin Ligi 2023</a>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                        <p class="card-text">Sıralama turlarından sonra açılacak form ile tahminlerinizi
-                            yarış saatine kadar yapabilirsiniz.</p>
-                        <li class="list-group-item list-group-item-action">
-                            <a href="{% url "tahmin:home" %}" class="card-link">Tahmin Ligi Nedir & Kurallar</a></li>
-                        <li class="list-group-item list-group-item-action">
-                            <a href="{% url "tahmin:new_team_form" "2023-f1" %}" class="card-link">Tahmin yap
-                                {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
-                            </a>
-                        </li>
-                        <li class="list-group-item list-group-item-action"><a
-                                href="{% url "tahmin:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
-                        <li class="list-group-item list-group-item-action"><a
-                                href="{{ last_race_f1.get_tahmin_url }}" class="card-link">Son Yarış</a></li>
-                    </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url "tahmin:race_list" "2023-f1" %}" class="card-link">F1 Tahmin Ligi 2023</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
+                    <p class="card-text">Sıralama turlarından sonra açılacak form ile tahminlerinizi
+                        yarış saatine kadar yapabilirsiniz.</p>
+                    <li class="list-group-item list-group-item-action">
+                        <a href="{% url "tahmin:home" %}" class="card-link">Tahmin Ligi Nedir & Kurallar</a></li>
+                    <li class="list-group-item list-group-item-action">
+                        <a href="{% url "tahmin:new_team_form" "2023-f1" %}" class="card-link">Tahmin yap
+                            {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
+                        </a>
+                    </li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "tahmin:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{{ last_race_f1.get_tahmin_url }}" class="card-link">Son Yarış</a></li>
                 </div>
             </div>
         </div>

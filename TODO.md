@@ -2,6 +2,9 @@
 This file is a todo file for the Formula 1 Türkiye webpage project
 
 ### TODO
+- Fix Race edit page to squeeze the input boxes
+- Fix forms sent after deadline
+- Maybe make homepage boxes more centered
 
 ### Done ✓
 - [x] Created a TODO.md file  
