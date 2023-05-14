@@ -9,3 +9,27 @@
 .dataTables_filter {
     float: left !important;
 }
+
+.bg_winner {
+    background-color: #FFFFBF !important;
+  }
+
+.bg_second {
+background-color: #DFDFDF !important;
+}
+
+.bg_third {
+background-color: #FFDF9F !important;
+}
+
+.bg_points {
+background-color: #DFFFDF !important;
+}
+
+.bg_classified {
+background-color: #CFCFFF !important;
+}
+
+.bg_retired {
+background-color: #EFCFFF !important;
+}

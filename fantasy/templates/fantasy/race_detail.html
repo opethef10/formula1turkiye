@@ -40,14 +40,14 @@
                     {% if tab_id == "drivers" %}
                         <tr>
                             <th>Sürücü</th>
-                            <th>Sıralama</th>
-                            <th>Spr. Grid</th>
-                            <th>Sprint</th>
+                            <th>Qual</th>
+                            <th>SprG</th>
+                            <th>SprR</th>
                             <th>Grid</th>
-                            <th>Yarış</th>
-                            <th>EHT</th>
+                            <th>Race</th>
+                            <th>EHT.</th>
                             <th>Geçiş</th>
-                            <th>Sıralama</th>
+                            <th>Sıra.</th>
                             <th>Finiş</th>
                             <th>Toplam</th>
                         </tr>
@@ -57,7 +57,6 @@
                             <tr>
                                 <td>
                                     <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
-                                    <small class="text-muted d-block">{{ race_driver.championship_constructor.constructor }}</small>
                                 </td>
                                 <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
                                 <td>{{ race_driver.grid_sprint|default_if_none:"-" }}</td>
@@ -73,7 +72,7 @@
                         {% endfor %}
                         {% else %}
                         <tr>
-                            <th>#</th>
+                            <th>Sıra</th>
                             <th>Taktik</th>
                             <th>Hak</th>
                             <th>Bütçe</th>
@@ -85,7 +84,7 @@
                             {% if tab_id == "teams" %}
                                 <th>Geçiş</th>
                                 <th>Sıralama</th>
-                                <th>Yarış</th>
+                                <th>Finiş</th>
                                 <th>Taktiksiz</th>
                             {% endif %}
                         </tr>
@@ -158,13 +157,38 @@
                             },
                             {
                                 searchable: false,
-                                {% if tab_id == "drivers" %}
-                                    targets: 0,
-                                {% else %}
+                                targets: 0
+                            },
+                            {
+                                {% if not tab_id == "drivers" %}
                                     orderable: false,
                                     targets: [0,1,6,7,8,9,10,11,12,13],
                                 {% endif %}
+                            },
+                            {% if tab_id == "drivers" %}
+                            {
+                                targets: [1, 2, 3, 4, 5, 6],
+                                render: function (data, type, row, meta) {
+                                    var table = $('#table_drivers').dataTable().api();
+                                    if (type === 'display') {
+                                        var node = table.cell(meta.row, meta.col).nodes().to$();
+                                        var data_int = parseInt(data);
+                                        if (data_int === 1) {
+                                            node.addClass('bg_winner');
+                                        } else if (data_int === 2) {
+                                            node.addClass('bg_second');
+                                        } else if (data_int === 3) {
+                                            node.addClass('bg_third');
+                                        } else if (4 <= data_int && data_int <= 10) {
+                                            node.addClass('bg_points');
+                                        } else if (data_int > 10) {
+                                            node.addClass('bg_classified');
+                                        }
+                                    }
+                                    return data;
+                                }
                             }
+                            {% endif %}
                         ]
                     }
                 );
