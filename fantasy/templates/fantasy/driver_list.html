@@ -149,6 +149,31 @@
                                     },
                                     targets: 1,
                                 },
+                                {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                                {
+                                    targets: "_all",
+
+                                    render: function (data, type, row, meta) {
+                                        var table = $('#table_{{ tab_id}}').dataTable().api();
+                                        if (type === 'display') {
+                                            var node = table.cell(meta.row, meta.col).nodes().to$();
+                                            var data_int = parseInt(data);
+                                            if (data_int === 1) {
+                                                node.addClass('bg_winner');
+                                            } else if (data_int === 2) {
+                                                node.addClass('bg_second');
+                                            } else if (data_int === 3) {
+                                                node.addClass('bg_third');
+                                            } else if (4 <= data_int && data_int <= 10) {
+                                                node.addClass('bg_points');
+                                            } else if (data_int > 10) {
+                                                node.addClass('bg_classified');
+                                            }
+                                        }
+                                        return data;
+                                    }
+                                }
+                                {% endif %}
                             ],
                             {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
                                 "order": [[1, 'asc']],
@@ -158,6 +183,13 @@
                         {% endif %}
                     }
                 );
+                {% if tab_id in "instances,price,discount" %}
+                    $("#table_{{ tab_id }} tbody td").not(":nth-child(1), :empty").colorize();
+                {% elif tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                {% else %}
+                    $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2), :empty").colorize();
+                {% endif %}
+
             {% endfor %}
         });
 

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2023-05-14
+### Added
+- error_base.html
+- Conditional formatting in datatables
+- Wikipedia-like race position background coloring
+### Changed
+- DRY'ed error templates
+### Deprecated
+### Removed
+### Fixed
+### Security
+
 ## [1.5.0] - 2023-05-11 (Compact Datatables)
 ### Added
 - Tanzim driver statistic
@@ -13,10 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made datatables compact, striped, hovered
 - Container is now 86% of the page width
 - Search box aligned to left side
-### Deprecated
-### Removed
-### Fixed
-### Security
 
 ## [1.4.7] - 2023-04-30
 ### Fixed
