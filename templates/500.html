@@ -1,16 +1,8 @@
-{% extends "base.html" %}
+{% extends "error_base.html" %}
 {% load i18n static %}
 
-{% block crumbarea %}
-{% endblock %}
-
 {% block title %}{% translate 'Server error (500)' %}{% endblock %}
-
-{% block content %}
-    <div class="alert my-4" role="alert">
-        <img src="{% static 'img/500.jpg' %}" class="rounded mx-auto my-3 d-block" alt="500!">
-        <h2 class="text-center">{% translate 'Server Error <em>(500)</em>' %}</h2>
-        <p class="text-center">Bizden kaynaklı bir hata oluştu. Hata mesajı yöneticilere e-posta aracılığıyla
-            iletildi. En kısa zamanda düzeltmeye çalışacağız.</p>
-    </div>
-{% endblock %}
+{% block img_url %}{% static 'img/500.jpg' %}{% endblock %}
+{% block error_code %}500{% endblock %}
+{% block error_title %}{% translate 'Server Error <em>(500)</em>' %}{% endblock %}
+{% block error_text %}Bizden kaynaklı bir hata oluştu. Hata mesajı yöneticilere e-posta aracılığıyla iletildi. En kısa zamanda düzeltmeye çalışacağız.{% endblock %}
