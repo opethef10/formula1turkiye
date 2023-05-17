@@ -209,9 +209,15 @@ class RaceDriver(models.Model):
     qualy = models.PositiveIntegerField(blank=True, null=True)
     grid_sprint = models.PositiveIntegerField(blank=True, null=True)
     sprint = models.PositiveIntegerField(blank=True, null=True)
+    sprint_fastest_lap = models.PositiveIntegerField(blank=True, null=True)
     grid = models.PositiveIntegerField(blank=True, null=True)
     result = models.PositiveIntegerField(blank=True, null=True)
     fastest_lap = models.PositiveIntegerField(blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['race', 'driver'], name='unique_racedriver'),
+        ]
 
     def coefficient(self, tactic):
         championship = self.race.championship

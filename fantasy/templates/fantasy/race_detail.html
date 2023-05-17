@@ -45,7 +45,6 @@
                             <th>SprR</th>
                             <th>Grid</th>
                             <th>Race</th>
-                            <th>EHT.</th>
                             <th>Geçiş</th>
                             <th>Sıra.</th>
                             <th>Finiş</th>
@@ -58,12 +57,11 @@
                                 <td>
                                     <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
                                 </td>
-                                <td>{{ race_driver.qualy|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.grid_sprint|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.sprint|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.grid|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.result|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.fastest_lap|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.qualy|default_if_none:"" }}</td>
+                                <td>{{ race_driver.grid_sprint|default_if_none:"" }}</td>
+                                <td>{{ race_driver.sprint|default_if_none:"" }}<b><sup>{{ race_driver.sprint_fastest_lap|default_if_none:"" }}</sup></b></td>
+                                <td>{{ race_driver.grid|default_if_none:"" }}</td>
+                                <td>{{ race_driver.result|default_if_none:"" }}<b><sup>{{ race_driver.fastest_lap|default_if_none:"" }}</sup></b></td>
                                 <td>{{ race_driver.overtake_point }}</td>
                                 <td>{{ race_driver.qualy_point }}</td>
                                 <td>{{ race_driver.race_point }}</td>
@@ -148,7 +146,7 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [[{% if tab_id == "drivers" %}10 {% else %} 5 {% endif %}, 'desc']],
+                        "order": [[{% if tab_id == "drivers" %}9 {% else %} 5 {% endif %}, 'desc']],
                         "info": false,
                         columnDefs: [
                             {
@@ -167,12 +165,12 @@
                             },
                             {% if tab_id == "drivers" %}
                             {
-                                targets: [1, 2, 3, 4, 5, 6],
+                                targets: [1, 2, 3, 4, 5],
                                 render: function (data, type, row, meta) {
                                     var table = $('#table_drivers').dataTable().api();
+                                    var data_int = parseInt(data);
                                     if (type === 'display') {
                                         var node = table.cell(meta.row, meta.col).nodes().to$();
-                                        var data_int = parseInt(data);
                                         if (data_int === 1) {
                                             node.addClass('bg_winner');
                                         } else if (data_int === 2) {
@@ -185,7 +183,7 @@
                                             node.addClass('bg_classified');
                                         }
                                     }
-                                    return data;
+                                    return (type === 'sort') ? data_int : data;
                                 }
                             }
                             {% endif %}
