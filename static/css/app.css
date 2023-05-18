@@ -1,3 +1,7 @@
+body {
+    font-family: 'Cabin', "serif"; !important
+}
+
 .navbar-brand {
     font-family: 'Peralta', cursive;
 }
@@ -12,24 +16,24 @@
 
 .bg_winner {
     background-color: #FFFFBF !important;
-  }
+}
 
 .bg_second {
-background-color: #DFDFDF !important;
+    background-color: #DFDFDF !important;
 }
 
 .bg_third {
-background-color: #FFDF9F !important;
+    background-color: #FFDF9F !important;
 }
 
 .bg_points {
-background-color: #DFFFDF !important;
+    background-color: #DFFFDF !important;
 }
 
 .bg_classified {
-background-color: #CFCFFF !important;
+    background-color: #CFCFFF !important;
 }
 
 .bg_retired {
-background-color: #EFCFFF !important;
+    background-color: #EFCFFF !important;
 }

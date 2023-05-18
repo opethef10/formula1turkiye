@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2023-05-18
+### Added
+- Color fields to Championship Constructor table
+- Fastest lap information as superscript
+### Changed
+- Body font to Cabin
+### Deprecated
+### Removed
+- Fastest lap column in race detail page
+### Fixed
+### Security
+
 ## [1.5.1] - 2023-05-14
 ### Added
 - error_base.html
@@ -12,10 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Wikipedia-like race position background coloring
 ### Changed
 - DRY'ed error templates
-### Deprecated
-### Removed
-### Fixed
-### Security
 
 ## [1.5.0] - 2023-05-11 (Compact Datatables)
 ### Added
