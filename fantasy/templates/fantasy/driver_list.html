@@ -52,8 +52,9 @@
                     {% if tab_id == "instances" %}
                         {% for driver, count_list in driver_count_dict.items %}
                             <tr>
-                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
-
+                                <td style="background-color: {{ driver.race_instances.first.championship_constructor.bgcolor }}; color: {{ driver.race_instances.first.championship_constructor.fontcolor }}">
+                                    <b>{{ driver.name }}</b>
+                                </td>
 
                                 {% for count in count_list %}
                                     <td>
@@ -79,7 +80,9 @@
                     {% else %}
                         {% for driver, race_driver_list in race_driver_dict.items %}
                             <tr>
-                                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+                                <td style="background-color: {{ driver.race_instances.first.championship_constructor.bgcolor }}; color: {{ driver.race_instances.first.championship_constructor.fontcolor }}">
+                                    <b>{{ driver.name }}</b>
+                                </td>
                                 {% if tab_id not in "price,discount" %}
                                     <td></td>
                                 {% endif %}

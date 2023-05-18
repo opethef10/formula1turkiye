@@ -54,8 +54,8 @@
                         <tbody>
                         {% for race_driver in race_driver_list %}
                             <tr>
-                                <td>
-                                    <a href="{{ race_driver.driver.get_absolute_url }}">{{ race_driver.driver }}</a>
+                                <td style="background-color: {{ race_driver.championship_constructor.bgcolor }}; color: {{ race_driver.championship_constructor.fontcolor }}">
+                                    <b>{{ race_driver.driver }}</b>
                                 </td>
                                 <td>{{ race_driver.qualy|default_if_none:"" }}</td>
                                 <td>{{ race_driver.grid_sprint|default_if_none:"" }}</td>
