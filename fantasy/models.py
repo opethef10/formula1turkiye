@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django_countries.fields import CountryField
+from colorfield.fields import ColorField
 
 TACTIC_CHOICES = [
     ("G", "Geçiş"),
@@ -209,9 +210,15 @@ class RaceDriver(models.Model):
     qualy = models.PositiveIntegerField(blank=True, null=True)
     grid_sprint = models.PositiveIntegerField(blank=True, null=True)
     sprint = models.PositiveIntegerField(blank=True, null=True)
+    sprint_fastest_lap = models.PositiveIntegerField(blank=True, null=True)
     grid = models.PositiveIntegerField(blank=True, null=True)
     result = models.PositiveIntegerField(blank=True, null=True)
     fastest_lap = models.PositiveIntegerField(blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['race', 'driver'], name='unique_racedriver'),
+        ]
 
     def coefficient(self, tactic):
         championship = self.race.championship
@@ -359,6 +366,16 @@ class ChampionshipConstructor(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name='constructor_instances')
     constructor = models.ForeignKey(Constructor, on_delete=models.CASCADE, related_name='championship_instances')
     garage_order = models.IntegerField()
+    bgcolor = ColorField(default="#f8f9fa")
+    alternative_bgcolor = ColorField(default="#f8f9fa")
+    fontcolor = ColorField(default="#000000")
+    alternative_fontcolor = ColorField(default="#000000")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['championship', 'constructor'], name='unique_championship_constructor'),
+            models.UniqueConstraint(fields=['championship', 'garage_order'], name='unique_championship_garage_order'),
+        ]
 
     def __str__(self):
         return f"{self.championship} - {self.constructor}"
