@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_countries",
     'clearcache',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
