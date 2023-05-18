@@ -32,7 +32,7 @@ class RaceListView(ListView):
     template_name = "tahmin/race_list.html"
 
     def get_queryset(self):
-        races = Race.objects.select_related("championship", "circuit").filter(championship__slug=self.kwargs.get('champ'))
+        races = Race.objects.select_related("championship", "country").filter(championship__slug=self.kwargs.get('champ'))
         queryset = races.order_by('round')
         return queryset
 
@@ -112,7 +112,7 @@ class TeamListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        race_list = Race.objects.select_related("circuit", "championship").prefetch_related(
+        race_list = Race.objects.select_related("country", "championship").prefetch_related(
             "tahmin_team_instances",
             "questions", "driver_instances", "driver_instances__driver"
         ).filter(
