@@ -40,7 +40,7 @@
                     {% for idx in "01234567" %}
                         {% with trd_list|index:forloop.counter0 as raceteamdriver %}
                             <td>
-                                <a href="{{ raceteamdriver.racedriver.driver.get_absolute_url }}">{{ raceteamdriver.racedriver.driver.surname }}</a>
+                                <a href="#">{{ raceteamdriver.racedriver.driver.surname }}</a>
                                 <small class="text-muted d-block">{{ raceteamdriver.total_point }}</small>
                                 <small class="text-muted d-block">{{ raceteamdriver.racedriver.price|with_currency }}</small>
                             </td>
