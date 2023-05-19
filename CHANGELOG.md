@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Driver stats link to homepage
 ### Changed
 - List of links to horizontal list group in Fantasy Race List 
+- Race edit page more compact
 ### Deprecated
 ### Removed
 - Driver detail page and view
