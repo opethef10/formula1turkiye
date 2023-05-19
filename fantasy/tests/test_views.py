@@ -122,21 +122,6 @@ class TeamListTests(ViewTestMixin, TestCase):
         cls.view = views.TeamListView
 
 
-class DriverDetailViewTests(DetailViewTestMixin, TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.driver = Driver.objects.create(
-            forename='Sebastian', surname="Vettel", number=5, code="VET"
-        )
-        cls.url_name = 'driver_detail'
-        cls.url_kwargs = {'driver_slug': cls.driver.slug}
-        cls.url_kwargs_404 = {'driver_slug': "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/drivers/{cls.driver.slug}"
-        cls.template_name = "fantasy/driver_detail.html"
-        cls.context_variable = 'driver'
-        cls.view = views.DriverDetailView
-
-
 class RaceDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):

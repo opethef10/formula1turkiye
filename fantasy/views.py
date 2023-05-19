@@ -106,12 +106,6 @@ class ChampionshipListView(ListView):
     queryset = Championship.objects.filter(is_fantasy=True).only("series", "year")
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class DriverDetailView(DetailView):
-    model = Driver
-    slug_url_kwarg = "driver_slug"
-
-
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
