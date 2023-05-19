@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.urls import reverse
 from django.utils.functional import cached_property
 
 from fantasy.models import Race, Driver, RaceDriver, Championship
@@ -27,12 +26,6 @@ class TahminTeam(models.Model):
 
     def name(self):
         return f"{self.user.first_name} {self.user.last_name}"
-
-    def get_absolute_url(self):
-        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
-
-    def get_tahmin_url(self):
-        return reverse("tahmin:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
 
 
 class RaceTahmin(models.Model):
