@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Driver detail page and view
 - Circuit column from race list
+- Circuit model and Circuit field for Race
 ### Fixed
 ### Security
 
