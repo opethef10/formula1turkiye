@@ -46,7 +46,7 @@ class DriverListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        race_list = Race.objects.select_related("country", "championship").prefetch_related("team_instances").filter(
+        race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
@@ -160,7 +160,7 @@ class RaceListView(ListView):
     model = Race
 
     def get_queryset(self):
-        races = Race.objects.select_related("championship", "country").filter(
+        races = Race.objects.select_related("championship").filter(
             championship__slug=self.kwargs.get('champ'))
         queryset = races.order_by('round')
         return queryset
@@ -198,7 +198,7 @@ class TeamListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        race_list = Race.objects.select_related("country", "championship").prefetch_related("team_instances").filter(
+        race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
