@@ -29,7 +29,6 @@
         <tr>
             <th>Ayak</th>
             <th>Ad</th>
-            <th>Pist</th>
             <th>Tarih</th>
         </tr>
         </thead>
@@ -38,7 +37,6 @@
             <tr class="align-middle">
                 <td>{{ race.round }}</td>
                 <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
-                <td>{{ race.circuit }}</td>
                 <td>{{ race.datetime|default_if_none:"-" }}</td>
             </tr>
         {% endfor %}
