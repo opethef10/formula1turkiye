@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.0] - 2023-05-19
 ### Added
 - Really3D Casio watch to Tahmin race detail page
+- Driver stats link to homepage
 ### Changed
 - List of links to horizontal list group in Fantasy Race List 
 ### Deprecated
