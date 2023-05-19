@@ -28,14 +28,15 @@
         {{ formset.management_form }}
         <div class="form-group row">
             <div class="col-lg-2"><b>Sürücü</b></div>
-            <div class="col-lg-1"><b>Fiyat</b></div>
             <div class="col-lg-1"><b>Tanzim</b></div>
-            <div class="col-lg-1"><b>Sıralama</b></div>
-            <div class="col-lg-1"><b>Spr.grid</b></div>
-            <div class="col-lg-1"><b>Sprint</b></div>
-            <div class="col-lg-1"><b>Grid</b></div>
-            <div class="col-lg-1"><b>Yarış</b></div>
-            <div class="col-lg-1"><b>EHT</b></div>
+            <div class="text-center" style="width: 60px"><b>Fiyat</b></div>
+            <div class="text-center" style="width: 60px"><b>Sıralama</b></div>
+            <div class="text-center" style="width: 60px"><b>Sp.Grid</b></div>
+            <div class="text-center" style="width: 60px"><b>Sprint</b></div>
+            <div class="text-center" style="width: 60px"><b>Grid</b></div>
+            <div class="text-center" style="width: 60px"><b>Race</b></div>
+            <div class="text-center" style="width: 60px"><b>EHT</b></div>
+            <div class="text-center" style="width: 60px"><b>SpEHT</b></div>
         </div>
         {% for form in formset %}
             {% if form.non_field_errors %}
@@ -49,18 +50,14 @@
                 {% for field in form %}
                     {% if forloop.first %}
                         <div class="col-lg-2">
-                            {#                        {% render_field field %}#}
                             {% render_field field disabled="True" %}
                         </div>
-                        {% elif forloop.counter == 3 %}
+                        {% elif forloop.counter == 2 %}
                         <div class="col-lg-1">
-                            {#                        {% render_field field %}#}
                             {% render_field field %}
                         </div>
                     {% else %}
-                        <div class="col-lg-1">
-                            {#                {{ field.label_tag}}#}
-                            {#                    {{ field }}#}
+                        <div>
                             {% render_field field style="width: 60px" %}
                         </div>
                     {% endif %}

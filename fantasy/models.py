@@ -85,20 +85,6 @@ class Championship(models.Model):
             return None
 
 
-class Circuit(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, editable=False)
-    country = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-
 class Constructor(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, editable=False)
@@ -138,7 +124,6 @@ class Race(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.RESTRICT, related_name='races', null=True)
     round = models.IntegerField()
     country = CountryField()
-    circuit = models.ForeignKey(Circuit, null=True, on_delete=models.SET_NULL, related_name='grand_prix')
     datetime = models.DateTimeField()
     deadline = models.DateTimeField(null=True, blank=True)
     wikilink = models.URLField(blank=True)
