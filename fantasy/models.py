@@ -62,6 +62,14 @@ class Championship(models.Model):
             self.slug = f"{self.year}-{self.series}"
         super().save(*args, **kwargs)
 
+    def coefficient(self, tactic):
+        if tactic == "G":
+            return self.overtake_coefficient
+        elif tactic == "S":
+            return self.qualifying_coefficient
+        elif tactic == "F":
+            return self.finish_coefficient
+
     def latest_race(self):
         try:
             return self.races.filter(
@@ -199,58 +207,56 @@ class RaceDriver(models.Model):
             models.UniqueConstraint(fields=['race', 'driver'], name='unique_racedriver'),
         ]
 
-    def coefficient(self, tactic):
-        championship = self.race.championship
-        if tactic == "G":
-            return championship.overtake_coefficient
-        elif tactic == "S":
-            return championship.qualifying_coefficient
-        elif tactic == "F":
-            return championship.finish_coefficient
+    def __str__(self):
+        return f"{self.race}-{self.driver}"
 
     def qualy_point(self, tactic=None):
-        coefficient = self.coefficient(tactic) if tactic == "S" else 1
+        coefficient = self.race.championship.coefficient(tactic) if tactic == "S" else 1
         return round(POINTS["qualy"].get(self.qualy, 0) * coefficient, 1)
 
-    def sprint_point(self, tactic=None):
-        coefficient = self.coefficient(tactic) if tactic == "F" else 1
-        return round(POINTS["sprint"][self.race.championship.get_series_display()].get(self.sprint, 0) * coefficient, 1)
+    def _sprint_point(self):
+        return POINTS["sprint"][self.race.championship.get_series_display()].get(self.sprint, 0)
+
+    def _feature_point(self):
+        return POINTS["race"].get(self.result, 0)
 
     def race_point(self, tactic=None):
-        coefficient = self.coefficient(tactic) if tactic == "F" else 1
+        coefficient = self.race.championship.coefficient(tactic) if tactic == "F" else 1
         return round(
-            (POINTS["race"].get(self.result, 0) + self.sprint_point() + (self.fastest_lap or 0)) * coefficient,
+            (self._feature_point() + self._sprint_point() + (self.fastest_lap or 0)) * coefficient,
             1
         )
 
-    def sprint_overtake_point(self, tactic=None):
-        coefficient = self.coefficient(tactic) if tactic == "G" else 1
+    def _sprint_overtake_point(self):
         if self.race.championship.get_series_display() == "Formula 1":
             return 0
         if not self.grid_sprint or not self.sprint:
-            return 0 * coefficient
+            return 0
         elif self.grid_sprint < self.sprint:
-            return 0 * coefficient
+            return 0
         else:
             raw = (self.grid_sprint - self.sprint)
             bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
             top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
-            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+            return raw + bottom_to_top - top_to_top
 
-    def feature_overtake_point(self, tactic=None):
-        coefficient = self.coefficient(tactic) if tactic == "G" else 1
+    def _feature_overtake_point(self):
         if not self.grid or not self.result:
-            return 0 * coefficient
+            return 0
         elif self.grid < self.result:
-            return 0 * coefficient
+            return 0
         else:
             raw = (self.grid - self.result)
             bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
             top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
-            return round((raw + bottom_to_top - top_to_top) * coefficient, 1)
+            return raw + bottom_to_top - top_to_top
 
     def overtake_point(self, tactic=None):
-        return round(self.sprint_overtake_point(tactic) + self.feature_overtake_point(tactic), 1)
+        coefficient = self.race.championship.coefficient(tactic) if tactic == "G" else 1
+        return round(
+            (self._sprint_overtake_point() + self._feature_overtake_point()) * coefficient,
+            1
+        )
 
     def total_point(self, tactic=None):
         return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
@@ -265,8 +271,8 @@ class RaceDriver(models.Model):
             return round(self.price - discount, 1)
         return self.price
 
-    def __str__(self):
-        return f"{self.race}-{self.driver}"
+    def instances(self):
+        return self.raceteamdrivers.count()
 
 
 class Team(models.Model):
@@ -330,12 +336,7 @@ class RaceTeamDriver(models.Model):
         return f"{self.raceteam}-{self.racedriver}"
 
     def total_point(self):
-        return round(
-            self.racedriver.overtake_point(self.raceteam.tactic) +
-            self.racedriver.qualy_point(self.raceteam.tactic) +
-            self.racedriver.race_point(self.raceteam.tactic),
-            1
-        )
+        return self.racedriver.total_point(self.raceteam.tactic)
 
 
 class ChampionshipConstructor(models.Model):

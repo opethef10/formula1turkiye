@@ -126,12 +126,11 @@ class RaceDetailViewTests(DetailViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
-        circuit = Circuit.objects.create(name="İstanbul Park", country="Turkey")
         cls.race = Race.objects.create(
             name="Turkish GP",
             championship=cls.championship,
             round=1,
-            circuit=circuit,
+            country="TR",
             datetime=timezone.now()
         )
         cls.url_name = 'race_detail'
