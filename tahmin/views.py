@@ -135,16 +135,10 @@ class TeamListView(ListView):
         for rt in race_team_list:
             race_team_dict[rt.team][rt.race.round - 1] = rt
 
-        if self.request.user.is_authenticated:
-            team_count = race_team_list.filter(team__user=self.request.user).count()
-        else:
-            team_count = None
-
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
-        context["race_team_count"] = team_count
         context["tabs"] = {
             "total_point": "Toplam Puan",
         }
