@@ -49,41 +49,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% if tab_id == "instances" %}
-                        {% for driver, count_list in driver_count_dict.items %}
-                            <tr>
-                                <td style="background-color: {{ driver.race_instances.first.championship_constructor.bgcolor }}; color: {{ driver.race_instances.first.championship_constructor.fontcolor }}">
-                                    <b>{{ driver.name }}</b>
-                                </td>
-
-                                {% for count in count_list %}
-                                    <td>
-                                        {{ count|default_if_none:"-" }}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                        </table>
-                        <table class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
-
-                        {% for tactic, count_list in tactic_count_dict.items %}
-                            <tr>
-                                <td>{{ tactic }}</td>
-                                {% for count in count_list %}
-                                    <td>
-                                        {{ count|default_if_none:"-" }}
-                                    </td>
-                                {% endfor %}
-                                <td></td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
                         {% for driver, race_driver_list in race_driver_dict.items %}
                             <tr>
                                 <td style="background-color: {{ driver.race_instances.first.championship_constructor.bgcolor }}; color: {{ driver.race_instances.first.championship_constructor.fontcolor }}">
                                     <b>{{ driver.name }}</b>
                                 </td>
-                                {% if tab_id not in "price,discount" %}
+                                {% if tab_id not in "instances,price,discount" %}
                                     <td></td>
                                 {% endif %}
 
@@ -100,6 +71,21 @@
                                 {% endfor %}
                             </tr>
                         {% endfor %}
+                    {% if tab_id == "instances" %}
+                        <table class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+
+                        {% for tactic, count_list in tactic_count_dict.items %}
+                            <tr>
+                                <td>{{ tactic }}</td>
+                                {% for count in count_list %}
+                                    <td>
+                                        {{ count|default_if_none:"-" }}
+                                    </td>
+                                {% endfor %}
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </table>
                     {% endif %}
                     </tbody>
                     </table>

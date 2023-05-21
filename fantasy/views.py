@@ -64,10 +64,6 @@ class DriverListView(ListView):
         for rd in race_driver_list:
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
-        driver_count_dict = {driver: [None] * race_count for driver in driver_list}
-        for rd in race_driver_list:
-            driver_count_dict[rd.driver][rd.race.round - 1] = rd.raceteamdrivers.count()
-
         tactic_count_dict = {tactic: [None] * race_count for tactic in {"Finiş", "Geçiş", "Sıralama"}}
 
         for race in race_list:
@@ -76,10 +72,8 @@ class DriverListView(ListView):
             )
             for tactic in {"Finiş", "Geçiş", "Sıralama"}:
                 tactic_count_dict[tactic][race.round - 1] = race_tactic_sum_dict.get(tactic[0])
-
         context["tactic_count_dict"] = tactic_count_dict
         context["race_driver_dict"] = race_driver_dict
-        context["driver_count_dict"] = driver_count_dict
         context["championship"] = self.championship
         context["race_list"] = race_list
         context["tabs"] = {
@@ -209,16 +203,10 @@ class TeamListView(ListView):
         for rt in race_team_list:
             race_team_dict[rt.team][rt.race.round - 1] = rt
 
-        if self.request.user.is_authenticated:
-            team_count = race_team_list.filter(team__user=self.request.user).count()
-        else:
-            team_count = None
-
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
-        context["race_team_count"] = team_count
         context["tabs"] = {
             "total_point": "Toplam Puan",
         }
