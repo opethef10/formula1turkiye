@@ -179,20 +179,15 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         try:
             return RaceTahmin.objects.get(
-                team__user=self.request.user,
-                team__championship=self.championship,
+                user=self.request.user,
                 race=self.race
             )
         except RaceTahmin.DoesNotExist:
             return
 
     def form_valid(self, form):
-        team, created = TahminTeam.objects.get_or_create(
-            user=self.request.user,
-            championship=self.championship
-        )
         form.instance.race = self.race
-        form.instance.team = team
+        form.instance.user = self.request.user
         response = super().form_valid(form)
 
         for key, value in form.cleaned_data.items():

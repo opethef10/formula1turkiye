@@ -83,7 +83,7 @@
         {% for race_team in race_team_list %}
             <tr>
                 <td></td>
-                <td><a href="#">{{ race_team.team.name }}</a></td>
+                <td><a href="#">{{ tahmin.user.get_full_name }}</a></td>
                 {% for idx in "123456789" %}
                     {% with "prediction_"|add:idx as prediction_field %}
                         {% with race_team|call_or_get_attr:prediction_field as racedriver %}

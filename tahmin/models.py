@@ -30,7 +30,8 @@ class TahminTeam(models.Model):
 
 class RaceTahmin(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmin_team_instances')
-    team = models.ForeignKey(TahminTeam, on_delete=models.CASCADE, related_name='race_instances')
+    team = models.ForeignKey(TahminTeam, on_delete=models.CASCADE, related_name='race_instances')  # TODO
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins', null=True, blank=True)
     prediction_1 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_1')
     prediction_2 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_2')
     prediction_3 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_3')
@@ -51,7 +52,7 @@ class RaceTahmin(models.Model):
     )
 
     def __str__(self):
-        return f"{self.race}-{self.team}"
+        return f"{self.race}-{self.user.get_full_name()}"
 
     @cached_property
     def prediction_point(self):
