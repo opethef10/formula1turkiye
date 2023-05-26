@@ -3,22 +3,22 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-    <li class="breadcrumb-item">{{ championship }}</li>
+    <li class="breadcrumb-item">{{ view.championship }}</li>
 {% endblock %}
 
 {% block content %}
     <div class="list-group-horizontal">
-        <li class="list-group-item "><a href="{% url 'fantasy:driver_list' championship.slug %}" class="card-link"> Sürücü İstatistikleri</a></li>
-        <li class="list-group-item"><a href="{% url 'fantasy:team_list' championship.slug %}" class="card-link"> Takımlar (Genel Klasman) </a></li>
+        <li class="list-group-item "><a href="{% url 'fantasy:driver_list' view.championship.slug %}" class="card-link"> Sürücü İstatistikleri</a></li>
+        <li class="list-group-item"><a href="{% url 'fantasy:team_list' view.championship.slug %}" class="card-link"> Takımlar (Genel Klasman) </a></li>
         <li class="list-group-item">
         {% if race_team_count > 1 %}
-            <a href="{% url 'fantasy:edit_team_form' championship.slug %}" class="card-link">Alım Satım</a>
+            <a href="{% url 'fantasy:edit_team_form' view.championship.slug %}" class="card-link">Alım Satım</a>
         {% elif race_team_count == 0 %}
-            <a href="{% url 'fantasy:new_team_form' championship.slug %}" class="card-link">Yeni Takım Kur</a>
+            <a href="{% url 'fantasy:new_team_form' view.championship.slug %}" class="card-link">Yeni Takım Kur</a>
         {% elif race_team_count == 1 %}
-            <a href="{% url 'fantasy:edit_team_form' championship.slug %}" class="card-link">Takımı Düzenle</a>
+            <a href="{% url 'fantasy:edit_team_form' view.championship.slug %}" class="card-link">Takımı Düzenle</a>
         {% else %}
-            <a href="{% url 'fantasy:new_team_form' championship.slug %}" class="card-link">Yeni Takım / Alım
+            <a href="{% url 'fantasy:new_team_form' view.championship.slug %}" class="card-link">Yeni Takım / Alım
                 Satım (Giriş Yapınız)</a>
         {% endif %}
         </li>

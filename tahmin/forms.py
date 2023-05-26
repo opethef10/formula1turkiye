@@ -9,8 +9,8 @@ class RaceDriverChoiceField(forms.ModelChoiceField):
 
 class NewTahminForm(forms.ModelForm):
     class Meta:
-        model = RaceTahmin
-        exclude = ["race", "team"]
+        model = Tahmin
+        exclude = ["race", "user"]
 
     def __init__(self, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -5,17 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.1] - 2023-05-21
+## [1.7.0] - 2023-05-26 (Performance Improvements, Remove Teams)
 ### Added
+- RaceTahmin user field
+### Changed
+- Place of tahmin_score function
+- RaceTahmin to Tahmin
+### Deprecated
+- TahminTeam
+- RaceTeam
+### Removed
+### Fixed
+- Tahmin TeamList performance issues
+### Security
+
+## [1.6.1] - 2023-05-21
 ### Changed
 - Place of coefficient function in fantasy models
-### Deprecated
 ### Removed
 - Unnecessary is_authenticated in team_list views
 - driver_count_dict in driver_list
 - circuit model in tests
-### Fixed
-### Security
 
 ## [1.6.0] - 2023-05-19
 ### Added
