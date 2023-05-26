@@ -88,7 +88,7 @@ class DriverListTests(ViewTestMixin, TestCase):
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/drivers"
         cls.template_name = "fantasy/driver_list.html"
-        cls.context_variable = 'driver_list'
+        cls.context_variable = 'race_driver_dict'
         cls.view = views.DriverListView
 
 
@@ -103,10 +103,6 @@ class RaceListTests(ViewTestMixin, TestCase):
         cls.template_name = "fantasy/race_list.html"
         cls.context_variable = 'race_list'
         cls.view = views.RaceListView
-
-    def test_view_uses_championship_context(self):
-        response = self.client.get(self.url_reverse())
-        self.assertEquals(self.championship, response.context["championship"])
 
 
 class TeamListTests(ViewTestMixin, TestCase):

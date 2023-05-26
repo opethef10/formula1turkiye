@@ -1,6 +1,6 @@
 import json
 from decimal import Decimal
-from math import ceil
+from functools import cache
 from pathlib import Path
 
 from django.contrib.auth.models import User
@@ -152,12 +152,14 @@ class Race(models.Model):
     def get_tahmin_url(self):
         return reverse("tahmin:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
 
+    @cached_property
     def next(self):
         try:
             return self.get_next_by_datetime(championship=self.championship)
         except Race.DoesNotExist:
             return None
 
+    @cached_property
     def previous(self):
         try:
             return self.get_previous_by_datetime(championship=self.championship)
@@ -166,26 +168,11 @@ class Race(models.Model):
 
     @cached_property
     def top10(self):
-        top10_drivers = self.driver_instances.filter(
-            result__isnull=False
-        ).order_by("result")[:10]
-        return list(top10_drivers) + [None] * (10 - len(top10_drivers))
-
-    @cached_property
-    def tahmin_counts(self):
-        return [
-            self.tahmin_team_instances.filter(**{f"prediction_{idx}": race_driver}).count()
-            for idx, race_driver
-            in enumerate(self.top10, 1)
-        ]
-
-    @cached_property
-    def tahmin_points(self):
-        def tahmin_score(count):
-            if not 0 < count < 20:
-                return 0
-            return ceil((20 - count) ** 2 / 2)
-        return [tahmin_score(count) for count in self.tahmin_counts]
+        top10_drivers = self.driver_instances.select_related("driver").filter(
+            result__isnull=False,
+            result__lte=10
+        ).only("race", "driver", "result").order_by("result")
+        return top10_drivers
 
 
 class RaceDriver(models.Model):
@@ -273,6 +260,10 @@ class RaceDriver(models.Model):
 
     def instances(self):
         return self.raceteamdrivers.count()
+
+    @cache
+    def tahmin_count(self, position):
+        return getattr(self, f"prediction_{position}").count()
 
 
 class Team(models.Model):

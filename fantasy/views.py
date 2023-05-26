@@ -8,7 +8,6 @@ from django.db.models import Count
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
@@ -23,7 +22,7 @@ HOURS = settings.HOURS
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class DriverListView(ListView):
-    model = Driver
+    template_name = "fantasy/driver_list.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -33,35 +32,27 @@ class DriverListView(ListView):
         )
 
     def get_queryset(self):
-        return Driver.objects.prefetch_related(
-            "race_instances", "race_instances__championship_constructor"
+        return RaceDriver.objects.prefetch_related(
+            "raceteamdrivers"
+        ).select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
         ).filter(
-            attended_races__in=Race.objects.filter(
-                championship=self.championship
-            )
-        ).distinct().order_by(
-            'race_instances__championship_constructor__garage_order',
-            "number"
+            race__championship=self.championship
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
+        race_list = Race.objects.prefetch_related("team_instances").filter(
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
-        driver_list = self.get_queryset()
-        race_driver_list = RaceDriver.objects.prefetch_related(
-            "race__championship",
-            "raceteamdrivers"
-        ).select_related(
-            "driver",
-            "race"
-        ).filter(
-            race__championship=self.championship
-        )
-        race_driver_dict = {driver: [None] * race_count for driver in driver_list}
-        for rd in race_driver_list:
+        race_driver_dict = {}
+        for rd in self.get_queryset():
+            if rd.driver not in race_driver_dict:
+                race_driver_dict[rd.driver] = [None] * race_count
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
         tactic_count_dict = {tactic: [None] * race_count for tactic in {"Finiş", "Geçiş", "Sıralama"}}
@@ -95,42 +86,43 @@ class DriverListView(ListView):
 
 @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
-    model = Championship
+    queryset = Championship.objects.filter(is_fantasy=True)
     ordering = ["-year", "series"]
-    queryset = Championship.objects.filter(is_fantasy=True).only("series", "year")
 
 
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
+
     def get_object(self):
         return get_object_or_404(
-            Race.objects.select_related("championship"),
-            championship__slug=self.kwargs.get('champ'),
+            Race,
+            championship=self.championship,
             round=self.kwargs.get('round')
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["race_driver_list"] = RaceDriver.objects.prefetch_related(
-            "race__championship"
-        ).select_related(
-            "championship_constructor", "driver", "race", "championship_constructor__constructor", "race__championship"
-        ).filter(
-            race=context["race"]
+        race = self.object
+        context["race_driver_list"] = race.driver_instances.select_related(
+            "championship_constructor", "driver", "race", "race__championship"
         ).order_by(
             "championship_constructor__garage_order",
             "driver__number"
         )
-        context["race_team_list"] = RaceTeam.objects.prefetch_related(
+        context["race_team_list"] = race.team_instances.prefetch_related(
             "raceteamdrivers", "race_drivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
             "team__user", "team__championship", "race_drivers__race__championship",
             "raceteamdrivers__racedriver__race__championship"
         ).select_related(
             "team",
-        ).filter(
-            race=context["race"]
         ).order_by(
             "team__user__first_name",
             "team__user__last_name"
@@ -143,15 +135,18 @@ class RaceDetailView(DetailView):
         return context
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceListView(ListView):
-    model = Race
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
 
     def get_queryset(self):
-        races = Race.objects.select_related("championship").filter(
-            championship__slug=self.kwargs.get('champ'))
-        queryset = races.order_by('round')
-        return queryset
+        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
@@ -162,7 +157,6 @@ class RaceListView(ListView):
         else:
             team_count = None
         context = super().get_context_data(**kwargs)
-        context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get('champ'))
         context["race_team_count"] = team_count
         return context
 

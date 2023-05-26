@@ -44,15 +44,15 @@
                     </thead>
                     <tbody>
 
-                    {% for tahminteam, race_team_list in race_team_dict.items %}
+                    {% for user, tahmin_list in tahmin_race_user_matrix.items %}
                         <tr>
                             <td></td>
-                            <td><a href="#">{{ tahminteam.name }}</a></td>
+                            <td><a href="#">{{ user.get_full_name }}</a></td>
                             <td></td>
 
-                            {% for race_team in race_team_list %}
+                            {% for tahmin in tahmin_list %}
                                 <td>
-                                    {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                    {{ tahmin|call_or_get_attr:tab_id|default_if_none:"-" }}
                                 </td>
                             {% endfor %}
                         </tr>
