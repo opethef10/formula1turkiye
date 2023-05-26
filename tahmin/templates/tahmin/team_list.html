@@ -50,9 +50,9 @@
                             <td><a href="#">{{ user.get_full_name }}</a></td>
                             <td></td>
 
-                            {% for race_team in race_team_list %}
+                            {% for tahmin in tahmin_list %}
                                 <td>
-                                    {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                    {{ tahmin|call_or_get_attr:tab_id|default_if_none:"-" }}
                                 </td>
                             {% endfor %}
                         </tr>

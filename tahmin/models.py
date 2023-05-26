@@ -1,3 +1,5 @@
+from math import ceil
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.functional import cached_property
@@ -12,7 +14,13 @@ QUESTION_CHOICES = [
 ]
 
 
-class TahminTeam(models.Model):
+def tahmin_score(count):
+    if not 0 < count < 20:
+        return 0
+    return ceil((20 - count) ** 2 / 2)
+
+
+class TahminTeam(models.Model):  # TODO
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="tahmin_teams")
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="tahmin_teams", null=True)
 
@@ -56,26 +64,19 @@ class RaceTahmin(models.Model):
 
     @cached_property
     def prediction_point(self):
-        top10 = self.race.top10
-        points = self.race.tahmin_points
         questions = self.race.questions.all()[:2]
-        result = []
+        result = [None] * 12
         for position in range(1, 11):
-            predicted_driver = getattr(self, f"prediction_{position}")
-            resulting_racedriver = top10[position-1]
-            position_point = points[position-1]
-            if predicted_driver == resulting_racedriver:
-                result.append(position_point)
-            else:
-                result.append(None)
+            predicted_race_driver = getattr(self, f"prediction_{position}")
+            if predicted_race_driver.result == position:
+                count = predicted_race_driver.tahmin_count(position)
+                point = tahmin_score(count)
+                result[position - 1] = point
         for idx in {1, 2}:
+            question = questions[idx - 1]
             predicted_answer = getattr(self, f"question_{idx}")
-            actual_answer = questions[idx-1].answer
-            question_point = questions[idx-1].point
-            if predicted_answer == actual_answer:
-                result.append(question_point)
-            else:
-                result.append(None)
+            if predicted_answer == question.answer:
+                result[10 + idx - 1] = question.point
         return result
 
     def total_point(self):

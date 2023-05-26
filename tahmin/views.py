@@ -20,30 +20,28 @@ HOURS = settings.HOURS
 
 @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
-    model = Championship
-    ordering = ["-year", "series"]
     queryset = Championship.objects.filter(is_tahmin=True)
+    ordering = ["-year", "series"]
     template_name = "tahmin/championship_list.html"
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceListView(ListView):
-    model = Race
     template_name = "tahmin/race_list.html"
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            slug=self.kwargs.get('champ')
+        )
+
     def get_queryset(self):
-        races = Race.objects.select_related("championship").filter(championship__slug=self.kwargs.get('champ'))
-        queryset = races.order_by('round')
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["championship"] = get_object_or_404(Championship, slug=self.kwargs.get('champ'))
-        return context
+        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
 
 
-@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class RaceDetailView(DetailView):
+# @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
+class RaceDetailView(ListView):
     model = Race
     template_name = "tahmin/race_detail.html"
 
@@ -53,48 +51,40 @@ class RaceDetailView(DetailView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-
-    def get_object(self):
-        return get_object_or_404(
-            Race.objects.prefetch_related("questions", "driver_instances", "driver_instances__driver").select_related("championship"),
+        self.race = get_object_or_404(
+            Race.objects.prefetch_related(
+                "questions", "driver_instances", "tahmin_team_instances", "driver_instances__driver"
+            ).select_related("championship"),
             championship=self.championship,
             round=self.kwargs.get('round')
         )
 
+    def get_object(self):
+        return self.race.tahmin_team_instances.select_related(
+            "user", *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
+        )
+
     def get_context_data(self, **kwargs):
-        current_race = self.get_object()
-        race_tahmins = RaceTahmin.objects.prefetch_related(
-            *(f"prediction_{idx}__driver" for idx in range(1, 11)), "team__user",
-            "race__driver_instances",
-            "race__tahmin_team_instances",
-            "race__questions"
-        ).select_related(
-            "team", *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
-        ).filter(
-            race=current_race
-        ).order_by(
-            "team__user__first_name",
-            "team__user__last_name"
-        )
+        current_race = self.race
+        tahmin_counts = [
+            race_driver.tahmin_count(position)
+            for position, race_driver
+            in enumerate(self.race.top10, 1)
+        ]
+        tahmin_points = [tahmin_score(count) for count in tahmin_counts]
         context = super().get_context_data(**kwargs)
-        context["race_driver_list"] = RaceDriver.objects.select_related("driver").filter(
-            race=current_race
-        ).order_by(
-            "championship_constructor__garage_order",
-            "driver__number"
-        )
-        context["race_team_list"] = race_tahmins
-        context["top10"] = current_race.top10
-        context["counts"] = current_race.tahmin_counts
-        context["points"] = current_race.tahmin_points
+        context["tahmin_counts"] = tahmin_counts
+        context["tahmin_points"] = tahmin_points
+        context["tahmin_list"] = self.get_object()
+        context["race"] = current_race
         context["before_race"] = current_race.datetime > timezone.now()
 
         return context
 
 
-@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class TeamListView(ListView):
-    model = TahminTeam
+    model = RaceTahmin
     template_name = "tahmin/team_list.html"
 
     def setup(self, request, *args, **kwargs):
@@ -105,11 +95,19 @@ class TeamListView(ListView):
         )
 
     def get_queryset(self):
-        queryset = TahminTeam.objects.select_related("user", "championship").filter(
-            championship=self.championship
-        ).distinct()
-        # queryset = queryset.order_by('forename')
-        return queryset
+        return RaceTahmin.objects.prefetch_related(
+            *(f"prediction_{idx}__driver" for idx in range(1, 11)),
+            "race__tahmin_team_instances", "race__questions",
+            "race__driver_instances",
+            *(f"race__driver_instances__prediction_{idx}" for idx in range(1, 11)),
+            "race__championship",
+        ).select_related(
+            "user",
+            "race",
+            *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
+        ).filter(
+            race__championship=self.championship
+        )
 
     def get_context_data(self, **kwargs):
         race_list = Race.objects.select_related("championship").prefetch_related(
@@ -119,26 +117,17 @@ class TeamListView(ListView):
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
-        team_list = self.get_queryset()
-        race_team_list = RaceTahmin.objects.prefetch_related(
-            *(f"prediction_{idx}__driver" for idx in range(1, 11)), "team__user",
-            "race__tahmin_team_instances", "race__questions", "race__driver_instances",
-            "race__championship",
-        ).select_related(
-            "team",
-            "race",
-            *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
-        ).filter(
-            race__championship=self.championship
-        )
-        race_team_dict = {team: [None] * race_count for team in team_list}
-        for rt in race_team_list:
-            race_team_dict[rt.team][rt.race.round - 1] = rt
+        tahmin_list = self.get_queryset()
+        tahmin_race_user_matrix = {}
+        for tahmin in tahmin_list:
+            if tahmin.user not in tahmin_race_user_matrix:
+                tahmin_race_user_matrix[tahmin.user] = [None] * race_count
+            tahmin_race_user_matrix[tahmin.user][tahmin.race.round - 1] = tahmin
 
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
         context["race_list"] = race_list
-        context["race_team_dict"] = race_team_dict
+        context["tahmin_race_user_matrix"] = tahmin_race_user_matrix
         context["tabs"] = {
             "total_point": "Toplam Puan",
         }

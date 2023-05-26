@@ -32,7 +32,7 @@
         <thead class="thead-inverse">
         <tr>
             <th>Sıra</th>
-            {% for racedriver in top10 %}
+            {% for _ in "1234567890" %}
                 <th>{{ forloop.counter }}</th>
             {% endfor %}
             <th>11</th>
@@ -41,7 +41,7 @@
         </thead>
         <tr>
             <td><b>Sürücü</b></td>
-            {% for racedriver in top10 %}
+            {% for racedriver in race.top10 %}
                 <td><b> {{ racedriver.driver.code|title }} </b></td>
             {% endfor %}
             <td>{{ race.questions.all.0.answer|default_if_none:"N/A" }}</td>
@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td><b>Doğru Tahmin Sayısı</b></td>
-            {% for count in counts %}
+            {% for count in tahmin_counts %}
                 <td> {{ count }} </td>
             {% endfor %}
             <td></td>
@@ -57,7 +57,7 @@
         </tr>
         <tr>
             <td><b>Puan</b></td>
-            {% for point in points %}
+            {% for point in tahmin_points %}
                 <td> {{ point }} </td>
             {% endfor %}
             <td>{{ race.questions.all.0.point|default_if_none:"-" }}</td>
@@ -70,7 +70,7 @@
         <tr>
             <th>Sıra</th>
             <th>Üye</th>
-            {% for racedriver in top10 %}
+            {% for _ in "1234567890" %}
                 <th>{{ forloop.counter }}</th>
             {% endfor %}
             <th>11</th>
@@ -80,41 +80,41 @@
         </thead>
 
         <tbody>
-        {% for race_team in race_team_list %}
+        {% for tahmin in tahmin_list %}
             <tr>
                 <td></td>
                 <td><a href="#">{{ tahmin.user.get_full_name }}</a></td>
                 {% for idx in "123456789" %}
                     {% with "prediction_"|add:idx as prediction_field %}
-                        {% with race_team|call_or_get_attr:prediction_field as racedriver %}
+                        {% with tahmin|call_or_get_attr:prediction_field as racedriver %}
                             <td>
                                 {{ racedriver.driver.code|title }}
                                 <small hidden>
-                                    {{ race_team.prediction_point|index:forloop.counter0|default_if_none:"" }}
+                                    {{ tahmin.prediction_point|index:forloop.counter0|default_if_none:"" }}
                                 </small>
                             </td>
                         {% endwith %}
                     {% endwith %}
                 {% endfor %}
                 <td>
-                    {{ race_team.prediction_10.driver.code|title }}
+                    {{ tahmin.prediction_10.driver.code|title }}
                     <small hidden>
-                        {{ race_team.prediction_point.9|default_if_none:"" }}
+                        {{ tahmin.prediction_point.9|default_if_none:"" }}
                     </small>
                 </td>
                 <td>
-                    {{ race_team.question_1 }}
+                    {{ tahmin.question_1 }}
                     <small hidden>
-                        {{ race_team.prediction_point.10|default_if_none:"" }}
+                        {{ tahmin.prediction_point.10|default_if_none:"" }}
                     </small>
                 </td>
                 <td>
-                    {{ race_team.question_2 }}
+                    {{ tahmin.question_2 }}
                     <small hidden>
-                        {{ race_team.prediction_point.11|default_if_none:"" }}
+                        {{ tahmin.prediction_point.11|default_if_none:"" }}
                     </small>
                 </td>
-                <td><b>{{ race_team.total_point }}</b></td>
+                <td><b>{{ tahmin.total_point }}</b></td>
             </tr>
         {% endfor %}
 
