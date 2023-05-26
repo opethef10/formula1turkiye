@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RaceTahmin user field
 ### Changed
 - Place of tahmin_score function
+- RaceTahmin to Tahmin
 ### Deprecated
 - TahminTeam
 - RaceTeam

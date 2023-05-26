@@ -84,7 +84,7 @@ class RaceDetailView(ListView):
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class TeamListView(ListView):
-    model = RaceTahmin
+    model = Tahmin
     template_name = "tahmin/team_list.html"
 
     def setup(self, request, *args, **kwargs):
@@ -95,7 +95,7 @@ class TeamListView(ListView):
         )
 
     def get_queryset(self):
-        return RaceTahmin.objects.prefetch_related(
+        return Tahmin.objects.prefetch_related(
             *(f"prediction_{idx}__driver" for idx in range(1, 11)),
             "race__tahmin_team_instances", "race__questions",
             "race__driver_instances",
@@ -135,7 +135,7 @@ class TeamListView(ListView):
 
 
 class NewTahminView(LoginRequiredMixin, UpdateView):
-    model = RaceTahmin
+    model = Tahmin
     form_class = NewTahminForm
     success_url = "/sent/"
 
@@ -167,11 +167,11 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         try:
-            return RaceTahmin.objects.get(
+            return Tahmin.objects.get(
                 user=self.request.user,
                 race=self.race
             )
-        except RaceTahmin.DoesNotExist:
+        except Tahmin.DoesNotExist:
             return
 
     def form_valid(self, form):

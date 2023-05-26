@@ -36,7 +36,7 @@ class TahminTeam(models.Model):  # TODO
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class RaceTahmin(models.Model):
+class Tahmin(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmin_team_instances')
     team = models.ForeignKey(TahminTeam, on_delete=models.CASCADE, related_name='race_instances')  # TODO
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins', null=True, blank=True)
