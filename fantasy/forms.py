@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from .models import *
+from .models import Driver, RaceTeam, RaceDriver, TACTIC_CHOICES
 
 
 class RaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):

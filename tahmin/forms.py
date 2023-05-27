@@ -1,5 +1,6 @@
 from django import forms
-from .models import *
+
+from .models import Tahmin, QUESTION_CHOICES
 
 
 class RaceDriverChoiceField(forms.ModelChoiceField):
