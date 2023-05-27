@@ -53,14 +53,14 @@ class RaceDetailView(ListView):
         )
         self.race = get_object_or_404(
             Race.objects.prefetch_related(
-                "questions", "driver_instances", "tahmin_team_instances", "driver_instances__driver"
+                "questions", "driver_instances", "tahmins", "driver_instances__driver"
             ).select_related("championship"),
             championship=self.championship,
             round=self.kwargs.get('round')
         )
 
     def get_object(self):
-        return self.race.tahmin_team_instances.select_related(
+        return self.race.tahmins.select_related(
             "user", *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
         )
 
@@ -97,7 +97,7 @@ class TeamListView(ListView):
     def get_queryset(self):
         return Tahmin.objects.prefetch_related(
             *(f"prediction_{idx}__driver" for idx in range(1, 11)),
-            "race__tahmin_team_instances", "race__questions",
+            "race__tahmins", "race__questions",
             "race__driver_instances",
             *(f"race__driver_instances__prediction_{idx}" for idx in range(1, 11)),
             "race__championship",
@@ -111,7 +111,7 @@ class TeamListView(ListView):
 
     def get_context_data(self, **kwargs):
         race_list = Race.objects.select_related("championship").prefetch_related(
-            "tahmin_team_instances",
+            "tahmins",
             "questions", "driver_instances", "driver_instances__driver"
         ).filter(
             championship=self.championship
