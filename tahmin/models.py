@@ -20,25 +20,8 @@ def tahmin_score(count):
     return ceil((20 - count) ** 2 / 2)
 
 
-class TahminTeam(models.Model):  # TODO
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="tahmin_teams")
-    championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="tahmin_teams", null=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'championship'], name='unique_tahmin_championship_user'),
-        ]
-
-    def __str__(self):
-        return f"{self.championship.slug} - {self.name()}"
-
-    def name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-
 class Tahmin(models.Model):
-    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmin_team_instances')
-    team = models.ForeignKey(TahminTeam, on_delete=models.CASCADE, related_name='race_instances')  # TODO
+    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmins')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins', null=True, blank=True)
     prediction_1 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_1')
     prediction_2 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_2')
