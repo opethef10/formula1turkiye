@@ -14,15 +14,16 @@ class NewTahminForm(forms.ModelForm):
 
     def __init__(self, current_race, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        race_drivers = current_race.driver_instances.select_related(
+            "driver"
+        ).order_by(
+            "championship_constructor__garage_order",
+            "driver__number"
+        )
         for idx in range(1, 11):
             self.fields[f"prediction_{idx}"] = RaceDriverChoiceField(
                 label=f"{idx}. Sürücü",
-                queryset=RaceDriver.objects.filter(
-                    race=current_race
-                ).order_by(
-                    "championship_constructor__garage_order",
-                    "driver__number"
-                )
+                queryset=race_drivers
             )
         self.fields["question_1"].label = "11. Soru henüz oluşturulmadı"
         self.fields["question_1"].disabled = True
