@@ -5,15 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.7.2] - 2023-05-27
+## [major.minor.patch] - yyyy-mm-dd
 ### Added
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
-- "tahmin_form.html" can't be found
-- 216 duplicate queries in tahmin form 
 ### Security
+
+## [1.7.3] - 2023-05-27
+### Added
+- select_related for championship in driver list
+
+## [1.7.2] - 2023-05-27
+### Fixed
+- "tahmin_form.html" can't be found
+- 216 duplicate queries in tahmin form
 
 ## [1.7.1] - 2023-05-26
 ### Removed

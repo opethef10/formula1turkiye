@@ -45,7 +45,7 @@ class DriverListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        race_list = Race.objects.prefetch_related("team_instances").filter(
+        race_list = Race.objects.prefetch_related("team_instances").select_related("championship").filter(
             championship=self.championship
         ).order_by('round')
         race_count = race_list.count()
