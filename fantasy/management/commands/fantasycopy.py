@@ -1,7 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.utils import timezone
+from django.core.management.base import BaseCommand
 
-from fantasy.models import *
+from fantasy.models import Championship, RaceDriver, RaceTeam, RaceTeamDriver
 
 
 class Command(BaseCommand):
