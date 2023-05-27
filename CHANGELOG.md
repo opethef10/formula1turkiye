@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.4] - 2023-05-27
+### Fixed
+- Star imports
+
 ## [1.7.3] - 2023-05-27
 ### Added
 - select_related for championship in driver list

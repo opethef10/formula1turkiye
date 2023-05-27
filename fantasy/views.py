@@ -8,13 +8,14 @@ from django.db.models import Count
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 
-from .forms import *
-from .models import *
+from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
+from .models import Championship, Race, RaceDriver, RaceTeam, Team
 
 logger = logging.getLogger("f1tform")
 HOURS = settings.HOURS

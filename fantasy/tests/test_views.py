@@ -1,8 +1,11 @@
+from decimal import Decimal
+
+from django.contrib.auth.models import User
 from django.test import TestCase
-from django.urls import resolve
+from django.urls import resolve, reverse
 from django.utils import timezone
 
-from ..models import *
+from ..models import Championship, Race, Team
 from .. import views
 
 CHAMPIONSHIP_TEST_DATA = dict(
