@@ -131,9 +131,10 @@ class TeamListView(ListView):
 
 
 class NewTahminView(LoginRequiredMixin, UpdateView):
-    model = Tahmin
     form_class = NewTahminForm
     success_url = "/sent/"
+    template_name = "tahmin/tahmin_form.html"
+    error_message = "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -149,16 +150,9 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         else:
             return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["championship"] = self.championship
-        return context
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({
-            'current_race': self.race
-        })
+        kwargs['current_race'] = self.race
         return kwargs
 
     def get_object(self):
@@ -183,7 +177,7 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        messages.error(self.request, "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!")
+        messages.error(self.request, self.error_message)
         for key, value in form.cleaned_data.items():
             if key.startswith("prediction"):
                 form.cleaned_data[key] = str(value.driver)
