@@ -41,9 +41,8 @@ class RaceListView(ListView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class RaceDetailView(ListView):
-    model = Race
-    template_name = "tahmin/race_detail.html"
+class RaceTahminView(ListView):
+    template_name = "tahmin/race_tahmins.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -59,26 +58,23 @@ class RaceDetailView(ListView):
             round=self.kwargs.get('round')
         )
 
-    def get_object(self):
+    def get_queryset(self):
         return self.race.tahmins.select_related(
-            "user", *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
+            "user",
+            *(f"prediction_{idx}" for idx in range(1, 11)),
+            *(f"prediction_{idx}__driver" for idx in range(1, 11))
         )
 
     def get_context_data(self, **kwargs):
-        current_race = self.race
-        tahmin_counts = [
+        context = super().get_context_data(**kwargs)
+        context["tahmin_counts"] = [
             race_driver.tahmin_count(position)
             for position, race_driver
             in enumerate(self.race.top10, 1)
         ]
-        tahmin_points = [tahmin_score(count) for count in tahmin_counts]
-        context = super().get_context_data(**kwargs)
-        context["tahmin_counts"] = tahmin_counts
-        context["tahmin_points"] = tahmin_points
-        context["tahmin_list"] = self.get_object()
-        context["race"] = current_race
-        context["before_race"] = current_race.datetime > timezone.now()
-
+        context["tahmin_points"] = [tahmin_score(count) for count in context["tahmin_counts"]]
+        context["race"] = self.race
+        context["before_race"] = self.race.datetime > timezone.now()
         return context
 
 

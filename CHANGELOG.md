@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.5] - 2023-05-28
+### Changed
+- RaceDetailView to RaceTahminView
+
 ## [1.7.4] - 2023-05-27
 ### Fixed
 - Star imports

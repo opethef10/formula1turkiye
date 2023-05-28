@@ -150,7 +150,7 @@ class Race(models.Model):
         return reverse("fantasy:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
 
     def get_tahmin_url(self):
-        return reverse("tahmin:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
+        return reverse("tahmin:race_tahmins", kwargs={'champ': self.championship.slug, "round": self.round})
 
     @cached_property
     def next(self):
