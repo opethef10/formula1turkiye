@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.query import QuerySet
@@ -239,8 +240,10 @@ class TeamDetailView(DetailView):
         return context
 
 
-class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
+class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = RaceTeam
+    success_message = "Form başarıyla gönderildi!"
+    error_message = "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -285,7 +288,6 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, "Form başarıyla gönderildi!")
         for key, value in form.cleaned_data.items():
             if isinstance(value, QuerySet):
                 form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
@@ -296,7 +298,7 @@ class TeamNewEditBaseView(LoginRequiredMixin, UpdateView):
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        messages.error(self.request, "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!")
+        messages.error(self.request, self.error_message)
         for key, value in form.cleaned_data.items():
             if isinstance(value, QuerySet):
                 form.cleaned_data[key] = [str(racedriver.driver) for racedriver in value]
