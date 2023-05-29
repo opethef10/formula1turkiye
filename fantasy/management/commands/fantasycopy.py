@@ -17,7 +17,7 @@ class Command(BaseCommand):
         set_token = options["token"]
         championship = Championship.objects.get(series=series)
         prev_race = championship.latest_race()
-        next_race = prev_race.next()
+        next_race = prev_race.next
         prev_race_drivers = prev_race.driver_instances.all()
         prev_raceteams = prev_race.team_instances.all()
         
