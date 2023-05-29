@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - RaceDetailView to RaceTahminView
 - Refactor NewTahminView
+### Fixed
+- next() to next
 
 ## [1.7.4] - 2023-05-27
 ### Fixed
