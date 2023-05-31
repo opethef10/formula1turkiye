@@ -42,6 +42,15 @@ class Tahmin(models.Model):
         choices=QUESTION_CHOICES
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['race', 'user'], name='unique_tahmin'),
+        ]
+        ordering = [
+            "race",
+            "user__first_name"
+        ]
+
     def __str__(self):
         return f"{self.race}-{self.user.get_full_name()}"
 
@@ -83,6 +92,9 @@ class Question(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        ordering = ["race"]
 
     def __str__(self):
         return f"{self.race} - {self.form_str()}"

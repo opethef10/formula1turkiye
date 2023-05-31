@@ -15,15 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.7.6] - 2023-05-31
 ### Added
-- RaceDriver ordering
+- Model orderings
 - Championship.fastest_lap_point
-- Race ordering
 ### Changed
 - RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
 - question_* fields in Tahmin to answer_* fields to reduce ambiguity
 ### Removed
-- order_by in RaceDriver querysets
-- order_by in Race querysets
+- Redundant order_by in most model querysets
 
 ## [1.7.5] - 2023-05-28
 ### Added

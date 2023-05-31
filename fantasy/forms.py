@@ -87,7 +87,7 @@ class EditTeamForm(forms.ModelForm):
         )
         self.old_race_drivers = current_racedrivers.filter(
             driver__in=prv_drivers
-        )
+        ).order_by("-price")
         prev_to_buy = current_racedrivers.exclude(
             driver__in=prv_drivers
         )

@@ -55,6 +55,12 @@ class Championship(models.Model):
     price_img = models.FileField(null=True, blank=True)
     slug = models.SlugField(unique=True, editable=False)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['year', 'series'], name='unique_year_series'),
+        ]
+        ordering = ["-year", "series"]
+
     def __str__(self):
         return f"{self.year} {self.get_series_display()} Şampiyonası"
 
@@ -99,6 +105,9 @@ class Constructor(models.Model):
     slug = models.SlugField(unique=True, editable=False)
     championship = models.ManyToManyField(Championship, through='ChampionshipConstructor', related_name='constructors')
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -114,6 +123,9 @@ class Driver(models.Model):
     slug = models.SlugField(unique=True, editable=False)
     number = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=3, blank=True, null=True)
+
+    class Meta:
+        ordering = ["forename", "surname"]
 
     def __str__(self):
         return self.name
@@ -196,10 +208,8 @@ class RaceDriver(models.Model):
             models.UniqueConstraint(fields=['race', 'driver'], name='unique_racedriver'),
         ]
         ordering = [
-            "race__championship__series",
-            "race__championship__year",
-            "race__round",
-            "championship_constructor__garage_order",
+            "race",
+            "championship_constructor",
             "driver__number"
         ]
 
@@ -311,6 +321,12 @@ class RaceTeam(models.Model):
     )
     race_drivers = models.ManyToManyField(RaceDriver, through="RaceTeamDriver", related_name='raceteams', blank=True)
 
+    class Meta:
+        ordering = [
+            "race",
+            "team__user"
+        ]
+
     def __str__(self):
         return f"{self.race}-{self.team}"
 
@@ -338,6 +354,12 @@ class RaceTeamDriver(models.Model):
     raceteam = models.ForeignKey(RaceTeam, on_delete=models.CASCADE, related_name='raceteamdrivers')
     racedriver = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='raceteamdrivers')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['raceteam', 'racedriver'], name='unique_raceteam_racedriver'),
+        ]
+        ordering = ["racedriver__race", "raceteam__team__user__first_name", "-racedriver__price"]
+
     def __str__(self):
         return f"{self.raceteam}-{self.racedriver}"
 
@@ -350,8 +372,8 @@ class ChampionshipConstructor(models.Model):
     constructor = models.ForeignKey(Constructor, on_delete=models.CASCADE, related_name='championship_instances')
     garage_order = models.IntegerField()
     bgcolor = ColorField(default="#f8f9fa")
-    alternative_bgcolor = ColorField(default="#f8f9fa")
     fontcolor = ColorField(default="#000000")
+    alternative_bgcolor = ColorField(default="#f8f9fa")
     alternative_fontcolor = ColorField(default="#000000")
 
     class Meta:
@@ -359,6 +381,7 @@ class ChampionshipConstructor(models.Model):
             models.UniqueConstraint(fields=['championship', 'constructor'], name='unique_championship_constructor'),
             models.UniqueConstraint(fields=['championship', 'garage_order'], name='unique_championship_garage_order'),
         ]
+        ordering = ["championship", "garage_order"]
 
     def __str__(self):
         return f"{self.championship} - {self.constructor}"
