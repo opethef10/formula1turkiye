@@ -40,9 +40,6 @@ class NewTeamForm(forms.ModelForm):
             label="Sürücüler",
             queryset=RaceDriver.objects.select_related("driver").filter(
                 race=current_race
-            ).order_by(
-                "championship_constructor__garage_order",
-                "driver__number"
             ),
             widget=CheckboxSelectMultipleWithPrice(),
             help_text="En fazla 8 pilot seçebilirsiniz."

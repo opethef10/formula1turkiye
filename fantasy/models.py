@@ -193,6 +193,13 @@ class RaceDriver(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['race', 'driver'], name='unique_racedriver'),
         ]
+        ordering = [
+            "race__championship__series",
+            "race__championship__year",
+            "race__round",
+            "championship_constructor__garage_order",
+            "driver__number"
+        ]
 
     def __str__(self):
         return f"{self.race}-{self.driver}"

@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.6] - 2023-05-31
+### Added
+- RaceDriver ordering
+### Changed
+### Deprecated
+### Removed
+- order_by in RaceDriver querysets
+### Fixed
+### Security
+
 ## [1.7.5] - 2023-05-28
 ### Added
 - SuccessMessageMixin to TeamNewEditBaseView

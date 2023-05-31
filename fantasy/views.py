@@ -115,9 +115,6 @@ class RaceDetailView(DetailView):
         race = self.object
         context["race_driver_list"] = race.driver_instances.select_related(
             "championship_constructor", "driver", "race", "race__championship"
-        ).order_by(
-            "championship_constructor__garage_order",
-            "driver__number"
         )
         context["race_team_list"] = race.team_instances.prefetch_related(
             "raceteamdrivers", "race_drivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
