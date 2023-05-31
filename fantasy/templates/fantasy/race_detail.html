@@ -59,9 +59,9 @@
                                 </td>
                                 <td>{{ race_driver.qualy|default_if_none:"" }}</td>
                                 <td>{{ race_driver.grid_sprint|default_if_none:"" }}</td>
-                                <td>{{ race_driver.sprint|default_if_none:"" }}<b><sup>{{ race_driver.sprint_fastest_lap|default_if_none:"" }}</sup></b></td>
+                                <td>{{ race_driver.sprint|default_if_none:"" }}<b><sup>{% if race_driver.sprint_fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
                                 <td>{{ race_driver.grid|default_if_none:"" }}</td>
-                                <td>{{ race_driver.result|default_if_none:"" }}<b><sup>{{ race_driver.fastest_lap|default_if_none:"" }}</sup></b></td>
+                                <td>{{ race_driver.result|default_if_none:"" }}<b><sup>{% if race_driver.fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
                                 <td>{{ race_driver.overtake_point }}</td>
                                 <td>{{ race_driver.qualy_point }}</td>
                                 <td>{{ race_driver.race_point }}</td>
@@ -146,7 +146,7 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [[{% if tab_id == "drivers" %}9 {% else %} 5 {% endif %}, 'desc']],
+                        order: {% if tab_id == "drivers" %}[]{% else %} [[5, 'desc']] {% endif %},
                         "info": false,
                         columnDefs: [
                             {

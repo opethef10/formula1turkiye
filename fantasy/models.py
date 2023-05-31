@@ -45,6 +45,7 @@ class Championship(models.Model):
     )
     is_fantasy = models.BooleanField(default=False)
     is_tahmin = models.BooleanField(default=False)
+    fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -184,10 +185,10 @@ class RaceDriver(models.Model):
     qualy = models.PositiveIntegerField(blank=True, null=True)
     grid_sprint = models.PositiveIntegerField(blank=True, null=True)
     sprint = models.PositiveIntegerField(blank=True, null=True)
-    sprint_fastest_lap = models.PositiveIntegerField(blank=True, null=True)
+    sprint_fastest_lap = models.BooleanField(default=False)
     grid = models.PositiveIntegerField(blank=True, null=True)
     result = models.PositiveIntegerField(blank=True, null=True)
-    fastest_lap = models.PositiveIntegerField(blank=True, null=True)
+    fastest_lap = models.BooleanField(default=False)
 
     class Meta:
         constraints = [
@@ -216,8 +217,14 @@ class RaceDriver(models.Model):
 
     def race_point(self, tactic=None):
         coefficient = self.race.championship.coefficient(tactic) if tactic == "F" else 1
+        fastest_lap_point = self.race.championship.fastest_lap_point
         return round(
-            (self._feature_point() + self._sprint_point() + (self.fastest_lap or 0)) * coefficient,
+            (
+                self._feature_point() +
+                self._sprint_point() +
+                (self.fastest_lap * fastest_lap_point) +
+                (self.sprint_fastest_lap * fastest_lap_point)
+            ) * coefficient,
             1
         )
 

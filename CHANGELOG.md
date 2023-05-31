@@ -16,7 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.6] - 2023-05-31
 ### Added
 - RaceDriver ordering
+- Championship.fastest_lap_point
 ### Changed
+- RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
 ### Deprecated
 ### Removed
 - order_by in RaceDriver querysets
