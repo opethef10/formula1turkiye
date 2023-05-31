@@ -17,9 +17,6 @@ class NewTahminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         race_drivers = current_race.driver_instances.select_related(
             "driver"
-        ).order_by(
-            "championship_constructor__garage_order",
-            "driver__number"
         )
         for idx in range(1, 11):
             self.fields[f"prediction_{idx}"] = RaceDriverChoiceField(
