@@ -37,7 +37,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
+        return self.championship.races.only("name", "round", "championship", "datetime")
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
@@ -111,7 +111,7 @@ class TeamListView(ListView):
             "questions", "driver_instances", "driver_instances__driver"
         ).filter(
             championship=self.championship
-        ).order_by('round')
+        )
         race_count = race_list.count()
         tahmin_list = self.get_queryset()
         tahmin_race_user_matrix = {}

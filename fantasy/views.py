@@ -49,7 +49,7 @@ class DriverListView(ListView):
         context = super().get_context_data(**kwargs)
         race_list = Race.objects.prefetch_related("team_instances").select_related("championship").filter(
             championship=self.championship
-        ).order_by('round')
+        )
         race_count = race_list.count()
         race_driver_dict = {}
         for rd in self.get_queryset():
@@ -145,7 +145,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
+        return self.championship.races.only("name", "round", "championship", "datetime")
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
@@ -181,7 +181,7 @@ class TeamListView(ListView):
     def get_context_data(self, **kwargs):
         race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
             championship=self.championship
-        ).order_by('round')
+        )
         race_count = race_list.count()
         team_list = self.get_queryset()
         race_team_list = RaceTeam.objects.prefetch_related(
@@ -223,7 +223,7 @@ class TeamDetailView(DetailView):
         )
         race_list = Race.objects.select_related("championship").filter(
             championship=championship
-        ).order_by('round')
+        )
         team = self.get_object()
 
         race_team_dict = {race: None for race in race_list}

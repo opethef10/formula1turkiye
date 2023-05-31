@@ -143,6 +143,7 @@ class Race(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['championship', 'round'], name='unique_championship_round'),
         ]
+        ordering = ["-datetime"]
 
     def __str__(self):
         return f"{self.championship.year} {self.name}"
