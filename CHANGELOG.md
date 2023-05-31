@@ -19,11 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Championship.fastest_lap_point
 ### Changed
 - RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
-### Deprecated
+- question_* fields in Tahmin to answer_* fields to reduce ambiguity
 ### Removed
 - order_by in RaceDriver querysets
-### Fixed
-### Security
 
 ## [1.7.5] - 2023-05-28
 ### Added
