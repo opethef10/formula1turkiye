@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Model orderings
 - Championship.fastest_lap_point
+- Title blocks for each template
 ### Changed
 - RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
 - question_* fields in Tahmin to answer_* fields to reduce ambiguity
