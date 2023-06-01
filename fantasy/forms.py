@@ -121,7 +121,7 @@ class EditTeamForm(forms.ModelForm):
         # Clean race drivers
         to_sell = cleaned_data.get("to_sell", RaceDriver.objects.none())
         to_buy = cleaned_data.get("to_buy", RaceDriver.objects.none())
-        race_drivers = self.old_race_drivers.difference(to_sell).union(to_buy)
+        race_drivers = self.old_race_drivers.exclude(id__in=to_sell) | to_buy
         if not race_drivers:
             self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
         if len(race_drivers) > self.max_drivers_in_a_team:
