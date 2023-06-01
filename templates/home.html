@@ -72,7 +72,7 @@
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "fantasy:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{{ last_race_f1.get_absolute_url }}" class="card-link">Son Yarış</a></li>
+                            href="{% url "fantasy:redirect_last_race" "2023-f1" %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url 'fantasy:driver_list' "2023-f1" %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f1 %}
@@ -108,7 +108,7 @@
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "fantasy:team_list" "2023-f2" %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{{ last_race_f2.get_absolute_url }}" class="card-link">Son Yarış</a></li>
+                            href="{% url "fantasy:redirect_last_race" "2023-f2" %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url 'fantasy:driver_list' "2023-f2" %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f2 %}
@@ -137,7 +137,7 @@
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "tahmin:team_list" "2023-f1" %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{{ last_race_f1.get_tahmin_url }}" class="card-link">Son Yarış</a></li>
+                            href="{% url "tahmin:redirect_last_race" "2023-f1" %}" class="card-link">Son Yarış</a></li>
                 </div>
             </div>
         </div>
