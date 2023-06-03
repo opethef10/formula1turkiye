@@ -6,18 +6,55 @@ from django.utils.functional import cached_property
 
 from fantasy.models import Race, Driver, RaceDriver, Championship
 
-QUESTION_CHOICES = [
-    ("A", "A"),
-    ("B", "B"),
-    ("C", "C"),
-    ("D", "D"),
-]
-
 
 def tahmin_score(count):
     if not 0 < count < 20:
         return 0
     return ceil((20 - count) ** 2 / 2)
+
+
+class Question(models.Model):
+    QUESTION_CHOICES = [
+        ("A", "A"),
+        ("B", "B"),
+        ("C", "C"),
+        ("D", "D"),
+    ]
+    race = models.ForeignKey(Race, on_delete=models.RESTRICT, related_name='questions', null=True)
+    text = models.TextField()
+    choice_A = models.CharField(max_length=64)
+    point_A = models.PositiveSmallIntegerField()
+    choice_B = models.CharField(max_length=64)
+    point_B = models.PositiveSmallIntegerField()
+    choice_C = models.CharField(null=True, blank=True, max_length=64)
+    point_C = models.PositiveSmallIntegerField(null=True, blank=True)
+    choice_D = models.CharField(null=True, blank=True, max_length=64)
+    point_D = models.PositiveSmallIntegerField(null=True, blank=True)
+    answer = models.CharField(
+        max_length=1,
+        choices=QUESTION_CHOICES,
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ["race"]
+
+    def __str__(self):
+        return f"{self.race} - {self.form_str()}"
+
+    def form_str(self):
+        result = f"{self.text}\n"
+        for char, _ in self.QUESTION_CHOICES:
+            choice = getattr(self, f"choice_{char}")
+            point = getattr(self, f"point_{char}")
+            if choice:
+                result += f"\n{char}) {choice} [{point} puan]"
+        return result
+
+    @cached_property
+    def point(self):
+        return getattr(self, f"point_{self.answer}", 0)
 
 
 class Tahmin(models.Model):
@@ -35,11 +72,11 @@ class Tahmin(models.Model):
     prediction_10 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_10')
     answer_1 = models.CharField(
         max_length=1,
-        choices=QUESTION_CHOICES
+        choices=Question.QUESTION_CHOICES
     )
     answer_2 = models.CharField(
         max_length=1,
-        choices=QUESTION_CHOICES
+        choices=Question.QUESTION_CHOICES
     )
 
     class Meta:
@@ -73,41 +110,3 @@ class Tahmin(models.Model):
 
     def total_point(self):
         return round(sum(point for point in self.prediction_point if point is not None), 1)
-
-
-class Question(models.Model):
-    race = models.ForeignKey(Race, on_delete=models.RESTRICT, related_name='questions', null=True)
-    text = models.TextField()
-    choice_A = models.CharField(max_length=64)
-    point_A = models.PositiveSmallIntegerField()
-    choice_B = models.CharField(max_length=64)
-    point_B = models.PositiveSmallIntegerField()
-    choice_C = models.CharField(null=True, blank=True, max_length=64)
-    point_C = models.PositiveSmallIntegerField(null=True, blank=True)
-    choice_D = models.CharField(null=True, blank=True, max_length=64)
-    point_D = models.PositiveSmallIntegerField(null=True, blank=True)
-    answer = models.CharField(
-        max_length=1,
-        choices=QUESTION_CHOICES,
-        null=True,
-        blank=True
-    )
-
-    class Meta:
-        ordering = ["race"]
-
-    def __str__(self):
-        return f"{self.race} - {self.form_str()}"
-
-    def form_str(self):
-        result = f"{self.text}\n"
-        for char, _ in QUESTION_CHOICES:
-            choice = getattr(self, f"choice_{char}")
-            point = getattr(self, f"point_{char}")
-            if choice:
-                result += f"\n{char}) {choice} [{point} puan]"
-        return result
-
-    @cached_property
-    def point(self):
-        return getattr(self, f"point_{self.answer}", 0)

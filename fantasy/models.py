@@ -12,23 +12,6 @@ from django.utils.text import slugify
 from django_countries.fields import CountryField
 from colorfield.fields import ColorField
 
-TACTIC_CHOICES = [
-    ("G", "Geçiş"),
-    ("S", "Sıralama"),
-    ("F", "Finiş"),
-]
-CHAMPIONSHIP_CHOICES = [
-    ("f1", "Formula 1"),
-    ("f2", "Formula 2"),
-    ("fe", "Formula E"),
-]
-OVERTAKE_DOUBLE_POINT_THRESHOLD = 10
-DISCOUNT_COEFFICIENTS = (
-    Decimal("0.6"),
-    Decimal("0.13"),
-    Decimal("-0.0044"),
-    Decimal("0.000054")
-)
 JSON_PATH = Path(__file__).parent / "points.json"
 with JSON_PATH.open() as json_file:
     POINTS = json.load(
@@ -38,6 +21,11 @@ with JSON_PATH.open() as json_file:
 
 
 class Championship(models.Model):
+    CHAMPIONSHIP_CHOICES = [
+        ("f1", "Formula 1"),
+        ("f2", "Formula 2"),
+        ("fe", "Formula E"),
+    ]
     year = models.IntegerField()
     series = models.CharField(
         max_length=255,
@@ -70,11 +58,11 @@ class Championship(models.Model):
         super().save(*args, **kwargs)
 
     def coefficient(self, tactic):
-        if tactic == "G":
+        if tactic == RaceTeam.GEÇİŞ:
             return self.overtake_coefficient
-        elif tactic == "S":
+        elif tactic == RaceTeam.SIRALAMA:
             return self.qualifying_coefficient
-        elif tactic == "F":
+        elif tactic == RaceTeam.FİNİŞ:
             return self.finish_coefficient
 
     def latest_race(self):
@@ -190,6 +178,13 @@ class Race(models.Model):
 
 
 class RaceDriver(models.Model):
+    DISCOUNT_COEFFICIENTS = (
+        Decimal("0.6"),
+        Decimal("0.13"),
+        Decimal("-0.0044"),
+        Decimal("0.000054")
+    )
+    OVERTAKE_DOUBLE_POINT_THRESHOLD = 10
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='driver_instances')
     driver = models.ForeignKey(Driver, on_delete=models.RESTRICT, related_name='race_instances')
     championship_constructor = models.ForeignKey("ChampionshipConstructor", null=True, on_delete=models.SET_NULL, related_name='race_drivers')
@@ -217,7 +212,7 @@ class RaceDriver(models.Model):
         return f"{self.race}-{self.driver}"
 
     def qualy_point(self, tactic=None):
-        coefficient = self.race.championship.coefficient(tactic) if tactic == "S" else 1
+        coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.SIRALAMA else 1
         return round(POINTS["qualy"].get(self.qualy, 0) * coefficient, 1)
 
     def _sprint_point(self):
@@ -227,7 +222,7 @@ class RaceDriver(models.Model):
         return POINTS["race"].get(self.result, 0)
 
     def race_point(self, tactic=None):
-        coefficient = self.race.championship.coefficient(tactic) if tactic == "F" else 1
+        coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
         fastest_lap_point = self.race.championship.fastest_lap_point
         return round(
             (
@@ -248,8 +243,8 @@ class RaceDriver(models.Model):
             return 0
         else:
             raw = (self.grid_sprint - self.sprint)
-            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
-            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
+            bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
+            top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
             return raw + bottom_to_top - top_to_top
 
     def _feature_overtake_point(self):
@@ -259,12 +254,12 @@ class RaceDriver(models.Model):
             return 0
         else:
             raw = (self.grid - self.result)
-            bottom_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
-            top_to_top = max(0, OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
+            bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
+            top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
             return raw + bottom_to_top - top_to_top
 
     def overtake_point(self, tactic=None):
-        coefficient = self.race.championship.coefficient(tactic) if tactic == "G" else 1
+        coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.GEÇİŞ else 1
         return round(
             (self._sprint_overtake_point() + self._feature_overtake_point()) * coefficient,
             1
@@ -276,7 +271,7 @@ class RaceDriver(models.Model):
     def discounted_price(self):
         if self.discount:
             discount = sum(
-                DISCOUNT_COEFFICIENTS[power] * self.price ** power
+                self.DISCOUNT_COEFFICIENTS[power] * self.price ** power
                 for power
                 in range(4)
             )
@@ -311,6 +306,14 @@ class Team(models.Model):
 
 
 class RaceTeam(models.Model):
+    GEÇİŞ = "G"
+    SIRALAMA = "S"
+    FİNİŞ = "F"
+    TACTIC_CHOICES = [
+        (GEÇİŞ, "Geçiş"),
+        (SIRALAMA, "Sıralama"),
+        (FİNİŞ, "Finiş"),
+    ]
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='team_instances')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='race_instances')
     token = models.IntegerField()
@@ -335,13 +338,13 @@ class RaceTeam(models.Model):
         return round(sum(race_driver.total_point(self.tactic) for race_driver in self.race_drivers.all()), 1)
 
     def overtake_point(self):
-        return round(sum(race_driver.total_point("G") for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.GEÇİŞ) for race_driver in self.race_drivers.all()), 1)
 
     def qualy_point(self):
-        return round(sum(race_driver.total_point("S") for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.SIRALAMA) for race_driver in self.race_drivers.all()), 1)
 
     def race_point(self):
-        return round(sum(race_driver.total_point("F") for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.FİNİŞ) for race_driver in self.race_drivers.all()), 1)
 
     def none_point(self):
         return round(sum(race_driver.total_point() for race_driver in self.race_drivers.all()), 1)
