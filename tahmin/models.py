@@ -33,14 +33,23 @@ class Tahmin(models.Model):
     prediction_8 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_8')
     prediction_9 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_9')
     prediction_10 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_10')
-    question_1 = models.CharField(
+    answer_1 = models.CharField(
         max_length=1,
         choices=QUESTION_CHOICES
     )
-    question_2 = models.CharField(
+    answer_2 = models.CharField(
         max_length=1,
         choices=QUESTION_CHOICES
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['race', 'user'], name='unique_tahmin'),
+        ]
+        ordering = [
+            "race",
+            "user__first_name"
+        ]
 
     def __str__(self):
         return f"{self.race}-{self.user.get_full_name()}"
@@ -57,7 +66,7 @@ class Tahmin(models.Model):
                 result[position - 1] = point
         for idx in {1, 2}:
             question = questions[idx - 1]
-            predicted_answer = getattr(self, f"question_{idx}")
+            predicted_answer = getattr(self, f"answer_{idx}")
             if predicted_answer == question.answer:
                 result[10 + idx - 1] = question.point
         return result
@@ -83,6 +92,9 @@ class Question(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        ordering = ["race"]
 
     def __str__(self):
         return f"{self.race} - {self.form_str()}"

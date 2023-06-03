@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static fantasy_tags %}
 
+{% block title %}{{ race }}{% endblock %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
@@ -103,13 +105,13 @@
                     </small>
                 </td>
                 <td>
-                    {{ tahmin.question_1 }}
+                    {{ tahmin.answer_1 }}
                     <small hidden>
                         {{ tahmin.prediction_point.10|default_if_none:"" }}
                     </small>
                 </td>
                 <td>
-                    {{ tahmin.question_2 }}
+                    {{ tahmin.answer_2 }}
                     <small hidden>
                         {{ tahmin.prediction_point.11|default_if_none:"" }}
                     </small>

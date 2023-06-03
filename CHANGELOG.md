@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.6] - 2023-06-01
+### Added
+- Model orderings
+- Championship.fastest_lap_point
+- Title blocks for each template
+- LastRaceRedirectView
+### Changed
+- RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
+- question_* fields in Tahmin to answer_* fields to reduce ambiguity
+- Simplify alım satım form __init__
+- Flatpage title element
+### Removed
+- Redundant order_by in most model querysets
+### Fixed
+- order_by error in compound statements
+
 ## [1.7.5] - 2023-05-28
 ### Added
 - SuccessMessageMixin to TeamNewEditBaseView
