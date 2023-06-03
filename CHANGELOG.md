@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RaceDriver.fastest_lap & RaceDriver.sprint_fastest_lap to BooleanField
 - question_* fields in Tahmin to answer_* fields to reduce ambiguity
 - Simplify alım satım form __init__
+- Flatpage title element
 ### Removed
 - Redundant order_by in most model querysets
 ### Fixed
