@@ -86,7 +86,7 @@ class DriverListView(ListView):
         return context
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
     queryset = Championship.objects.filter(is_fantasy=True)
     ordering = ["-year", "series"]
@@ -172,7 +172,7 @@ class RaceListView(ListView):
         return context
 
 
-@method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class TeamListView(ListView):
     model = Team
 

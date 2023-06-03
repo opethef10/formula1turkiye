@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Tahmin, QUESTION_CHOICES
+from .models import Tahmin, Question
 
 
 class RaceDriverChoiceField(forms.ModelChoiceField):
@@ -32,5 +32,5 @@ class NewTahminForm(forms.ModelForm):
             self.fields[f"answer_{idx}"] = forms.ChoiceField(
                 label=f"1{idx}. {question.form_str()}",
                 widget=forms.RadioSelect,
-                choices=QUESTION_CHOICES[:4 if question.choice_D else (3 if question.choice_C else 2)],
+                choices=Question.QUESTION_CHOICES[:4 if question.choice_D else (3 if question.choice_C else 2)],
             )

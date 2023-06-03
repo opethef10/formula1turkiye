@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from .models import Driver, RaceTeam, RaceDriver, TACTIC_CHOICES
+from .models import RaceTeam, RaceDriver
 
 
 class RaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -84,7 +84,7 @@ class EditTeamForm(forms.ModelForm):
             driver__in=prv_driver_ids
         )
 
-        self.fields["tactic"] = forms.ChoiceField(label="Taktik", choices=TACTIC_CHOICES, initial=self.prev_race_team.tactic)
+        self.fields["tactic"] = forms.ChoiceField(label="Taktik", choices=RaceTeam.TACTIC_CHOICES, initial=self.prev_race_team.tactic)
         self.fields["token"] = forms.IntegerField(label="Kalan Hak", disabled=True, required=False, initial=self.prev_race_team.token)
         self.fields["budget"] = forms.DecimalField(label="Kalan Bütçe", disabled=True, required=False, initial=self.prev_race_team.budget)
         self.fields["race_drivers"] = RaceDriverMultipleChoiceField(
