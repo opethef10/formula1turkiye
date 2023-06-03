@@ -20,7 +20,7 @@ logger = logging.getLogger("f1tform")
 HOURS = settings.HOURS
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class ChampionshipListView(ListView):
     queryset = Championship.objects.filter(is_tahmin=True)
     ordering = ["-year", "series"]
