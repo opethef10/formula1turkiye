@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static fantasy_tags %}
 
+{% block title %}Sürücü İstatistikleri{% endblock %}
+
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
 {% endblock %}
@@ -9,7 +11,7 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
-    <li class="breadcrumb-item">Sürücüler</li>
+    <li class="breadcrumb-item">Sürücü İstatistikleri</li>
 {% endblock %}
 
 {% block content %}

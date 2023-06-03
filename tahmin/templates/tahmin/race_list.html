@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Tahmin {{ view.championship }}{% endblock %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>

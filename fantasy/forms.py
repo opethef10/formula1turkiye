@@ -40,9 +40,6 @@ class NewTeamForm(forms.ModelForm):
             label="Sürücüler",
             queryset=RaceDriver.objects.select_related("driver").filter(
                 race=current_race
-            ).order_by(
-                "championship_constructor__garage_order",
-                "driver__number"
             ),
             widget=CheckboxSelectMultipleWithPrice(),
             help_text="En fazla 8 pilot seçebilirsiniz."
@@ -77,22 +74,14 @@ class EditTeamForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.max_drivers_in_a_team = current_race.championship.max_drivers_in_team
         prev_race = current_race.get_previous_by_datetime(championship=current_race.championship)
-        current_racedrivers = RaceDriver.objects.select_related("driver").filter(
-            race=current_race
-        )
-        prv_drivers = Driver.objects.filter(
-            race_instances__raceteamdrivers__raceteam__team__user=request.user,
-            race_instances__race=prev_race,
-        )
-        self.prev_race_team = RaceTeam.objects.get(
-            race=prev_race,
-            team__user=request.user
-        )
+        current_racedrivers = current_race.driver_instances.select_related("driver")
+        self.prev_race_team = prev_race.team_instances.get(team__user=request.user)
+        prv_driver_ids = self.prev_race_team.race_drivers.values_list("driver", flat=True)
         self.old_race_drivers = current_racedrivers.filter(
-            driver__in=prv_drivers
-        )
+            driver__in=prv_driver_ids
+        ).order_by("-price")
         prev_to_buy = current_racedrivers.exclude(
-            driver__in=prv_drivers
+            driver__in=prv_driver_ids
         )
 
         self.fields["tactic"] = forms.ChoiceField(label="Taktik", choices=TACTIC_CHOICES, initial=self.prev_race_team.tactic)
@@ -124,7 +113,7 @@ class EditTeamForm(forms.ModelForm):
         # Clean race drivers
         to_sell = cleaned_data.get("to_sell", RaceDriver.objects.none())
         to_buy = cleaned_data.get("to_buy", RaceDriver.objects.none())
-        race_drivers = self.old_race_drivers.difference(to_sell).union(to_buy)
+        race_drivers = self.old_race_drivers.exclude(id__in=to_sell) | to_buy
         if not race_drivers:
             self.add_error(None, "Takımınız en az bir sürücüden oluşmalıdır.")
         if len(race_drivers) > self.max_drivers_in_a_team:

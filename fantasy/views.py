@@ -7,13 +7,13 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic import ListView, DetailView, TemplateView, UpdateView
+from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
 from .models import Championship, Race, RaceDriver, RaceTeam, Team
@@ -49,7 +49,7 @@ class DriverListView(ListView):
         context = super().get_context_data(**kwargs)
         race_list = Race.objects.prefetch_related("team_instances").select_related("championship").filter(
             championship=self.championship
-        ).order_by('round')
+        ).order_by("round")
         race_count = race_list.count()
         race_driver_dict = {}
         for rd in self.get_queryset():
@@ -92,6 +92,18 @@ class ChampionshipListView(ListView):
     ordering = ["-year", "series"]
 
 
+class LastRaceRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        champ_slug = self.kwargs.get('champ')
+        championship = get_object_or_404(Championship, slug=champ_slug)
+        latest_race = championship.latest_race()
+
+        if latest_race:
+            return reverse('fantasy:race_detail', kwargs={'champ': champ_slug, 'round': latest_race.round})
+        else:
+            raise Http404("No previous races found.")
+
+
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
@@ -115,9 +127,6 @@ class RaceDetailView(DetailView):
         race = self.object
         context["race_driver_list"] = race.driver_instances.select_related(
             "championship_constructor", "driver", "race", "race__championship"
-        ).order_by(
-            "championship_constructor__garage_order",
-            "driver__number"
         )
         context["race_team_list"] = race.team_instances.prefetch_related(
             "raceteamdrivers", "race_drivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
@@ -184,7 +193,7 @@ class TeamListView(ListView):
     def get_context_data(self, **kwargs):
         race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
             championship=self.championship
-        ).order_by('round')
+        ).order_by("round")
         race_count = race_list.count()
         team_list = self.get_queryset()
         race_team_list = RaceTeam.objects.prefetch_related(
@@ -226,7 +235,7 @@ class TeamDetailView(DetailView):
         )
         race_list = Race.objects.select_related("championship").filter(
             championship=championship
-        ).order_by('round')
+        ).order_by("round")
         team = self.get_object()
 
         race_team_dict = {race: None for race in race_list}

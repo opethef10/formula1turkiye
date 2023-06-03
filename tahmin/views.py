@@ -3,12 +3,14 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import ListView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTahminForm
 from .models import Tahmin, tahmin_score
@@ -38,6 +40,18 @@ class RaceListView(ListView):
 
     def get_queryset(self):
         return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
+
+
+class LastRaceRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        champ_slug = self.kwargs.get('champ')
+        championship = get_object_or_404(Championship, slug=champ_slug)
+        latest_race = championship.latest_race()
+
+        if latest_race:
+            return reverse('tahmin:race_tahmins', kwargs={'champ': champ_slug, 'round': latest_race.round})
+        else:
+            raise Http404("No previous races found.")
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
@@ -111,7 +125,7 @@ class TeamListView(ListView):
             "questions", "driver_instances", "driver_instances__driver"
         ).filter(
             championship=self.championship
-        ).order_by('round')
+        ).order_by("round")
         race_count = race_list.count()
         tahmin_list = self.get_queryset()
         tahmin_race_user_matrix = {}
