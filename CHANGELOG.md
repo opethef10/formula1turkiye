@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.7] - 2023-06-03
 ### Changed
 - Place of choices to their respective models
+### Removed
+- All remaining view caches except flatpages
 
 ## [1.7.6] - 2023-06-01
 ### Added

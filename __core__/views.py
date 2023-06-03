@@ -10,7 +10,7 @@ from fantasy.models import Championship, Race
 HOURS = settings.HOURS
 
 
-@method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
+# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class HomeView(TemplateView):
     template_name = "home.html"
 
