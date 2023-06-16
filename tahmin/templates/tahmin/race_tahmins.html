@@ -34,11 +34,9 @@
         <thead class="thead-inverse">
         <tr>
             <th>Sıra</th>
-            {% for _ in "1234567890" %}
+            {% for _ in "123456789012" %}
                 <th>{{ forloop.counter }}</th>
             {% endfor %}
-            <th>11</th>
-            <th>12</th>
         </tr>
         </thead>
         <tr>
@@ -72,11 +70,9 @@
         <tr>
             <th>Sıra</th>
             <th>Üye</th>
-            {% for _ in "1234567890" %}
+            {% for _ in "123456789012" %}
                 <th>{{ forloop.counter }}</th>
             {% endfor %}
-            <th>11</th>
-            <th>12</th>
             <th>Toplam</th>
         </tr>
         </thead>
@@ -86,36 +82,16 @@
             <tr>
                 <td></td>
                 <td><a href="#">{{ tahmin.user.get_full_name }}</a></td>
-                {% for idx in "123456789" %}
-                    {% with "prediction_"|add:idx as prediction_field %}
-                        {% with tahmin|call_or_get_attr:prediction_field as racedriver %}
-                            <td>
-                                {{ racedriver.driver.code|title }}
-                                <small hidden>
-                                    {{ tahmin.prediction_point|index:forloop.counter0|default_if_none:"" }}
-                                </small>
-                            </td>
-                        {% endwith %}
-                    {% endwith %}
+                {% for position, racedriver in tahmin.predicted_racedrivers %}
+                    <td {% if racedriver.result == position %}style="background-color: #99ff9c"{% endif %}>
+                        {{ racedriver.driver.code|title }}
+                    </td>
                 {% endfor %}
-                <td>
-                    {{ tahmin.prediction_10.driver.code|title }}
-                    <small hidden>
-                        {{ tahmin.prediction_point.9|default_if_none:"" }}
-                    </small>
-                </td>
-                <td>
-                    {{ tahmin.answer_1 }}
-                    <small hidden>
-                        {{ tahmin.prediction_point.10|default_if_none:"" }}
-                    </small>
-                </td>
-                <td>
-                    {{ tahmin.answer_2 }}
-                    <small hidden>
-                        {{ tahmin.prediction_point.11|default_if_none:"" }}
-                    </small>
-                </td>
+                {% for predicted_answer, question in tahmin.predicted_answers %}
+                    <td {% if predicted_answer == question.answer %}style="background-color: #99ff9c"{% endif %}>
+                        {{ predicted_answer }}
+                    </td>
+                {% endfor %}
                 <td><b>{{ tahmin.total_point }}</b></td>
             </tr>
         {% endfor %}
@@ -147,16 +123,7 @@
                             orderable: false,
                             targets: 0,
                         },
-                    ],
-                    rowCallback: function (row, data, index) {
-                        for (let i = 2; i < 14; ++i) {
-                            console.log(row, i, data[i])
-                            $("td", row).eq(i).filter(function () {
-                                return parseInt($(this).find("small").text(), 10) >= 0;
-                            }).css('background-color', '#99ff9c')
-                        }
-
-                    }
+                    ]
                 }
             );
             table.on('init.dt', function () {

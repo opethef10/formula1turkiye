@@ -13,7 +13,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTahminForm
-from .models import Tahmin, tahmin_score
+from .models import Tahmin
 from fantasy.models import Championship, Race
 
 logger = logging.getLogger("f1tform")
@@ -86,7 +86,11 @@ class RaceTahminView(ListView):
             for position, race_driver
             in enumerate(self.race.top10, 1)
         ]
-        context["tahmin_points"] = [tahmin_score(count) for count in context["tahmin_counts"]]
+        context["tahmin_points"] = [
+            race_driver.tahmin_score(position)
+            for position, race_driver
+            in enumerate(self.race.top10, 1)
+        ]
         context["race"] = self.race
         context["before_race"] = self.race.datetime > timezone.now()
         return context

@@ -64,10 +64,10 @@
                                 <td>{{ race_driver.sprint|default_if_none:"" }}<b><sup>{% if race_driver.sprint_fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
                                 <td>{{ race_driver.grid|default_if_none:"" }}</td>
                                 <td>{{ race_driver.result|default_if_none:"" }}<b><sup>{% if race_driver.fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
-                                <td>{{ race_driver.overtake_point }}</td>
-                                <td>{{ race_driver.qualy_point }}</td>
-                                <td>{{ race_driver.race_point }}</td>
-                                <td><b>{{ race_driver.total_point }}</b></td>
+                                <td>{{ race_driver.overtake_point|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.qualy_point|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.race_point|default_if_none:"-" }}</td>
+                                <td><b>{{ race_driver.total_point|default_if_none:"-" }}</b></td>
                             </tr>
                         {% endfor %}
                         {% else %}
@@ -111,7 +111,7 @@
                                                 <a href="#">{{ raceteamdriver.racedriver.driver.surname }}</a>
                                                 <small class="text-muted d-block">
                                                     {% if tab_id == "teams" %}
-                                                        {{ raceteamdriver.total_point }}
+                                                        {{ raceteamdriver.total_point|default_if_none:"-" }}
                                                     {% elif tab_id == "kadrolar" %}
                                                         {{ raceteamdriver.racedriver.price|with_currency }}
                                                     {% endif %}
