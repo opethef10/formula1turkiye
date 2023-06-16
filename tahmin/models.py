@@ -1,16 +1,8 @@
-from math import ceil
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.functional import cached_property
 
 from fantasy.models import Race, Driver, RaceDriver, Championship
-
-
-def tahmin_score(count):
-    if not 0 < count < 20:
-        return 0
-    return ceil((20 - count) ** 2 / 2)
 
 
 class Question(models.Model):
@@ -91,22 +83,19 @@ class Tahmin(models.Model):
     def __str__(self):
         return f"{self.race}-{self.user.get_full_name()}"
 
-    @cached_property
-    def prediction_point(self):
-        questions = self.race.questions.all()[:2]
-        result = [None] * 12
+    def predicted_racedrivers(self):
         for position in range(1, 11):
-            predicted_race_driver = getattr(self, f"prediction_{position}")
-            if predicted_race_driver.result == position:
-                count = predicted_race_driver.tahmin_count(position)
-                point = tahmin_score(count)
-                result[position - 1] = point
-        for idx in {1, 2}:
-            question = questions[idx - 1]
-            predicted_answer = getattr(self, f"answer_{idx}")
-            if predicted_answer == question.answer:
-                result[10 + idx - 1] = question.point
-        return result
+            yield position, getattr(self, f"prediction_{position}")
+
+    def predicted_answers(self):
+        for idx, question in enumerate(self.race.questions.all()[:2], 1):
+            yield getattr(self, f"answer_{idx}"), question
 
     def total_point(self):
-        return round(sum(point for point in self.prediction_point if point is not None), 1)
+        total = 0
+        for position, predicted_race_driver in self.predicted_racedrivers():
+            total += predicted_race_driver.tahmin_score(position)
+        for predicted_answer, question in self.predicted_answers():
+            if predicted_answer == question.answer:
+                total += question.point
+        return total
