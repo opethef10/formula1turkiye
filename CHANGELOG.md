@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.9] - 2023-06-16
+### Fixed
+- Optimize static images
+
 ## [1.7.8] - 2023-06-16
 ### Changed
 - Simplify Tahmin logic
