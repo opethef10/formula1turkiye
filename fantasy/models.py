@@ -213,6 +213,8 @@ class RaceDriver(models.Model):
         return f"{self.race}-{self.driver}"
 
     def qualy_point(self, tactic=None):
+        if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
+            return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.SIRALAMA else 1
         return round(POINTS["qualy"].get(self.qualy, 0) * coefficient, 1)
 
@@ -223,6 +225,8 @@ class RaceDriver(models.Model):
         return POINTS["race"].get(self.result, 0)
 
     def race_point(self, tactic=None):
+        if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
+            return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
         fastest_lap_point = self.race.championship.fastest_lap_point
         return round(
@@ -260,6 +264,8 @@ class RaceDriver(models.Model):
             return raw + bottom_to_top - top_to_top
 
     def overtake_point(self, tactic=None):
+        if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
+            return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.GEÇİŞ else 1
         return round(
             (self._sprint_overtake_point() + self._feature_overtake_point()) * coefficient,
@@ -267,7 +273,9 @@ class RaceDriver(models.Model):
         )
 
     def total_point(self, tactic=None):
-        return round(self.overtake_point(tactic) + self.qualy_point(tactic) + self.race_point(tactic), 1)
+        if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
+            return None
+        return round((self.overtake_point(tactic) or 0) + (self.qualy_point(tactic) or 0) + (self.race_point(tactic) or 0), 1)
 
     def discounted_price(self):
         if self.discount:
@@ -343,19 +351,19 @@ class RaceTeam(models.Model):
 
     @cached_property
     def total_point(self):
-        return round(sum(race_driver.total_point(self.tactic) for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.tactic) or 0 for race_driver in self.race_drivers.all()), 1)
 
     def overtake_point(self):
-        return round(sum(race_driver.total_point(self.GEÇİŞ) for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.GEÇİŞ) or 0 for race_driver in self.race_drivers.all()), 1)
 
     def qualy_point(self):
-        return round(sum(race_driver.total_point(self.SIRALAMA) for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.SIRALAMA) or 0 for race_driver in self.race_drivers.all()), 1)
 
     def race_point(self):
-        return round(sum(race_driver.total_point(self.FİNİŞ) for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point(self.FİNİŞ) or 0 for race_driver in self.race_drivers.all()), 1)
 
     def none_point(self):
-        return round(sum(race_driver.total_point() for race_driver in self.race_drivers.all()), 1)
+        return round(sum(race_driver.total_point() or 0 for race_driver in self.race_drivers.all()), 1)
 
     def total_worth(self):
         return round(sum(race_driver.price for race_driver in self.race_drivers.all()) + self.budget, 1)
