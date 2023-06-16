@@ -1,6 +1,7 @@
 import json
 from decimal import Decimal
 from functools import cache
+from math import ceil
 from pathlib import Path
 
 from django.contrib.auth.models import User
@@ -284,6 +285,13 @@ class RaceDriver(models.Model):
     @cache
     def tahmin_count(self, position):
         return getattr(self, f"prediction_{position}").count()
+
+    def tahmin_score(self, position):
+        if self.result == position:
+            count = self.tahmin_count(position)
+            if 0 < count < 20:
+                return ceil((20 - count) ** 2 / 2)
+        return 0
 
 
 class Team(models.Model):
