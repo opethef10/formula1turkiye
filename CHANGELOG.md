@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.10] - 2023-06-27
+### Added
+- robots.txt
+
 ## [1.7.9] - 2023-06-16
 ### Fixed
 - Optimize static images
