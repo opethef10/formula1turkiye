@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.7.10] - 2023-07-01
+### Added
+- robots.txt
+### Fixed
+- RaceTeam points not in floating point
+
 ## [1.7.9] - 2023-06-16
 ### Fixed
 - Optimize static images
@@ -95,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Really3D Casio watch to Tahmin race detail page
 - Driver stats link to homepage
 ### Changed
-- List of links to horizontal list group in Fantasy Race List 
+- List of links to horizontal list group in Fantasy Race List
 - Race edit page more compact
 ### Removed
 - Driver detail page and view
