@@ -16,7 +16,7 @@ from .forms import NewTahminForm
 from .models import Tahmin
 from fantasy.models import Championship, Race
 
-logger = logging.getLogger("f1tform")
+logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
 
 
