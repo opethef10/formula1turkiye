@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
-## [1.8.0] - 2023-07-13 (Separate setting files)
+## [1.8.2] - 2023-07-19
+### Added
+- Favicons
+
+## [1.8.1] - 2023-07-19
 ### Changed
 - Logging console in development
 - All F1T loggings are unified
