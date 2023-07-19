@@ -10,7 +10,7 @@ from django.views.generic import UpdateView, CreateView
 
 from .forms import SignUpForm
 
-logger = logging.getLogger("f1tsignup")
+logger = logging.getLogger("f1t")
 
 
 class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):

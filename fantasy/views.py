@@ -18,7 +18,7 @@ from django.views.generic import ListView, DetailView, RedirectView, TemplateVie
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
 from .models import Championship, Race, RaceDriver, RaceTeam, Team
 
-logger = logging.getLogger("f1tform")
+logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
 
 

@@ -10,10 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
-from decouple import config
 from django.contrib.messages import constants as messages
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -80,8 +78,6 @@ DATABASES = {
 }
 
 # LOGGING
-ALIM_SATIM_LOG_PATH = config("ALIM_SATIM_LOG", default=os.devnull, cast=Path)
-SIGNUP_LOG_PATH = config("ALIM_SATIM_LOG", default=os.devnull, cast=Path)
 LOGGING = {
     'version': 1,
     # The version number of our log
@@ -96,27 +92,15 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': ALIM_SATIM_LOG_PATH,
-            'formatter': 'verbose',
-        },
-        'signupfile': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': SIGNUP_LOG_PATH,
-            'formatter': 'verbose',
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            'formatter': 'simple',
         },
     },
     'loggers': {
-        'f1tform': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'f1tsignup': {
-            'handlers': ['signupfile'],
+        'f1t': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
