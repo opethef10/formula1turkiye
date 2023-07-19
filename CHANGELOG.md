@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.0] - 2023-07-13 (Separate setting files)
 ### Changed
+- Logging console in development
+- All F1T loggings are unified
+
+## [1.8.0] - 2023-07-13 (Separate setting files)
+### Changed
 - Separate settings files for different environments
 
 ## [1.7.10] - 2023-07-01
