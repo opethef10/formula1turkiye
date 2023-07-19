@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.3] - 2023-07-19
+### Fixed
+- site.webmanifest
+
 ## [1.8.2] - 2023-07-19
 ### Added
 - Favicons
