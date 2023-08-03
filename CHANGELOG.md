@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.4] - 2023-08-03
+### Changed
+- Requirements location
+- Simplify .env.example
+- Static file locations into app folders
+### Removed
+- Empty files
+
 ## [1.8.3] - 2023-07-19
 ### Fixed
 - site.webmanifest
