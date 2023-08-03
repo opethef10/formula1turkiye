@@ -1,10 +1,8 @@
 asgiref==3.5.2
 Django==4.1.4
 django-widget-tweaks==1.4.12
-python-dotenv==0.21.1
 sqlparse==0.4.3
 tzdata==2022.7
-python-decouple==3.7
 django-minify-html==1.5.0
 IPython==8.11.0
 django_extensions==3.2.1
