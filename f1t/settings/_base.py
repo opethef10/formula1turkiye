@@ -14,8 +14,9 @@ from pathlib import Path
 
 from django.contrib.messages import constants as messages
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-ROOT_URLCONF = '__core__.urls'
+PROJECT_DIR = Path(__file__).parent.parent
+BASE_DIR = PROJECT_DIR.parent
+ROOT_URLCONF = 'f1t.urls'
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
@@ -53,7 +54,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [PROJECT_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [PROJECT_DIR / 'static']
 MEDIA_URL = '/media/'
 
 # Default primary key field type

@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.5] - 2023-08-05
+### Added
+- tests.py to settings
+- .editorconfig
+### Changed
+- __core__ directory to f1t
+- static and templates directories to project folder
+### Fixed
+- 403.html
+
 ## [1.8.4] - 2023-08-03
 ### Added
 - Flexible container width transition
