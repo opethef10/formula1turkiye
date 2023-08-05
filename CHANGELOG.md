@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.8.5] - 2023-08-05
 ### Added
 - tests.py to settings
+- .editorconfig
 ### Changed
 - __core__ directory to f1t
 - static and templates directories to project folder
