@@ -1,7 +1,8 @@
 from pathlib import Path
-from .base import *
 
 from decouple import config, Csv
+
+from ._base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('DJANGO_SECRET_KEY')

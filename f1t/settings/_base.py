@@ -15,7 +15,7 @@ from pathlib import Path
 from django.contrib.messages import constants as messages
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-ROOT_URLCONF = '__core__.urls'
+ROOT_URLCONF = 'f1t.urls'
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
