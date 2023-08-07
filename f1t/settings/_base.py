@@ -21,7 +21,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
 INSTALLED_APPS = [
-    'accounts',
+    'f1t.apps.accounts',
     'fantasy',
     'tahmin',
     "django_minify_html",

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.6] - 2023-08-07
+### Changed
+- accounts app to f1t/apps folder
+
 ## [1.8.5] - 2023-08-05
 ### Added
 - tests.py to settings
