@@ -29,7 +29,7 @@ urlpatterns = [
     path("accounts/", include("f1t.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("fantasy/", include("fantasy.urls")),
-    path("tahmin/", include("tahmin.urls")),
+    path("tahmin/", include("f1t.apps.tahmin.urls")),
     path('', HomeView.as_view(), name='home'),
 ]
 

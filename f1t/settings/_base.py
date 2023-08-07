@@ -23,7 +23,7 @@ DEBUG = False
 INSTALLED_APPS = [
     'f1t.apps.accounts',
     'fantasy',
-    'tahmin',
+    'f1t.apps.tahmin',
     "django_minify_html",
     "django_extensions",
     "django_countries",
