@@ -21,9 +21,9 @@ INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
 INSTALLED_APPS = [
-    'accounts',
-    'fantasy',
-    'tahmin',
+    'f1t.apps.accounts',
+    'f1t.apps.fantasy',
+    'f1t.apps.tahmin',
     "django_minify_html",
     "django_extensions",
     "django_countries",

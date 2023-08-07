@@ -26,10 +26,10 @@ from .views import HomeView
 urlpatterns = [
     path('admin/clearcache/', include('clearcache.urls')),
     path('admin/', admin.site.urls),
-    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("f1t.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("fantasy/", include("fantasy.urls")),
-    path("tahmin/", include("tahmin.urls")),
+    path("fantasy/", include("f1t.apps.fantasy.urls")),
+    path("tahmin/", include("f1t.apps.tahmin.urls")),
     path('', HomeView.as_view(), name='home'),
 ]
 
