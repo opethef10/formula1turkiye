@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from fantasy.models import Championship, RaceDriver, RaceTeam, RaceTeamDriver
+from ...models import Championship, RaceDriver, RaceTeam, RaceTeamDriver
 
 
 class Command(BaseCommand):
@@ -20,7 +20,7 @@ class Command(BaseCommand):
         next_race = prev_race.next
         prev_race_drivers = prev_race.driver_instances.all()
         prev_raceteams = prev_race.team_instances.all()
-        
+
         for prd in prev_race_drivers:
             nrd, created = RaceDriver.objects.get_or_create(
                 race=next_race,
