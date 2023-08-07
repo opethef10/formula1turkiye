@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.functional import cached_property
 
-from fantasy.models import Race, Driver, RaceDriver, Championship
+from ..fantasy.models import Race, Driver, RaceDriver, Championship
 
 
 class Question(models.Model):
