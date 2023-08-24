@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.7] - 2023-08-24
+### Fixed
+- Forms viewed before the deadline but sent after it
+
 ## [1.8.6] - 2023-08-07
 ### Changed
 - Apps to f1t/apps folder

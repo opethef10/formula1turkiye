@@ -260,10 +260,11 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        self.race = self.championship.next_race("fantasy")
+        self.next_race = self.championship.next_race("fantasy")
+        self.race = self.next_race or self.championship.next_race("tahmin")
 
     def get(self, request, *args, **kwargs):
-        if self.race is None:
+        if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:
             return super().get(request, *args, **kwargs)
