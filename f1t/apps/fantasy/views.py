@@ -240,7 +240,9 @@ class TeamDetailView(DetailView):
 
         race_team_dict = {race: None for race in race_list}
         for rt in RaceTeam.objects.prefetch_related(
-            "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver"
+            "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
+            "raceteamdrivers__racedriver__race", "raceteamdrivers__racedriver__race__championship",
+            "race_drivers__race__championship"
         ).select_related("race", "team").filter(team=team):
             race_team_dict[rt.race] = rt
         context = super().get_context_data(**kwargs)

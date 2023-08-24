@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.8.7] - 2023-08-24
 ### Fixed
 - Forms viewed before the deadline but sent after it
+- n+1 queries problem in TeamDetailView
 
 ## [1.8.6] - 2023-08-07
 ### Changed
