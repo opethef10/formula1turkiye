@@ -240,7 +240,9 @@ class TeamDetailView(DetailView):
 
         race_team_dict = {race: None for race in race_list}
         for rt in RaceTeam.objects.prefetch_related(
-            "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver"
+            "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
+            "raceteamdrivers__racedriver__race", "raceteamdrivers__racedriver__race__championship",
+            "race_drivers__race__championship"
         ).select_related("race", "team").filter(team=team):
             race_team_dict[rt.race] = rt
         context = super().get_context_data(**kwargs)
@@ -260,10 +262,11 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        self.race = self.championship.next_race("fantasy")
+        self.next_race = self.championship.next_race("fantasy")
+        self.race = self.next_race or self.championship.next_race("tahmin")
 
     def get(self, request, *args, **kwargs):
-        if self.race is None:
+        if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:
             return super().get(request, *args, **kwargs)

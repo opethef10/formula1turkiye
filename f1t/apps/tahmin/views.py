@@ -160,10 +160,11 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
             Championship,
             slug=self.kwargs.get('champ')
         )
-        self.race = self.championship.next_race("tahmin")
+        self.next_race = self.championship.next_race("tahmin")
+        self.race = self.next_race or self.championship.latest_race()
 
     def get(self, request, *args, **kwargs):
-        if self.race is None:
+        if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:
             return super().get(request, *args, **kwargs)
