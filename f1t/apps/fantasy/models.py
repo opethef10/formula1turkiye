@@ -334,6 +334,7 @@ class RaceTeam(models.Model):
     ]
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='team_instances')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='race_instances')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fantasy_instances')
     token = models.IntegerField()
     budget = models.DecimalField(max_digits=4, decimal_places=1)
     tactic = models.CharField(
