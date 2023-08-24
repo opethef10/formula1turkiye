@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.8] - 2023-08-24
+### Changed
+- Nonnullify Tahmin
+
 ## [1.8.7] - 2023-08-24
 ### Fixed
 - Forms viewed before the deadline but sent after it

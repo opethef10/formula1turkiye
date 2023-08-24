@@ -51,7 +51,7 @@ class Question(models.Model):
 
 class Tahmin(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmins')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins', null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins')
     prediction_1 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_1')
     prediction_2 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_2')
     prediction_3 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_3')
