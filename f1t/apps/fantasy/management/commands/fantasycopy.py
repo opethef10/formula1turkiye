@@ -35,6 +35,7 @@ class Command(BaseCommand):
             nrt, created = RaceTeam.objects.get_or_create(
                 race=next_race,
                 team=prt.team,
+                user=prt.user,
                 token=16 if set_token else prt.token,
                 budget=prt.budget + 5 if increase_budget else prt.budget,
                 tactic=prt.tactic

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.8.9] - 2023-09-12
+### Fixed
+- Fix fantasycopy bug
+
 ## [1.8.8] - 2023-08-24
 ### Added
 - user field to RaceTeam
