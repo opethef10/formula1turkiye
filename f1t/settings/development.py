@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 INSTALLED_APPS.append("debug_toolbar")
-MIDDLEWARE.insert(4, "debug_toolbar.middleware.DebugToolbarMiddleware")
+MIDDLEWARE.insert(5, "debug_toolbar.middleware.DebugToolbarMiddleware")
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
