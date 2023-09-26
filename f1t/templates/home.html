@@ -20,7 +20,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="/elo/" class="card-link">Elo Sıralama Projesi</a></h5>
+                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="elo/" %}" class="card-link">Elo Sıralama Projesi</a></h5>
                     <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
                         pilotları listesini hazırladık.</p>
                 </div>
@@ -29,7 +29,7 @@
         <div class="col-4 ">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="/puanla/" class="card-link">Yarışı Puanla</a></h5>
+                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="puanla/" %}" class="card-link">Yarışı Puanla</a></h5>
                     <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
                         puanını belirliyoruz.</p>
                 </div>
@@ -38,7 +38,7 @@
         <div class="col-4 ">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="/quiz/" class="card-link">Quiz Night</a></h5>
+                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="quiz/" %}" class="card-link">Quiz Night</a></h5>
                     <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
                 </div>
             </div>
