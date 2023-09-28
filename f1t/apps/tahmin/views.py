@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -150,7 +150,7 @@ class TeamListView(ListView):
 
 class NewTahminView(LoginRequiredMixin, UpdateView):
     form_class = NewTahminForm
-    success_url = "/sent/"
+    success_url = reverse_lazy('django.contrib.flatpages.views.flatpage', args=["sent/"])
     template_name = "tahmin/tahmin_form.html"
     error_message = "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!"
 

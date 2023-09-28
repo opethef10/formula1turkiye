@@ -21,19 +21,23 @@ from django.conf import settings
 from django.contrib.flatpages.views import flatpage
 
 from .views import HomeView
+from .urlresolvers import solid_i18n_patterns
 
-
-urlpatterns = [
+patterns = [
     path('admin/clearcache/', include('clearcache.urls')),
     path('admin/', admin.site.urls),
     path("accounts/", include("f1t.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("fantasy/", include("f1t.apps.fantasy.urls")),
     path("tahmin/", include("f1t.apps.tahmin.urls")),
+    path("pages/", include("django.contrib.flatpages.urls")),
     path('', HomeView.as_view(), name='home'),
 ]
 
 if settings.DEBUG:
-    urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
+    patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
-urlpatterns.append(re_path(r'^(?P<url>.*/)$', cache_page(24 * settings.HOURS)(vary_on_cookie(flatpage))))
+urlpatterns = [
+    path("i18n/", include("django.conf.urls.i18n"))
+]
+urlpatterns += solid_i18n_patterns(*patterns)
