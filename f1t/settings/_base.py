@@ -22,6 +22,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
 INSTALLED_APPS = [
+    'django.contrib.flatpages',
     'f1t.apps.accounts',
     'f1t.apps.fantasy',
     'f1t.apps.tahmin',
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     "django_countries",
     'clearcache',
     'colorfield',
+    'django_summernote',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.contrib.flatpages',
     "django.contrib.redirects",
     'widget_tweaks'
 ]
@@ -163,3 +164,9 @@ SITE_ID = 1
 SECONDS = 1
 MINUTES = 60 * SECONDS
 HOURS = 60 * MINUTES
+
+# ==============================================================================
+# THIRD-PARTY SETTINGS
+# ==============================================================================
+
+SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
