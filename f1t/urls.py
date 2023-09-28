@@ -31,6 +31,7 @@ patterns = [
     path("fantasy/", include("f1t.apps.fantasy.urls")),
     path("tahmin/", include("f1t.apps.tahmin.urls")),
     path("pages/", include("django.contrib.flatpages.urls")),
+    path('__summernote/', include('django_summernote.urls')),
     path('', HomeView.as_view(), name='home'),
 ]
 
