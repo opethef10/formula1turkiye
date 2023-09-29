@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load form_tags widget_tweaks static %}
+
+{% block title %}Bize Ulaşın{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">Bize Ulaşın</li>
+{% endblock %}
+
+{% block content %}
+  <img src="{% static 'img/email.jpg' %}"
+       class="rounded mx-auto my-3 d-block"
+       alt="{% block error_code %}{% endblock %}">
+  <div class="alert alert-info">
+    <p>Mesajlarınızı bize iletmek için bu formu kullanabilirsiniz. Mesajlarınız yöneticilerimiz tarafından
+      en kısa sürede yanıtlanacaktır.</p>
+  </div>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-success">Gönder</button>
+    <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+  </form>
+{% endblock %}

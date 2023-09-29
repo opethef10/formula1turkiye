@@ -13,6 +13,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.9.2] - 2023-09-28
+### Added
+- Contact form
+- Footer
+- Bootstrap-social
+- Fontawesome
+### Fixed
+- Flatpages breadcrumb
+
+## [1.9.1] - 2023-09-28
+### Added
+- django-summernote
+
+## [1.9.0] - 2023-09-27 (Multilanguage)
+### Added
+- Redirects app
+- language.js
+- Languages settings
+### Changed
+- URLs to i18n patterns
+- Flatpages URL to /pages/
+
 ## [1.8.9] - 2023-09-12
 ### Fixed
 - Fix fantasycopy bug

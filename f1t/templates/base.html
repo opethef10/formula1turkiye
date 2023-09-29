@@ -18,9 +18,13 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
     {% endif %}
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
     {% block stylesheet %}{% endblock %}
 </head>
-<body class="bg-light mb-5">
+<body class="bg-light">
 {% block body %}
     {% include 'includes/navbar.html' %}
 
@@ -48,6 +52,7 @@
         {% block content %}
         {% endblock %}
     </div>
+{% include "includes/footer.html" %}
 {% endblock body %}
 
 {% if debug %}
@@ -63,6 +68,7 @@
 {% endif %}
 <script src="{% static 'js/tablink.js' %}"></script>
 <script src="{% static 'js/jquery-colorize.js' %}"></script>
+<script src="{% static 'js/language.js' %}"></script>
 {% block javascript %}{% endblock %}
 </body>
 </html>

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 
 from django.contrib.messages import constants as messages
+from django.utils.translation import gettext_lazy as _
 
 PROJECT_DIR = Path(__file__).parent.parent
 BASE_DIR = PROJECT_DIR.parent
@@ -21,6 +22,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
 
 INSTALLED_APPS = [
+    'django.contrib.flatpages',
     'f1t.apps.accounts',
     'f1t.apps.fantasy',
     'f1t.apps.tahmin',
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
     "django_countries",
     'clearcache',
     'colorfield',
+    'django_summernote',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,19 +39,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.contrib.flatpages',
-    'widget_tweaks'
+    "django.contrib.redirects",
+    "fontawesomefree",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     "django_minify_html.middleware.MinifyHtmlMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
 ]
 
 TEMPLATES = [
@@ -62,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
     },
@@ -111,11 +118,18 @@ LOGGING = {
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = "tr-tr"
+LANGUAGE_CODE = "tr"
 TIME_ZONE = "Europe/Istanbul"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+LANGUAGES = (
+    ('tr', _('Turkish')),
+    # ('en', _('English')),
+)
+LOCALE_PATHS = [
+    PROJECT_DIR / 'locale/',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -131,7 +145,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-ADMINS = [('Onur Arıkan', 'altimuray@gmail.com'), ('Semih Boz', 'semih.boz0@gmail.com')]
+ADMINS = [
+    ('Onur Arıkan', 'altimuray@gmail.com'),
+    ('Semih Boz', 'semih.boz0@gmail.com'),
+    ("Formula 1 Türkiye", "formula1turkiyef1t@gmail.com"),
+]
 
 EMAIL_SUBJECT_PREFIX = "[Formula 1 Türkiye] "
 
@@ -151,3 +169,9 @@ SITE_ID = 1
 SECONDS = 1
 MINUTES = 60 * SECONDS
 HOURS = 60 * MINUTES
+
+# ==============================================================================
+# THIRD-PARTY SETTINGS
+# ==============================================================================
+
+SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
