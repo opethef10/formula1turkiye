@@ -144,7 +144,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-ADMINS = [('Onur Arıkan', 'altimuray@gmail.com'), ('Semih Boz', 'semih.boz0@gmail.com')]
+ADMINS = [
+    ('Onur Arıkan', 'altimuray@gmail.com'),
+    ('Semih Boz', 'semih.boz0@gmail.com'),
+    ("Formula 1 Türkiye", "formula1turkiyef1t@gmail.com"),
+]
 
 EMAIL_SUBJECT_PREFIX = "[Formula 1 Türkiye] "
 
