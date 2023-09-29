@@ -6,6 +6,10 @@ body {
     font-family: 'Peralta', cursive;
 }
 
+.footer_pusher {
+    min-height: calc(100vh - 341px);
+}
+
 .container {
   max-width: 100%;
 }
