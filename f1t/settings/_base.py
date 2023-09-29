@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     "django.contrib.redirects",
-    'widget_tweaks'
+    "fontawesomefree",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
