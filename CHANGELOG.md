@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.9.3] - 2023-09-29
+### Fixed
+- production.txt in requirements
+- Contact form text alignment
+
 ## [1.9.2] - 2023-09-28
 ### Added
 - Contact form
