@@ -1,1 +1,2 @@
+-r base.txt
 python-decouple==3.7
