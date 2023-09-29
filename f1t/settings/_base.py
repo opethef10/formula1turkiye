@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     "django.contrib.redirects",
-    'widget_tweaks'
+    "fontawesomefree",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,7 @@ USE_L10N = True
 USE_TZ = True
 LANGUAGES = (
     ('tr', _('Turkish')),
-    ('en', _('English')),
+    # ('en', _('English')),
 )
 LOCALE_PATHS = [
     PROJECT_DIR / 'locale/',
@@ -144,7 +145,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-ADMINS = [('Onur Arıkan', 'altimuray@gmail.com'), ('Semih Boz', 'semih.boz0@gmail.com')]
+ADMINS = [
+    ('Onur Arıkan', 'altimuray@gmail.com'),
+    ('Semih Boz', 'semih.boz0@gmail.com'),
+    ("Formula 1 Türkiye", "formula1turkiyef1t@gmail.com"),
+]
 
 EMAIL_SUBJECT_PREFIX = "[Formula 1 Türkiye] "
 

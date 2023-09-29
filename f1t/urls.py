@@ -20,7 +20,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.conf import settings
 from django.contrib.flatpages.views import flatpage
 
-from .views import HomeView
+from .views import HomeView, ContactView
 from .urlresolvers import solid_i18n_patterns
 
 patterns = [
@@ -30,6 +30,7 @@ patterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("fantasy/", include("f1t.apps.fantasy.urls")),
     path("tahmin/", include("f1t.apps.tahmin.urls")),
+    path("contact/", ContactView.as_view(), name='contact'),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('__summernote/', include('django_summernote.urls')),
     path('', HomeView.as_view(), name='home'),
