@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-    <h3>ALIM SATIM - {{ view.race }}</h3>
+    <h3>ALIM SATIM - <a href="{{ view.race.get_absolute_url }}">{{ view.race }}</a></h3>
     <ul>
         <li>Sadece alım satım yapacaksanız, taktik seçimi yapmanıza gerek yoktur. Taktik seçimi varsayılan olarak geçen
             yarıştaki seçiminiz olarak görünür.
