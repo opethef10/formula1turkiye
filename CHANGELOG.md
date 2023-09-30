@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ## [1.9.4] - 2023-09-29
+### Added
+- Link to race in fantasy forms
+
+## [1.9.4] - 2023-09-29
 ### Fixed
 - Unsticky footer
 
