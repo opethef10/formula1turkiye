@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.9.7] - 2023-10-04
+### Added
+- Fantasy ready check
+### Changed
+- Order of sprint_shootout and sprint fields in Race model
+
 ## [1.9.6] - 2023-10-04
 ### Added
 - Session datetime fields

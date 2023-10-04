@@ -78,7 +78,8 @@ class Championship(models.Model):
         try:
             if league == "fantasy":
                 return self.races.filter(
-                    fp1_datetime__gt=timezone.now()
+                    fp1_datetime__gt=timezone.now(),
+                    fantasy_ready=True
                 ).latest("fp1_datetime")
             elif league == "tahmin":
                 return self.races.filter(
@@ -139,8 +140,8 @@ class Race(models.Model):
     fp2_datetime = models.DateTimeField(null=True, blank=True)
     fp3_datetime = models.DateTimeField(null=True, blank=True)
     quali_datetime = models.DateTimeField(null=True, blank=True)
-    sprint_datetime = models.DateTimeField(null=True, blank=True)
     sprint_shootout_datetime = models.DateTimeField(null=True, blank=True)
+    sprint_datetime = models.DateTimeField(null=True, blank=True)
     fantasy_ready = models.BooleanField(default=False)
     wikilink = models.URLField(blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
