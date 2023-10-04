@@ -17,7 +17,7 @@
     <li>Bütçenizi ({{ STARTING_BUDGET|with_currency }}) aşmayın.</li>
     <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>
     <li>Kadronuzu gönderdikten sonra düzenlemek istiyorsanız süresonuna kadar buradan düzenleyebilirsiniz.</li>
-    <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     <br/>
     <form method="post" novalidate>
         {% csrf_token %}

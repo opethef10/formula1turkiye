@@ -35,7 +35,7 @@
                 </li>
             </ul>
         </li>
-        <li>İşlemlerinizi <b>{{ view.race.deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+        <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     </ul>
     <img src="{{ championship.price_img.url }}" width="410px" height="480px"
          alt="Fantasy fiyatlar">
