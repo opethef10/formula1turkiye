@@ -9,18 +9,24 @@
 {% endblock %}
 
 {% block content %}
-    <ul>
-        <li class="fs-5"><a href="{% url 'tahmin:team_list' view.championship.slug %}"> Takımlar (Genel Klasman) </a></li>
-    </ul>
-    <a href="{% url 'tahmin:new_team_form' view.championship.slug %}" class="btn btn-primary ml-2">Yeni Tahmin</a>
-    <p></p>
-    <h3>Yarışlar</h3>
-    <table class="table">
+    <div class="list-group-horizontal">
+        <li class="list-group-item "><a href="{% url 'tahmin:team_list' view.championship.slug %}" class="card-link"> Takımlar (Genel Klasman) </a></li>
+        <li class="list-group-item"><a href="{% url 'tahmin:new_team_form' view.championship.slug %}" class="card-link">Yeni Tahmin</a></li>
+    </div>
+
+    <h3 class="my-3">Yarışlar</h3>
+    <table class="table table-responsive table-hover cell-border order-column justify-content-center text-center">
         <thead class="thead-inverse">
         <tr>
             <th>Ayak</th>
             <th>Ad</th>
-            <th>Tarih</th>
+            <th>1. Antrenman</th>
+            <th>2. Antrenman</th>
+            <th>3. Antrenman</th>
+            <th>Sıralama</th>
+            <th>Sprint Shootout</th>
+            <th>Sprint</th>
+            <th>Yarış</th>
         </tr>
         </thead>
         <tbody>
@@ -28,7 +34,13 @@
             <tr class="align-middle">
                 <td>{{ race.round }}</td>
                 <td><a href="{{ race.get_tahmin_url }}">{{ race.name }}</a></td>
-                <td>{{ race.datetime|default_if_none:"-" }}</td>
+                <td>{{ race.fp1_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp2_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp3_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.quali_datetime|date:"DATE_FORMAT"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_shootout_datetime|date:"DATE_FORMAT"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_datetime|date:"DATE_FORMAT"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.datetime|date:"DATE_FORMAT" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
             </tr>
         {% endfor %}
         </tbody>
