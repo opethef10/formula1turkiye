@@ -15,7 +15,7 @@
     </div>
 
     <h3 class="my-3">Yarışlar</h3>
-    <table class="table table-responsive table-hover cell-border order-column justify-content-center text-center">
+    <table class="table table-responsive table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>
             <th>Ayak</th>
@@ -34,13 +34,13 @@
             <tr class="align-middle">
                 <td>{{ race.round }}</td>
                 <td><a href="{{ race.get_tahmin_url }}">{{ race.name }}</a></td>
-                <td>{{ race.fp1_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.fp2_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.fp3_datetime|date:"DATE_FORMAT"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.quali_datetime|date:"DATE_FORMAT"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.sprint_shootout_datetime|date:"DATE_FORMAT"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.sprint_datetime|date:"DATE_FORMAT"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.datetime|date:"DATE_FORMAT" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.quali_datetime|date:"j F"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_shootout_datetime|date:"j F"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_datetime|date:"j F"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
             </tr>
         {% endfor %}
         </tbody>
