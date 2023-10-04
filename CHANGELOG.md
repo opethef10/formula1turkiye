@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.9.8] - 2023-10-04
+### Fixed
+- Race list tables
+
 ## [1.9.7] - 2023-10-04
 ### Added
 - Fantasy ready check
