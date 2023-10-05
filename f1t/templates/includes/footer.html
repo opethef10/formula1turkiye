@@ -6,7 +6,10 @@
       <div class="row">
         <div class="col-sm-12 col-md-3 col-lg-3">
           <h5>Linkler</h5>
-          <a class="font-weight-light" href="{% url "contact" %}">Bize ulaşın!</a>
+            <ul>
+              <li><a class="font-weight-light" href="{% url "contact" %}">Bize ulaşın!</a></li>
+              <li><a class="font-weight-light" href="{% url "django.contrib.flatpages.views.flatpage" url="changelog/" %}">Değişiklik güncesi</a></li>
+            </ul>
         </div>
         <div class="col-sm-12 col-md-3 col-lg-3">
           <h5>Facebook Gruplarımıza Katılın</h5>
