@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pistler{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">Pistler</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block content %}
+    <table id="table_circuit_list"
+           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Ad</th>
+            <th>Konum</th>
+            <th>Ülke</th>
+            <th>Enlem</th>
+            <th>Boylam</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for circuit in circuit_list %}
+            <tr>
+                <td><a href="{{ circuit.get_absolute_url }}">{{ circuit.name }}</a></td>
+                <td>{{ circuit.location }}</td>
+                <td><i class="{{ circuit.country.flag_css }}"></i> {{ circuit.country.name }}</td>
+                <td>{{ circuit.latitude }}</td>
+                <td>{{ circuit.longitude }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            $("#table_circuit_list").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "order": [],
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            orderable: false,
+                            targets: "_all"
+                        }
+                    ]
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}

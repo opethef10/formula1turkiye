@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Fantasy {{ view.championship }}{% endblock %}
 
@@ -6,6 +7,10 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item">{{ view.championship }}</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -30,7 +35,7 @@
         <thead class="thead-inverse">
         <tr>
             <th>Ayak</th>
-            <th>Ad</th>
+            <th>Ad / Pist</th>
             <th>1. Antrenman</th>
             <th>2. Antrenman</th>
             <th>3. Antrenman</th>
@@ -44,7 +49,7 @@
         {% for race in race_list %}
             <tr class="align-middle">
                 <td>{{ race.round }}</td>
-                <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
+                <td><i class="{{ race.country.flag_css }}"></i> <a href="{{ race.get_absolute_url }}">{{ race.name }}</a> <br> <a href="{{ race.circuit.get_absolute_url }}">{{ race.circuit}}</a></td>
                 <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>

@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.10.0] - 2023-10-09
+### Added
+- Circuit model
+- Circuit link in season pages
+
 ## [1.9.9] - 2023-10-05
 ### Added
 - Changelog page
