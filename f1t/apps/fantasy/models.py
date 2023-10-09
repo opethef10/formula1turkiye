@@ -90,6 +90,25 @@ class Championship(models.Model):
             return None
 
 
+class Circuit(models.Model):
+    slug = models.SlugField(primary_key=True)
+    name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    country = CountryField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    url = models.URLField(unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("fantasy:circuit_detail", kwargs={'pk': self.pk})
+
+
 class Constructor(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, editable=False)
@@ -135,6 +154,7 @@ class Race(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.RESTRICT, related_name='races', null=True)
     round = models.IntegerField()
     country = CountryField()
+    circuit = models.ForeignKey(Circuit, on_delete=models.RESTRICT, related_name='races', null=True)
     datetime = models.DateTimeField()
     fp1_datetime = models.DateTimeField(null=True, blank=True)
     fp2_datetime = models.DateTimeField(null=True, blank=True)

@@ -5,6 +5,8 @@ from . import views
 app_name = "fantasy"
 urlpatterns = [
     path('', views.ChampionshipListView.as_view(), name='home'),
+    path('circuits/', views.CircuitListView.as_view(), name='circuit_list'),
+    path('circuits/<pk>/', views.CircuitDetailView.as_view(), name='circuit_detail'),
     path('<slug:champ>/drivers/', views.DriverListView.as_view(), name='driver_list'),
     path('<slug:champ>/', views.RaceListView.as_view(), name='race_list'),
     path('<slug:champ>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),

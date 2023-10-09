@@ -16,7 +16,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
-from .models import Championship, Race, RaceDriver, RaceTeam, Team
+from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Team
 
 logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
@@ -92,6 +92,14 @@ class ChampionshipListView(ListView):
     ordering = ["-year", "series"]
 
 
+class CircuitListView(ListView):
+    model = Circuit
+
+
+class CircuitDetailView(DetailView):
+    model = Circuit
+
+
 class LastRaceRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         champ_slug = self.kwargs.get('champ')
@@ -157,7 +165,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
+        return self.championship.races.select_related("circuit").order_by("round")
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
