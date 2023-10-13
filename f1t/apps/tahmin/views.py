@@ -39,7 +39,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.only("name", "round", "championship", "datetime").order_by("round")
+        return self.championship.races.select_related("circuit").order_by("round")
 
 
 class LastRaceRedirectView(RedirectView):
