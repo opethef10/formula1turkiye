@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.11.0] - 2023-10-13
+### Added
+- Progressive web app structure
+
 ## [1.10.0] - 2023-10-09
 ### Added
 - Circuit model

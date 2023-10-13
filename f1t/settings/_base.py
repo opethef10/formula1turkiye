@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.redirects",
     "fontawesomefree",
     'widget_tweaks',
+    "pwa",
 ]
 
 MIDDLEWARE = [
@@ -175,3 +176,54 @@ HOURS = 60 * MINUTES
 # ==============================================================================
 
 SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
+
+# ==============================================================================
+# PWA SETTINGS
+# ==============================================================================
+PWA_APP_NAME = 'Formula 1 Türkiye'
+PWA_APP_DESCRIPTION = "Formula 1 Türkiye grubu ana sayfasına hoş geldiniz. Bu site, 4600'ü aşkın üyesiyle, " \
+    "aktifleştiği 2015 yılından bu yana Türkiye'nin en büyük Formula 1 Facebook grubu olan Formula 1 Türkiye'nin " \
+    "düzenlediği Fantasy ve Tahmin Ligleri için kurduğumuz web sitesidir. Dilerseniz Quiz Night, Yarışı Puanla ve " \
+    "Elo Sıralama Projesi gibi diğer ürünlerimize de bakabilirsiniz."
+PWA_APP_THEME_COLOR = '#0A0302'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/icons/android-chrome-192x192.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/icons/apple-touch-icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/icons/apple-touch-icon.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'tr'
+PWA_APP_SHORTCUTS = [
+    # {
+    #     'name': 'Shortcut',
+    #     'url': '/target',
+    #     'description': 'Shortcut to a page in my application'
+    # }
+]
+PWA_APP_SCREENSHOTS = [
+    # {
+    #   'src': '/static/images/icons/splash-750x1334.png',
+    #   'sizes': '750x1334',
+    #   "type": "image/png"
+    # }
+]
+

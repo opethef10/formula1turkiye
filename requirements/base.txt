@@ -11,4 +11,4 @@ django-countries===7.5.1
 django-colorfield==0.8.0
 django-summernote==0.8.20
 fontawesomefree==6.4.2
-
+django-pwa==1.1.0
