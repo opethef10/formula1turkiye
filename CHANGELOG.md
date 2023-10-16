@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.11.1] - 2023-10-16
 ### Fixed
+- Service worker fetch error
+
+## [1.11.1] - 2023-10-16
+### Fixed
 - Radio check file not caching in offline page
 
 ## [1.11.0] - 2023-10-13
