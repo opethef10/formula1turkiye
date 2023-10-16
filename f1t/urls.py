@@ -33,6 +33,7 @@ patterns = [
     path("contact/", ContactView.as_view(), name='contact'),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('__summernote/', include('django_summernote.urls')),
+    path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
 ]
 
