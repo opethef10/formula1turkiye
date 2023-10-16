@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.11.1] - 2023-10-16
+### Fixed
+- Radio check file not caching in offline page
+
 ## [1.11.0] - 2023-10-13
 ### Added
 - Progressive web app structure
