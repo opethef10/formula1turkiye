@@ -212,18 +212,3 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'tr'
-PWA_APP_SHORTCUTS = [
-    # {
-    #     'name': 'Shortcut',
-    #     'url': '/target',
-    #     'description': 'Shortcut to a page in my application'
-    # }
-]
-PWA_APP_SCREENSHOTS = [
-    # {
-    #   'src': '/static/images/icons/splash-750x1334.png',
-    #   'sizes': '750x1334',
-    #   "type": "image/png"
-    # }
-]
-
