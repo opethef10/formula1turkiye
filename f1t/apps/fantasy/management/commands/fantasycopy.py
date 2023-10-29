@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from ...models import Championship, RaceDriver, RaceTeam, RaceTeamDriver
 
@@ -15,7 +16,7 @@ class Command(BaseCommand):
         series = options["series"]
         increase_budget = options["budget"]
         set_token = options["token"]
-        championship = Championship.objects.get(series=series)
+        championship = Championship.objects.get(series=series, year=timezone.now().year)
         prev_race = championship.latest_race()
         next_race = prev_race.next
         prev_race_drivers = prev_race.driver_instances.all()
