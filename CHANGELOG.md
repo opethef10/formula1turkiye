@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.11.4] - 2023-10-29
+### Fixed
+- Fantasycopy year error
+
 ## [1.11.3] - 2023-10-16
 ### Fixed
 - New tahmin footer error
