@@ -349,6 +349,7 @@ class NewTeamView(TeamNewEditBaseView):
         if created:
             form.instance.race = self.race
             form.instance.team = team
+            form.instance.user = self.request.user
         return super().form_valid(form)
 
 
