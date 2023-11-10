@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static fantasy_tags %}
 
-{% block title %}Fantasy {{ championship }} Genel Klasman {% endblock %}
+{% block title %}Fantasy {{ view.championship }} Genel Klasman {% endblock %}
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
@@ -10,7 +10,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' championship.slug %}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' view.championship.slug %}">{{ view.championship }}</a></li>
     <li class="breadcrumb-item">Genel Klasman</li>
 {% endblock %}
 
@@ -46,10 +46,10 @@
                     </thead>
                     <tbody>
 
-                    {% for team, race_team_list in race_team_dict.items %}
+                    {% for user, race_team_list in race_team_dict.items %}
                         <tr>
                             <td></td>
-                            <td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></td>
+                            <td><a href="{% url 'fantasy:team_detail' view.championship.slug user.username %}">{{ user.get_full_name }}</a></td>
                             <td></td>
                             {% for race_team in race_team_list %}
                                 <td>

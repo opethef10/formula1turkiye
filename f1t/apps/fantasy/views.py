@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.db.models import Count
@@ -16,7 +17,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
-from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Team
+from .models import Championship, Circuit, Race, RaceDriver, RaceTeam
 
 logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
@@ -138,13 +139,11 @@ class RaceDetailView(DetailView):
         )
         context["race_team_list"] = race.team_instances.prefetch_related(
             "raceteamdrivers", "race_drivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
-            "team__user", "team__championship", "race_drivers__race__championship",
+            "race_drivers__race__championship",
             "raceteamdrivers__racedriver__race__championship"
         ).select_related(
-            "team",
-        ).order_by(
-            "team__user__first_name",
-            "team__user__last_name"
+            "user",
+            "race__championship"
         )
         context["tabs"] = {
             "drivers": "Sürücüler",
@@ -170,8 +169,8 @@ class RaceListView(ListView):
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
             team_count = RaceTeam.objects.filter(
-                team__user=self.request.user,
-                team__championship__slug=self.kwargs.get('champ')
+                user=self.request.user,
+                race__championship__slug=self.kwargs.get('champ')
             ).count()
         else:
             team_count = None
@@ -181,8 +180,8 @@ class RaceListView(ListView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class TeamListView(ListView):
-    model = Team
+class FantasyStandingsView(ListView):
+    template_name = "fantasy/fantasy_standings.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -192,32 +191,30 @@ class TeamListView(ListView):
         )
 
     def get_queryset(self):
-        queryset = Team.objects.select_related("user", "championship").prefetch_related("races_involved").filter(
-            championship=self.championship
-        ).distinct()
-        # queryset = queryset.order_by('forename')
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        race_list = Race.objects.select_related("championship").prefetch_related("team_instances").filter(
-            championship=self.championship
-        ).order_by("round")
-        race_count = race_list.count()
-        team_list = self.get_queryset()
-        race_team_list = RaceTeam.objects.prefetch_related(
+        return RaceTeam.objects.prefetch_related(
             "race_drivers", "race_drivers__race__championship"
         ).select_related(
-            "team",
-            "race"
+            "race",
+            "user"
         ).filter(
             race__championship=self.championship
         )
-        race_team_dict = {team: [None] * race_count for team in team_list}
-        for rt in race_team_list:
-            race_team_dict[rt.team][rt.race.round - 1] = rt
+
+    def get_context_data(self, **kwargs):
+        user_list = User.objects.filter(
+            fantasy_instances__race__championship=self.championship
+        ).distinct()
+
+        race_list = Race.objects.select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+        race_count = race_list.count()
+
+        race_team_dict = {user: [None] * race_count for user in user_list}
+        for rt in self.get_queryset():
+            race_team_dict[rt.user][rt.race.round - 1] = rt
 
         context = super().get_context_data(**kwargs)
-        context["championship"] = self.championship
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
         context["tabs"] = {
@@ -226,35 +223,42 @@ class TeamListView(ListView):
         return context
 
 
-class TeamDetailView(DetailView):
-    model = Team
+class FantasyUserProfileView(ListView):
+    template_name = "fantasy/fantasy_user_profile.html"
 
-    def get_object(self):
-        return get_object_or_404(
-            Team,
-            championship__slug=self.kwargs.get('champ'),
-            user__username=self.kwargs.get('username')
-        )
-
-    def get_context_data(self, **kwargs):
-        championship = get_object_or_404(
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
             Championship,
             slug=self.kwargs.get('champ')
         )
-        race_list = Race.objects.select_related("championship").filter(
-            championship=championship
-        ).order_by("round")
-        team = self.get_object()
+        self.user = get_object_or_404(
+            User,
+            username=self.kwargs.get('username')
+        )
 
-        race_team_dict = {race: None for race in race_list}
-        for rt in RaceTeam.objects.prefetch_related(
+    def get_queryset(self):
+        return RaceTeam.objects.prefetch_related(
+            "race_drivers", "race_drivers__race__championship",
             "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
             "raceteamdrivers__racedriver__race", "raceteamdrivers__racedriver__race__championship",
-            "race_drivers__race__championship"
-        ).select_related("race", "team").filter(team=team):
+        ).select_related(
+            "race",
+            "user"
+        ).filter(
+            race__championship=self.championship,
+            user=self.user
+        )
+
+    def get_context_data(self, **kwargs):
+        race_list = Race.objects.select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+
+        race_team_dict = {race: None for race in race_list}
+        for rt in self.get_queryset():
             race_team_dict[rt.race] = rt
         context = super().get_context_data(**kwargs)
-        context["championship"] = championship
         context["race_team_dict"] = race_team_dict
         return context
 
@@ -296,15 +300,16 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_object(self):
         try:
             return RaceTeam.objects.get(
-                team__user=self.request.user,
-                team__championship=self.championship,
+                user=self.request.user,
                 race=self.race
             )
         except RaceTeam.DoesNotExist:
             return
 
     def get_success_url(self):
-        return self.object.team.get_absolute_url()
+        return reverse(
+            "fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.object.user.username}
+        )
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -333,8 +338,8 @@ class NewTeamView(TeamNewEditBaseView):
 
     def get(self, request, *args, **kwargs):
         teams = RaceTeam.objects.filter(
-            team__user=self.request.user,
-            team__championship=self.championship
+            user=self.request.user,
+            race__championship=self.championship
         )
         if teams.count() > 1:
             return redirect(reverse("fantasy:edit_team_form", kwargs={"champ": self.championship.slug}))
@@ -342,13 +347,8 @@ class NewTeamView(TeamNewEditBaseView):
             return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        team, created = Team.objects.get_or_create(
-            user=self.request.user,
-            championship=self.championship
-        )
-        if created:
+        if not self.get_object():
             form.instance.race = self.race
-            form.instance.team = team
             form.instance.user = self.request.user
         return super().form_valid(form)
 
@@ -359,8 +359,8 @@ class EditTeamView(TeamNewEditBaseView):
 
     def get(self, request, *args, **kwargs):
         teams = RaceTeam.objects.filter(
-            team__user=self.request.user,
-            team__championship=self.championship
+            user=self.request.user,
+            race__championship=self.championship
         )
         if teams.count() <= 1:
             return redirect(reverse("fantasy:new_team_form", kwargs={"champ": self.championship.slug}))

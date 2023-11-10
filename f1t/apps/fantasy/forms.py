@@ -75,7 +75,7 @@ class EditTeamForm(forms.ModelForm):
         self.max_drivers_in_a_team = current_race.championship.max_drivers_in_team
         prev_race = current_race.get_previous_by_datetime(championship=current_race.championship)
         current_racedrivers = current_race.driver_instances.select_related("driver")
-        self.prev_race_team = prev_race.team_instances.get(team__user=request.user)
+        self.prev_race_team = prev_race.team_instances.get(user=request.user)
         prv_driver_ids = self.prev_race_team.race_drivers.values_list("driver", flat=True)
         self.old_race_drivers = current_racedrivers.filter(
             driver__in=prv_driver_ids

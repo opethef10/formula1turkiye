@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import resolve, reverse
 from django.utils import timezone
 
-from ..models import Championship, Race, Team
+from ..models import Championship, Race
 from .. import views
 
 CHAMPIONSHIP_TEST_DATA = dict(
@@ -116,9 +116,9 @@ class TeamListTests(ViewTestMixin, TestCase):
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.url_kwargs_404 = {'champ': "arbitrary"}
         cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams"
-        cls.template_name = "fantasy/team_list.html"
-        cls.context_variable = 'team_list'
-        cls.view = views.TeamListView
+        cls.template_name = "fantasy/fantasy_standings.html"
+        cls.context_variable = 'raceteam_list'
+        cls.view = views.FantasyStandingsView
 
 
 class RaceDetailViewTests(DetailViewTestMixin, TestCase):
@@ -146,14 +146,10 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.user = User.objects.create_user(username='test_user', password='12345')
-        cls.team = Team.objects.create(
-            user=cls.user,
-            championship=cls.championship
-        )
         cls.url_name = 'team_detail'
         cls.url_kwargs = {'champ': cls.championship.slug, "username": cls.user.username}
         cls.url_kwargs_404 = {'champ': cls.championship.slug, "username": "arbitrary"}
         cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams/{cls.user.username}"
-        cls.template_name = "fantasy/team_detail.html"
-        cls.context_variable = 'team'
-        cls.view = views.TeamDetailView
+        cls.template_name = "fantasy/fantasy_user_profile.html"
+        cls.context_variable = 'raceteam_list'
+        cls.view = views.FantasyUserProfileView
