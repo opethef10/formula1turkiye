@@ -165,7 +165,6 @@ class Race(models.Model):
     fantasy_ready = models.BooleanField(default=False)
     wikilink = models.URLField(blank=True)
     drivers = models.ManyToManyField(Driver, through='RaceDriver', related_name='attended_races')
-    teams = models.ManyToManyField('Team', through='RaceTeam', related_name='races_involved')
 
     class Meta:
         constraints = [
@@ -331,25 +330,6 @@ class RaceDriver(models.Model):
         return 0
 
 
-class Team(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="teams")
-    championship = models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="teams", null=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'championship'], name='unique_championship_user'),
-        ]
-
-    def __str__(self):
-        return f"{self.championship.slug} - {self.name()}"
-
-    def name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-    def get_absolute_url(self):
-        return reverse("fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.user.username})
-
-
 class RaceTeam(models.Model):
     GEÇİŞ = "G"
     SIRALAMA = "S"
@@ -360,7 +340,6 @@ class RaceTeam(models.Model):
         (FİNİŞ, "Finiş"),
     ]
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='team_instances')
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='race_instances')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fantasy_instances')
     token = models.IntegerField()
     budget = models.DecimalField(max_digits=4, decimal_places=1)
@@ -373,11 +352,11 @@ class RaceTeam(models.Model):
     class Meta:
         ordering = [
             "race",
-            "team__user"
+            "user"
         ]
 
     def __str__(self):
-        return f"{self.race}-{self.team}"
+        return f"{self.race}-{self.user}"
 
     @cached_property
     def total_point(self):
@@ -407,7 +386,7 @@ class RaceTeamDriver(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['raceteam', 'racedriver'], name='unique_raceteam_racedriver'),
         ]
-        ordering = ["racedriver__race", "raceteam__team__user__first_name", "-racedriver__price"]
+        ordering = ["racedriver__race", "raceteam__user__first_name", "-racedriver__price"]
 
     def __str__(self):
         return f"{self.raceteam}-{self.racedriver}"

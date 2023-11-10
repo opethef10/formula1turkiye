@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% load fantasy_tags %}
 
-{% block title %}{{ team.name }} Fantasy Lig Profili{% endblock %}
+{% block title %}{{ view.user.get_full_name }} Fantasy Lig Profili{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item"><a
-            href="{% url 'fantasy:race_list' team.championship.slug %}">{{ team.championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' team.championship.slug %}">Takımlar</a></li>
-    <li class="breadcrumb-item">{{ team.name }}</li>
+            href="{% url 'fantasy:race_list' view.championship.slug %}">{{ view.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'fantasy:team_list' view.championship.slug %}">Takımlar</a></li>
+    <li class="breadcrumb-item">{{ view.user.get_full_name }}</li>
 {% endblock %}
 
 {% block content %}

@@ -96,7 +96,7 @@
                                 <td>{{ race_team.tactic }}</td>
                                 <td>{{ race_team.token }}</td>
                                 <td>{{ race_team.budget|with_currency }}</td>
-                                <td><a href="{{ race_team.team.get_absolute_url }}">{{ race_team.team.name }}</a>
+                                <td><a href="{% url 'fantasy:team_detail' view.championship.slug race_team.user.username %}">{{ race_team.user.get_full_name }}</a>
                                 </td>
                                 {% if tab_id == "teams" %}
                                     <td><b>{{ race_team.total_point }}</b></td>

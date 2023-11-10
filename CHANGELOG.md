@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.12.0] - 2023-11-10
+### Removed
+- Team model
+
 ## [1.11.6] - 2023-11-02
 ### Fixed
 - Protocol error in password reset mail
