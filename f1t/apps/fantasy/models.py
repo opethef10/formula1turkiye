@@ -112,6 +112,8 @@ class Circuit(models.Model):
 class Constructor(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, editable=False)
+    country = CountryField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
     championship = models.ManyToManyField(Championship, through='ChampionshipConstructor', related_name='constructors')
 
     class Meta:
