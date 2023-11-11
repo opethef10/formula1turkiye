@@ -134,6 +134,9 @@ class Driver(models.Model):
     slug = models.SlugField(unique=True, editable=False)
     number = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=3, blank=True, null=True)
+    country = CountryField(null=True, blank=True)
+    dob = models.DateField(blank=True, null=True)
+    url = models.URLField(null=True, blank=True)
 
     class Meta:
         ordering = ["forename", "surname"]
