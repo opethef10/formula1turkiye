@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.13.2] - 2023-11-11
+### Fixed
+- Driver list calculation error
+
 ## [1.13.1] - 2023-11-11
 ### Changed
 - Driver model
