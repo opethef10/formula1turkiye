@@ -27,7 +27,7 @@ class ViewTestMixin:
     urlstring_without_slash = ''
     template_name = ''
     context_variable = 'None'
-    view = views.DriverListView
+    view = views.DriverStatsView
 
     def url_reverse(self, kwargs=None):
         if kwargs is None:
@@ -87,12 +87,12 @@ class DriverListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
-        cls.url_name = 'driver_list'
+        cls.url_name = 'driver_stats'
         cls.url_kwargs = {'champ': cls.championship.slug}
         cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/drivers"
-        cls.template_name = "fantasy/driver_list.html"
+        cls.template_name = "fantasy/driver_stats.html"
         cls.context_variable = 'race_driver_dict'
-        cls.view = views.DriverListView
+        cls.view = views.DriverStatsView
 
 
 class RaceListTests(ViewTestMixin, TestCase):

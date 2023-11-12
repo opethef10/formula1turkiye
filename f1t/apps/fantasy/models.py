@@ -153,6 +153,9 @@ class Driver(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse("fantasy:driver_detail", kwargs={'slug': self.slug})
+
 
 class Race(models.Model):
     name = models.CharField(max_length=255)
