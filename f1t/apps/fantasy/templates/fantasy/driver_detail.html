@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ driver.name }}{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'fantasy:all_driver_list' %}">Sürücüler</a></li>
+  <li class="breadcrumb-item">{{ driver.name }}</li>
+{% endblock %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block content %}
+  <ul>
+    <li>Ad: {{ driver.name }}</li>
+    <li>Numara: {{ driver.number|default_if_none:"" }}</li>
+    <li>Ülke: <i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</li>
+    <li>Kısaltma: {{ driver.code|default_if_none:"" }}</li>
+    <li>Doğum Tarihi: {{ driver.dob }}</li>
+    <li>{{ win }} galibiyet</li>
+    <li>{{ pole }} pol pozisyonu</li>
+    <li>{{ podium }} podyum</li>
+    <li>{{ not_classified }} klasman dışı</li>
+    <li>{{ total_races }} yarış</li>
+    <li>İlk yarış:  <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
+    <li>Son yarış: <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
+  </ul>
+
+  <table id="driver_results"
+           class="table table-hover table-striped">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Sıra</th>
+            {% for _ in positions %}
+                <th>{{ forloop.counter }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tr>
+            <td><b>Grid</b></td>
+            {% for grid_count in grid_list %}
+                <td>{{ grid_count }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td><b>Yarış</b></td>
+            {% for result_count in result_list %}
+                <td>{{ result_count }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endblock %}
