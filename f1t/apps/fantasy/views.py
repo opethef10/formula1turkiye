@@ -114,7 +114,9 @@ class DriverDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         driver = self.object
         positions = range(1,35)
+        race_range = range(1, 25)
         context["positions"] = positions
+        context["race_range"] = race_range
 
         race_results = driver.race_instances.select_related("race__championship").filter(race__datetime__lte=timezone.now())
         # Fetching counts for grid and result instances in a single query
@@ -125,16 +127,30 @@ class DriverDetailView(DetailView):
         grid_counts = {data['grid']: data['grid_count'] for data in annotated_grid_data}
         result_counts = {data['result']: data['result_count'] for data in annotated_result_data}
 
+        championships = Championship.objects.filter(
+            id__in=race_results.values_list("race__championship", flat=True)
+        )
+        race_results_dict = {
+            championship:
+                [None] * 24
+                for championship
+                in championships
+        }
+        for rr in race_results:
+            race_results_dict[rr.race.championship][rr.race.round - 1] = rr
+
         # Creating grid_list and result_list using the counts
-        context["grid_list"] = [grid_counts.get(pos, 0) for pos in positions]
-        context["result_list"] = [result_counts.get(pos, 0) for pos in positions]
-        context["pole"] = grid_counts[1]
-        context["win"] = result_counts[1]
-        context["podium"] = sum(context["result_list"][:3])
+        context["grid_list"] = [grid_counts.get(pos) for pos in positions]
+        context["result_list"] = [result_counts.get(pos) for pos in positions]
+        context["pole"] = grid_counts.get(1, 0)
+        context["win"] = result_counts.get(1, 0)
+        context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
         context["total_races"] = race_results.count()
-        context["not_classified"] = result_counts[None]
+        context["not_classified"] = result_counts.get(None, 0)
         context["first_race"] = race_results.earliest("race__datetime").race
         context["last_race"] = race_results.latest("race__datetime").race
+        context["race_results"] = race_results.order_by("race__datetime")
+        context["race_results_dict"] = race_results_dict
 
         return context
 

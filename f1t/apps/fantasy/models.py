@@ -89,6 +89,9 @@ class Championship(models.Model):
         except Race.DoesNotExist:
             return None
 
+    def get_absolute_url(self):
+        return reverse("fantasy:race_list", kwargs={'champ': f"{self.year}-{self.series}"})
+
 
 class Circuit(models.Model):
     slug = models.SlugField(primary_key=True)
