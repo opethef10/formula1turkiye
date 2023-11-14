@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [1.13.4] - 2023-11-14
+### Added
+- Driver career table
+
 ## [1.13.3] - 2023-11-12
 ### Added
 - Driver list and detail pages
