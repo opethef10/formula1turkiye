@@ -15,8 +15,8 @@
 
 {% block content %}
     <div class="list-group-horizontal">
-        <li class="list-group-item "><a href="{% url 'tahmin:team_list' view.championship.slug %}" class="card-link"> Takımlar (Genel Klasman) </a></li>
-        <li class="list-group-item"><a href="{% url 'tahmin:new_team_form' view.championship.slug %}" class="card-link">Yeni Tahmin</a></li>
+        <li class="list-group-item "><a href="{% url 'tahmin:team_list' view.championship.series view.championship.year %}" class="card-link"> Takımlar (Genel Klasman) </a></li>
+        <li class="list-group-item"><a href="{% url 'tahmin:new_team_form' view.championship.series view.championship.year %}" class="card-link">Yeni Tahmin</a></li>
     </div>
 
     <h3 class="my-3">Yarışlar</h3>

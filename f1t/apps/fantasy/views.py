@@ -32,7 +32,8 @@ class DriverStatsView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -157,12 +158,15 @@ class DriverDetailView(DetailView):
 
 class LastRaceRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        champ_slug = self.kwargs.get('champ')
-        championship = get_object_or_404(Championship, slug=champ_slug)
+        championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
         latest_race = championship.latest_race()
 
         if latest_race:
-            return reverse('fantasy:race_detail', kwargs={'champ': champ_slug, 'round': latest_race.round})
+            return latest_race.get_absolute_url()
         else:
             raise Http404("No previous races found.")
 
@@ -175,7 +179,8 @@ class RaceDetailView(DetailView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_object(self):
@@ -214,7 +219,8 @@ class RaceListView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -224,7 +230,7 @@ class RaceListView(ListView):
         if self.request.user.is_authenticated:
             team_count = RaceTeam.objects.filter(
                 user=self.request.user,
-                race__championship__slug=self.kwargs.get('champ')
+                race__championship=self.championship
             ).count()
         else:
             team_count = None
@@ -241,7 +247,8 @@ class FantasyStandingsView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -284,7 +291,8 @@ class FantasyUserProfileView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.user = get_object_or_404(
             User,
@@ -326,7 +334,8 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.next_race = self.championship.next_race("fantasy")
         self.race = self.next_race or self.championship.next_race("tahmin")
@@ -362,7 +371,12 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse(
-            "fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.object.user.username}
+            "fantasy:team_detail",
+            kwargs={
+                'series': self.championship.series,
+                'year': self.championship.year,
+                "username": self.object.user.username
+            }
         )
 
     def form_valid(self, form):
@@ -396,7 +410,12 @@ class NewTeamView(TeamNewEditBaseView):
             race__championship=self.championship
         )
         if teams.count() > 1:
-            return redirect(reverse("fantasy:edit_team_form", kwargs={"champ": self.championship.slug}))
+            return redirect(
+                reverse(
+                    "fantasy:edit_team_form",
+                    kwargs={'series': self.championship.series, 'year': self.championship.year}
+                )
+            )
         else:
             return super().get(request, *args, **kwargs)
 
@@ -417,7 +436,12 @@ class EditTeamView(TeamNewEditBaseView):
             race__championship=self.championship
         )
         if teams.count() <= 1:
-            return redirect(reverse("fantasy:new_team_form", kwargs={"champ": self.championship.slug}))
+            return redirect(
+                reverse(
+                    "fantasy:new_team_form",
+                    kwargs={'series': self.championship.series, 'year': self.championship.year}
+                )
+            )
         else:
             return super().get(request, *args, **kwargs)
 
@@ -427,11 +451,19 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
     form_class = RaceDriverEditForm
     template_name = "fantasy/race_edit.html"
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['formset'] = RaceDriverFormSet(
             queryset=RaceDriver.objects.filter(
-                race__championship__slug=self.kwargs.get('champ'),
+                race__championship=self.championship,
                 race__round=self.kwargs.get('round')
             )
         )
@@ -456,7 +488,7 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(
             Race.objects.select_related("championship"),
-            championship__slug=self.kwargs.get('champ'),
+            championship=self.championship,
             round=self.kwargs.get('round')
         )
 

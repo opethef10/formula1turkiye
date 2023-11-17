@@ -6,8 +6,8 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'tahmin:race_list' view.championship.slug %}">{{ view.championship }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'tahmin:team_list' view.championship.slug %}">Takımlar</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:race_list' view.championship.series view.championship.year %}">{{ view.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tahmin:team_list' view.championship.series view.championship.year %}">Takımlar</a></li>
     <li class="breadcrumb-item">Tahmin Yap</li>
 {% endblock %}
 

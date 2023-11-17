@@ -88,8 +88,8 @@ class DriverListTests(ViewTestMixin, TestCase):
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'driver_stats'
-        cls.url_kwargs = {'champ': cls.championship.slug}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/drivers"
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.series}/{cls.championship.year}/drivers"
         cls.template_name = "fantasy/driver_stats.html"
         cls.context_variable = 'race_driver_dict'
         cls.view = views.DriverStatsView
@@ -100,9 +100,9 @@ class RaceListTests(ViewTestMixin, TestCase):
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'race_list'
-        cls.url_kwargs = {'champ': cls.championship.slug}
-        cls.url_kwargs_404 = {'champ': "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}"
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
+        cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.series}/{cls.championship.year}"
         cls.template_name = "fantasy/race_list.html"
         cls.context_variable = 'race_list'
         cls.view = views.RaceListView
@@ -113,9 +113,9 @@ class TeamListTests(ViewTestMixin, TestCase):
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'team_list'
-        cls.url_kwargs = {'champ': cls.championship.slug}
-        cls.url_kwargs_404 = {'champ': "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams"
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
+        cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.series}/{cls.championship.year}/teams"
         cls.template_name = "fantasy/fantasy_standings.html"
         cls.context_variable = 'raceteam_list'
         cls.view = views.FantasyStandingsView
@@ -133,9 +133,9 @@ class RaceDetailViewTests(DetailViewTestMixin, TestCase):
             datetime=timezone.now()
         )
         cls.url_name = 'race_detail'
-        cls.url_kwargs = {'champ': cls.championship.slug, "round": cls.race.round}
-        cls.url_kwargs_404 = {'champ': cls.championship.slug, "round": 99}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/{cls.race.round}"
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year, "round": cls.race.round}
+        cls.url_kwargs_404 = {'series': cls.championship.series, 'year': cls.championship.year, "round": 99}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.series}/{cls.championship.year}/{cls.race.round}"
         cls.template_name = "fantasy/race_detail.html"
         cls.context_variable = 'race'
         cls.view = views.RaceDetailView
@@ -147,9 +147,9 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.user = User.objects.create_user(username='test_user', password='12345')
         cls.url_name = 'team_detail'
-        cls.url_kwargs = {'champ': cls.championship.slug, "username": cls.user.username}
-        cls.url_kwargs_404 = {'champ': cls.championship.slug, "username": "arbitrary"}
-        cls.urlstring_without_slash = f"/fantasy/{cls.championship.slug}/teams/{cls.user.username}"
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year, "username": cls.user.username}
+        cls.url_kwargs_404 = {'series': cls.championship.series, 'year': cls.championship.year, "username": "arbitrary"}
+        cls.urlstring_without_slash = f"/fantasy/{cls.championship.series}/{cls.championship.year}/teams/{cls.user.username}"
         cls.template_name = "fantasy/fantasy_user_profile.html"
         cls.context_variable = 'raceteam_list'
         cls.view = views.FantasyUserProfileView

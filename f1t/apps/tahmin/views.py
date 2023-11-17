@@ -35,7 +35,8 @@ class RaceListView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -44,12 +45,15 @@ class RaceListView(ListView):
 
 class LastRaceRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        champ_slug = self.kwargs.get('champ')
-        championship = get_object_or_404(Championship, slug=champ_slug)
+        championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
         latest_race = championship.latest_race()
 
         if latest_race:
-            return reverse('tahmin:race_tahmins', kwargs={'champ': champ_slug, 'round': latest_race.round})
+            return latest_race.get_tahmin_url()
         else:
             raise Http404("No previous races found.")
 
@@ -62,7 +66,8 @@ class RaceTahminView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.race = get_object_or_404(
             Race.objects.prefetch_related(
@@ -105,7 +110,8 @@ class TeamListView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -158,7 +164,8 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.next_race = self.championship.next_race("tahmin")
         self.race = self.next_race or self.championship.latest_race()
