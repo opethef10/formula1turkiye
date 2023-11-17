@@ -28,13 +28,13 @@ patterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("f1t.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("fantasy/", include("f1t.apps.fantasy.urls")),
     path("tahmin/", include("f1t.apps.tahmin.urls")),
     path("contact/", ContactView.as_view(), name='contact'),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('__summernote/', include('django_summernote.urls')),
     path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
+    path("", include("f1t.apps.fantasy.urls")),
 ]
 
 if settings.DEBUG:
