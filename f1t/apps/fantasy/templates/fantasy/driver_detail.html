@@ -5,7 +5,7 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'fantasy:all_driver_list' %}">Sürücüler</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'formula:all_driver_list' %}">Sürücüler</a></li>
   <li class="breadcrumb-item">{{ driver.name }}</li>
 {% endblock %}
 

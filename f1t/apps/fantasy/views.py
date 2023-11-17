@@ -371,7 +371,7 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse(
-            "fantasy:team_detail",
+            "formula:team_detail",
             kwargs={
                 'series': self.championship.series,
                 'year': self.championship.year,
@@ -412,7 +412,7 @@ class NewTeamView(TeamNewEditBaseView):
         if teams.count() > 1:
             return redirect(
                 reverse(
-                    "fantasy:edit_team_form",
+                    "formula:edit_team_form",
                     kwargs={'series': self.championship.series, 'year': self.championship.year}
                 )
             )
@@ -438,7 +438,7 @@ class EditTeamView(TeamNewEditBaseView):
         if teams.count() <= 1:
             return redirect(
                 reverse(
-                    "fantasy:new_team_form",
+                    "formula:new_team_form",
                     kwargs={'series': self.championship.series, 'year': self.championship.year}
                 )
             )

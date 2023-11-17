@@ -5,7 +5,7 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'fantasy:circuit_list' %}">Pistler</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'formula:circuit_list' %}">Pistler</a></li>
   <li class="breadcrumb-item">{{ circuit.name }}</li>
 {% endblock %}
 

@@ -5,9 +5,9 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item">
-        <a href="{% url 'fantasy:race_list' view.championship.series view.championship.year %}">{{ view.championship }}</a></li>
+        <a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship }}</a></li>
     <li class="breadcrumb-item">{{ race.name }}</li>
 {% endblock %}
 
@@ -18,7 +18,7 @@
         <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{{ race.next.get_absolute_url }}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
     {% if user.is_staff %}
-        <a href="{% url 'fantasy:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4">Sonuç / Fiyat Gir</a>
+        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4">Sonuç / Fiyat Gir</a>
     {% endif %}
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
@@ -96,7 +96,7 @@
                                 <td>{{ race_team.tactic }}</td>
                                 <td>{{ race_team.token }}</td>
                                 <td>{{ race_team.budget|with_currency }}</td>
-                                <td><a href="{% url 'fantasy:team_detail' view.championship.series view.championship.year race_team.user.username %}">{{ race_team.user.get_full_name }}</a>
+                                <td><a href="{% url 'formula:team_detail' view.championship.series view.championship.year race_team.user.username %}">{{ race_team.user.get_full_name }}</a>
                                 </td>
                                 {% if tab_id == "teams" %}
                                     <td><b>{{ race_team.total_point }}</b></td>

@@ -20,7 +20,7 @@ CHAMPIONSHIP_TEST_DATA = dict(
 
 
 class ViewTestMixin:
-    app_name_prefix = "fantasy:"
+    app_name_prefix = "formula:"
     url_name = ''
     url_kwargs = {}
     url_kwargs_404 = {}

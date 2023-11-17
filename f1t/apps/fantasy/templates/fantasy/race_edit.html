@@ -5,12 +5,12 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:home' %}">Fantasy Lig</a></li>
     <li class="breadcrumb-item">
-        <a href="{% url 'fantasy:race_list' object.championship.series object.championship.year %}">{{ object.championship }}</a>
+        <a href="{% url 'formula:race_list' object.championship.series object.championship.year %}">{{ object.championship }}</a>
     </li>
     <li class="breadcrumb-item">
-        <a href="{% url 'fantasy:race_detail' object.championship.series object.championship.year object.round%}">{{ object.name }}</a>
+        <a href="{% url 'formula:race_detail' object.championship.series object.championship.year object.round%}">{{ object.name }}</a>
     </li>
     <li class="breadcrumb-item">
         Yarışı Düzenle

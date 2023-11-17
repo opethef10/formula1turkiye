@@ -9,7 +9,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Tahmin Ligi</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:home' %}">Tahmin Ligi</a></li>
     <li class="breadcrumb-item"><a href="{% url 'tahmin:race_list' championship.series championship.year %}">{{ championship }}</a></li>
     <li class="breadcrumb-item">Takımlar</li>
 {% endblock %}
