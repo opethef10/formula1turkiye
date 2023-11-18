@@ -4,7 +4,7 @@ from . import views
 
 app_name = "formula"
 urlpatterns = [
-    path('', views.ChampionshipListView.as_view(), name='home'),
+    path('fantasy/', views.ChampionshipListView.as_view(), name='home'),
     path('circuits/', views.CircuitListView.as_view(), name='circuit_list'),
     path('circuits/<pk>/', views.CircuitDetailView.as_view(), name='circuit_detail'),
     path('drivers/', views.AllDriverListView.as_view(), name='all_driver_list'),
