@@ -194,7 +194,7 @@ class Race(models.Model):
 
     def get_tahmin_url(self):
         return reverse(
-            "tahmin:race_tahmins",
+            "formula:tahmin:race_tahmins",
             kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
         )
 

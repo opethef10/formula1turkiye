@@ -73,16 +73,6 @@ class DetailViewTestMixin(ViewTestMixin):
         self.assertEquals(response.status_code, 404)
 
 
-class HomeTests(ViewTestMixin, TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.url_name = 'home'
-        cls.urlstring_without_slash = "/fantasy"
-        cls.template_name = "fantasy/championship_list.html"
-        cls.context_variable = 'championship_list'
-        cls.view = views.ChampionshipListView
-
-
 class SeasonsListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):

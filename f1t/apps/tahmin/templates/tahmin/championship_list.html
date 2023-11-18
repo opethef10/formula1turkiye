@@ -9,16 +9,6 @@
 {% endblock %}
 
 {% block content %}
-    <h5>Aktif Şampiyonalar</h5>
-    <ul>
-        {% for championship in championship_list %}
-            <li>
-                <a href="{% url 'tahmin:race_list' championship.series championship.year %}">
-                    {{ championship.year }} {{ championship.get_series_display }} Tahmin Ligi
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
     <h5>Önceki Şampiyonlar</h5>
     <ul>
         <li>2017: Emirhan Kızılgün</li>

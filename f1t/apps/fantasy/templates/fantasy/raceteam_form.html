@@ -5,8 +5,8 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'formula:home' %}">Fantasy Lig</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' championship.series championship.year %}">{{ championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' championship.series championship.year %}">{{ championship.year }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:team_list' championship.series championship.year %}">Takımlar</a></li>
     <li class="breadcrumb-item">Yeni Takım</li>
 {% endblock %}

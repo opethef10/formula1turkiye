@@ -5,9 +5,9 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'formula:home' %}">Fantasy Lig</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item"><a
-            href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship }}</a></li>
+            href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:team_list' view.championship.series view.championship.year %}">Takımlar</a></li>
     <li class="breadcrumb-item">{{ view.user.get_full_name }}</li>
 {% endblock %}

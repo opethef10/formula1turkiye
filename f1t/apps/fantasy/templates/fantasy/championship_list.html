@@ -8,16 +8,6 @@
 {% endblock %}
 
 {% block content %}
-    <h5>Aktif Şampiyonalar</h5>
-    <ul>
-        {% for championship in championship_list %}
-            <li>
-                <a href="{% url 'formula:race_list' championship.series championship.year %}">
-                    {{ championship.year }} {{ championship.get_series_display }} Fantasy Lig
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
     <h4>FANTASY LİG</h4>
     <p class="text-justify">Fantasy Lig fikri, Nico Rosberg'in şampiyonluğundan bir gün önce, 26 Kasım 2016'da bir go
         kart sürüşü sonrasında
