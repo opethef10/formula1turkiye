@@ -95,6 +95,29 @@ class ChampionshipListView(ListView):
     ordering = ["-year", "series"]
 
 
+class SeasonsListView(ListView):
+    model = Championship
+    template_name = "fantasy/seasons_list.html"
+
+    def get_queryset(self):
+        championships = Championship.objects.filter(series=self.kwargs.get("series")).order_by('year')
+
+        # Create a dictionary to organize championships by decade
+        championship_dict = {}
+        for championship in championships:
+            decade = championship.year // 10 * 10
+            if decade not in championship_dict:
+                championship_dict[decade] = []
+            championship_dict[decade].append(championship)
+
+        return championship_dict
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["series"] = f"Formula {self.kwargs.get('series')[-1]}"
+        return context
+
+
 class CircuitListView(ListView):
     model = Circuit
 

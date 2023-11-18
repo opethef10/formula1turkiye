@@ -9,6 +9,7 @@ urlpatterns = [
     path('circuits/<pk>/', views.CircuitDetailView.as_view(), name='circuit_detail'),
     path('drivers/', views.AllDriverListView.as_view(), name='all_driver_list'),
     path('drivers/<slug>/', views.DriverDetailView.as_view(), name='driver_detail'),
+    path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
     path('<str:series>/<int:year>/drivers/', views.DriverStatsView.as_view(), name='driver_stats'),
     path('<str:series>/<int:year>/', views.RaceListView.as_view(), name='race_list'),
     path('<str:series>/<int:year>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),
