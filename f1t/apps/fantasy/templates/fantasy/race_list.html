@@ -14,24 +14,37 @@
 {% endblock %}
 
 {% block content %}
-    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-    <div class="btn-group mr-4" role="group" aria-label="Menu Group 1">
-        <a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Sürücü İstatistikleri</a>
-        <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Fantasy Lig Genel Klasman</a>
+  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+    {% if view.championship.is_fantasy %}
+      <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
+        <a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
+           class="btn btn-outline-primary">Sürücü İstatistikleri</a>
+        <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
+           class="btn btn-outline-primary">Fantasy Lig Genel Klasman</a>
         {% if race_team_count > 1 %}
-            <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Alım Satım</a>
+          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
+             class="btn btn-outline-primary">Alım Satım</a>
         {% elif race_team_count == 0 %}
-            <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Yeni Takım Kur</a>
+          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
+             class="btn btn-outline-primary">Yeni Takım Kur</a>
         {% elif race_team_count == 1 %}
-            <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Takımı Düzenle</a>
+          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
+             class="btn btn-outline-primary">Takımı Düzenle</a>
         {% else %}
-            <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Yeni Takım / Alım Satım (Giriş Yapınız)</a>
+          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
+             class="btn btn-outline-primary">Yeni Takım / Alım Satım (Giriş Yapınız)</a>
         {% endif %}
-    </div>
-    <div class="btn-group mr-4" role="group" aria-label="Menu Group 2">
-        <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Tahmin Ligi Genel Klasman</a>
-        <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}" class="btn btn-outline-primary">Yeni Tahmin</a>
-    </div>
+      </div>
+    {% endif %}
+
+    {% if view.championship.is_tahmin %}
+      <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
+        <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
+           class="btn btn-outline-primary">Tahmin Ligi Genel Klasman</a>
+        <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}"
+           class="btn btn-outline-primary">Yeni Tahmin</a>
+      </div>
+    {% endif %}
   </div>
 
     <h3 class="my-3">Yarışlar</h3>
@@ -47,7 +60,7 @@
             <th>Sprint Shootout</th>
             <th>Sprint</th>
             <th>Yarış</th>
-            <th>Sonuçlar</th>
+            <th>Lig Sonuçları</th>
         </tr>
         </thead>
         <tbody>
@@ -62,8 +75,14 @@
                 <td>{{ race.sprint_shootout_datetime|date:"j F"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.sprint_datetime|date:"j F"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
-                <td><a href="{{ race.get_absolute_url }}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy</a> <br>
-                  <a href="{{ race.get_tahmin_url }}"><i class="fa-solid fa-list-ol"></i> Tahmin</a></td>
+                <td>
+                  {% if view.championship.is_fantasy %}
+                  <a href="{{ race.get_absolute_url }}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy</a> <br>
+                  {% endif %}
+                  {% if view.championship.is_tahmin %}
+                    <a href="{{ race.get_tahmin_url }}"><i class="fa-solid fa-list-ol"></i> Tahmin</a>
+                  {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
