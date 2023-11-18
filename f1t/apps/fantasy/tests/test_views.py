@@ -83,6 +83,18 @@ class HomeTests(ViewTestMixin, TestCase):
         cls.view = views.ChampionshipListView
 
 
+class SeasonsListTests(ViewTestMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
+        cls.url_name = 'season_list'
+        cls.url_kwargs = {'series': cls.championship.series}
+        cls.urlstring_without_slash = f"/{cls.championship.series}"
+        cls.template_name = "fantasy/seasons_list.html"
+        cls.context_variable = 'object_list'
+        cls.view = views.SeasonsListView
+
+
 class DriverListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
