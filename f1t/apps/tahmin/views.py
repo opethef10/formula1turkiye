@@ -20,29 +20,6 @@ logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
 
 
-# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class ChampionshipListView(ListView):
-    queryset = Championship.objects.filter(is_tahmin=True)
-    ordering = ["-year", "series"]
-    template_name = "tahmin/championship_list.html"
-
-
-# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class RaceListView(ListView):
-    template_name = "tahmin/race_list.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
-    def get_queryset(self):
-        return self.championship.races.select_related("circuit").order_by("round")
-
-
 class LastRaceRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         championship = get_object_or_404(

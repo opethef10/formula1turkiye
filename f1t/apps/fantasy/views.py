@@ -89,12 +89,6 @@ class DriverStatsView(ListView):
         return context
 
 
-# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class ChampionshipListView(ListView):
-    queryset = Championship.objects.filter(is_fantasy=True)
-    ordering = ["-year", "series"]
-
-
 class SeasonsListView(ListView):
     model = Championship
     template_name = "fantasy/seasons_list.html"
