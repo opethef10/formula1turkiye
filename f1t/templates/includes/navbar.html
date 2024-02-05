@@ -7,6 +7,20 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainMenu">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'formula:circuit_list' %}">Pistler</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'formula:all_driver_list' %}">Sürücüler</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'formula:season_list' 'f1' %}">Formula 1</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'formula:season_list' 'f2' %}">Formula 2</a>
+            </li>
+          </ul>
             {% if user.is_authenticated %}
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">

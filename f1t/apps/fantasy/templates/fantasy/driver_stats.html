@@ -55,7 +55,7 @@
                             <tr>
                                 {% with race_driver_list.0 as rd %}
                                 <td style="background-color: {{ rd.championship_constructor.bgcolor }}; color: {{ rd.championship_constructor.fontcolor }}">
-                                    <b>{{ driver.name }}</b>
+                                    <a style="color: {{ rd.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
                                 </td>
                                 {% endwith %}
                                 {% if tab_id not in "instances,price,discount" %}
