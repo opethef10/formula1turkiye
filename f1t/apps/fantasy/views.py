@@ -18,7 +18,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
-from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver
+from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
 logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
@@ -125,14 +125,70 @@ class AllDriverListView(ListView):
     template_name = "fantasy/all_driver_list.html"
 
 
+class ConstructorListView(ListView):
+    model = Constructor
+
+
+class ConstructorDetailView(DetailView):
+    model = Constructor
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        constructor = self.object
+        positions = range(1, settings.MAX_DRIVER_POSITION + 1)
+        race_range = range(1, settings.MAX_RACES_IN_SEASON + 1)
+        context["positions"] = positions
+        context["race_range"] = race_range
+
+        race_results = RaceDriver.objects.filter(
+            race__datetime__lte=timezone.now(),
+            championship_constructor__constructor=constructor
+        )
+        # constructor.race_instances.select_related("race__championship").filter(race__datetime__lte=timezone.now())
+        # Fetching counts for grid and result instances in a single query
+        annotated_grid_data = race_results.values('grid').annotate(grid_count=Count('*'))
+        annotated_result_data = race_results.values('result').annotate(result_count=Count('*'))
+
+        # Creating dictionaries to map counts for each position
+        grid_counts = {data['grid']: data['grid_count'] for data in annotated_grid_data}
+        result_counts = {data['result']: data['result_count'] for data in annotated_result_data}
+
+        # championships = Championship.objects.filter(
+        #     id__in=race_results.values_list("race__championship", flat=True)
+        # )
+        # race_results_dict = {
+        #     championship:
+        #         [None] * settings.MAX_RACES_IN_SEASON
+        #         for championship
+        #         in championships
+        # }
+        # for rr in race_results:
+        #     race_results_dict[rr.race.championship][rr.race.round - 1] = rr
+
+        # Creating grid_list and result_list using the counts
+        context["grid_list"] = [grid_counts.get(pos) for pos in positions]
+        context["result_list"] = [result_counts.get(pos) for pos in positions]
+        context["pole"] = grid_counts.get(1, 0)
+        context["win"] = result_counts.get(1, 0)
+        context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
+        context["total_races"] = race_results.count()
+        context["not_classified"] = result_counts.get(None, 0)
+        context["first_race"] = race_results.earliest("race__datetime").race
+        context["last_race"] = race_results.latest("race__datetime").race
+        context["race_results"] = race_results.order_by("race__datetime")
+        # context["race_results_dict"] = race_results_dict
+
+        return context
+
+
 class DriverDetailView(DetailView):
     model = Driver
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         driver = self.object
-        positions = range(1,35)
-        race_range = range(1, 25)
+        positions = range(1, settings.MAX_DRIVER_POSITION + 1)
+        race_range = range(1, settings.MAX_RACES_IN_SEASON + 1)
         context["positions"] = positions
         context["race_range"] = race_range
 
@@ -150,7 +206,7 @@ class DriverDetailView(DetailView):
         )
         race_results_dict = {
             championship:
-                [None] * 24
+                [None] * settings.MAX_RACES_IN_SEASON
                 for championship
                 in championships
         }

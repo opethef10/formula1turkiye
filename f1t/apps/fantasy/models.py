@@ -130,6 +130,9 @@ class Constructor(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse("formula:constructor_detail", kwargs={'slug': self.slug})
+
 
 class Driver(models.Model):
     forename = models.CharField(max_length=255)
