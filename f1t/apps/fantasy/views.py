@@ -171,7 +171,7 @@ class ConstructorDetailView(DetailView):
         context["pole"] = grid_counts.get(1, 0)
         context["win"] = result_counts.get(1, 0)
         context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
-        context["total_races"] = race_results.count()
+        context["total_races"] = race_results.values_list('race').distinct().count()
         context["not_classified"] = result_counts.get(None, 0)
         context["first_race"] = race_results.earliest("race__datetime").race
         context["last_race"] = race_results.latest("race__datetime").race
@@ -226,6 +226,20 @@ class DriverDetailView(DetailView):
         context["race_results"] = race_results.order_by("race__datetime")
         context["race_results_dict"] = race_results_dict
 
+        return context
+
+class DriverResultsView(DetailView):
+    model = Driver
+    template_name = "fantasy/driver_results.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        driver = self.object
+        context['race_results'] = driver.race_instances.select_related(
+            "race__championship", "championship_constructor", "championship_constructor__constructor",
+        ).filter(
+            race__datetime__lte=timezone.now()
+        )
         return context
 
 

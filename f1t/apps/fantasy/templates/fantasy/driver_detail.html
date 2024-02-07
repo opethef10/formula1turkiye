@@ -24,7 +24,7 @@
     <li>{{ pole }} pol pozisyonu</li>
     <li>{{ podium }} podyum</li>
     <li>{{ not_classified }} klasman dışı</li>
-    <li>{{ total_races }} yarış</li>
+    <li><a href="{% url 'formula:driver_results' driver.slug %}">{{ total_races }} yarış</a></li>
     <li>İlk yarış:  <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
     <li>Son yarış: <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
   </ul>

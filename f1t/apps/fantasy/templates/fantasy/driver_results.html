@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ driver.name }} | Sonuçlar{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'formula:all_driver_list' %}">Sürücüler</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'formula:driver_detail' driver.slug %}">{{ driver.name }}</a></li>
+  <li class="breadcrumb-item">Sonuçlar</li>
+{% endblock %}
+
+{% block content %}
+
+  <table id="driver_results"
+         class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Yıl</th>
+            <th>Yarış</th>
+            <th>Takım</th>
+            <th>Sprint Grid</th>
+            <th>Sprint Yarış</th>
+            <th>Sıralama</th>
+            <th>Grid</th>
+            <th>Yarış</th>
+
+        </thead>
+          {% for result in race_results %}
+              <tr>
+                <td><a href="{{ result.race.championship.get_absolute_url }}">{{ result.race.championship.year }}</a></td>
+                <td><a href="{{ result.race.get_absolute_url }}">{{ result.race.name }}</a></td>
+                <td><a href="{{ result.championship_constructor.constructor.get_absolute_url }}">{{ result.championship_constructor.constructor }}</a></td>
+                <td>{{ result.grid_sprint|default_if_none:''}}</td>
+                <td>{{ result.sprint|default_if_none:'' }}</td>
+                <td>{{ result.qualy|default_if_none:''}}</td>
+                <td>{{ result.grid|default_if_none:''}}</td>
+                <td>{{ result.result|default_if_none:'' }}</td>
+              </tr>
+            {% endfor %}
+    </table>
+
+{% endblock %}
+
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            $("#driver_results").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: true,
+                    pageLength: 50,
+                    "order": [],
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            orderable: false,
+                            targets: "_all"
+                        }
+                    ]
+                }
+            );
+        })
+
+    </script>
+
+{% endblock %}
