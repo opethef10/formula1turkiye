@@ -5,9 +5,10 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'tahmin:home' %}">Tahmin Ligi</a></li>
     <li class="breadcrumb-item">
-        <a href="{% url 'tahmin:race_list' view.championship.slug %}">{{ view.championship }}</a></li>
+        <a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
     <li class="breadcrumb-item">{{ race.name }}</li>
 {% endblock %}
 
@@ -26,7 +27,7 @@
             <p class="text-center">Yaptığınız tahmini görmek ya da yeni tahmin yapmak için:</p>
         </div>
         <div class="row justify-content-center">
-            <a href="{% url 'tahmin:new_team_form' view.championship.slug %}" class="btn btn-primary ml-2">Tahmin Yap</a>
+            <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}" class="btn btn-primary ml-2">Tahmin Yap</a>
         </div>
     {% else %}
     <table id="top10"

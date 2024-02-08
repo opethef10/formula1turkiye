@@ -9,8 +9,8 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:home' %}">Fantasy Lig</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'fantasy:race_list' view.championship.slug %}">{{ view.championship }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
     <li class="breadcrumb-item">Genel Klasman</li>
 {% endblock %}
 
@@ -49,7 +49,7 @@
                     {% for user, race_team_list in race_team_dict.items %}
                         <tr>
                             <td></td>
-                            <td><a href="{% url 'fantasy:team_detail' view.championship.slug user.username %}">{{ user.get_full_name }}</a></td>
+                            <td><a href="{% url 'formula:team_detail' view.championship.series view.championship.year user.username %}">{{ user.get_full_name }}</a></td>
                             <td></td>
                             {% for race_team in race_team_list %}
                                 <td>

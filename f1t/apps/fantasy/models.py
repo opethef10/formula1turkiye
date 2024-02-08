@@ -90,7 +90,7 @@ class Championship(models.Model):
             return None
 
     def get_absolute_url(self):
-        return reverse("fantasy:race_list", kwargs={'champ': f"{self.year}-{self.series}"})
+        return reverse("formula:race_list", kwargs={'series': self.series, 'year': self.year})
 
 
 class Circuit(models.Model):
@@ -109,7 +109,7 @@ class Circuit(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("fantasy:circuit_detail", kwargs={'pk': self.pk})
+        return reverse("formula:circuit_detail", kwargs={'pk': self.pk})
 
 
 class Constructor(models.Model):
@@ -129,6 +129,9 @@ class Constructor(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("formula:constructor_detail", kwargs={'slug': self.slug})
 
 
 class Driver(models.Model):
@@ -157,7 +160,7 @@ class Driver(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("fantasy:driver_detail", kwargs={'slug': self.slug})
+        return reverse("formula:driver_detail", kwargs={'slug': self.slug})
 
 
 class Race(models.Model):
@@ -187,10 +190,16 @@ class Race(models.Model):
         return f"{self.championship.year} {self.name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
+        return reverse(
+            "formula:race_detail",
+            kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
+        )
 
     def get_tahmin_url(self):
-        return reverse("tahmin:race_tahmins", kwargs={'champ': self.championship.slug, "round": self.round})
+        return reverse(
+            "formula:tahmin:race_tahmins",
+            kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
+        )
 
     @cached_property
     def next(self):
