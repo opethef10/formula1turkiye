@@ -48,7 +48,7 @@
   </div>
 
     <h3 class="my-3">Yarışlar</h3>
-    <table class="table table-responsive table-hover table-sm table-striped">
+    <table id="table_race_list" class="table table-responsive table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>
             <th>Ayak</th>
@@ -56,11 +56,12 @@
             <th>1. Antrenman</th>
             <th>2. Antrenman</th>
             <th>3. Antrenman</th>
-            <th>Sıralama</th>
             <th>Sprint Shootout</th>
             <th>Sprint</th>
+            <th>Sıralama</th>
             <th>Yarış</th>
             <th>Lig Sonuçları</th>
+            <th>Puan</th>
         </tr>
         </thead>
         <tbody>
@@ -71,9 +72,9 @@
                 <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
-                <td>{{ race.quali_datetime|date:"j F"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.sprint_shootout_datetime|date:"j F"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.sprint_datetime|date:"j F"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.quali_datetime|date:"j F"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
                 <td>
                   {% if view.championship.is_fantasy %}
@@ -83,8 +84,40 @@
                     <a href="{{ race.get_tahmin_url }}"><i class="fa-solid fa-list-ol"></i> Tahmin</a>
                   {% endif %}
                 </td>
+              <td><a href="{% url 'formula:season_ratings' view.championship.series view.championship.year %}"><i class="fa-regular fa-star-half-stroke"></i>{{ race.rating.score|default_if_none:'' }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            $("#table_race_list").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "order": [],
+                    "searching": false,
+                    "info": false,
+                    columnDefs: [
+                        {
+                          className: "dt-center",
+                          targets: "_all"
+                        },
+                        {
+                            orderable: false,
+                            targets: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                        }
+                    ]
+                }
+            );
+        });
+
+    </script>
+
 {% endblock %}

@@ -27,6 +27,10 @@ urlpatterns = [
     path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
     path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
 
+    # Yarışı Puanla paths
+    path('<str:series>/<int:year>/puanla/', views.SeasonRatingView.as_view(), name='season_ratings'),
+    path('<str:series>/puanla/', views.SeriesRatingView.as_view(), name='series_ratings'),
+
     # Tahmin ligi paths
     path('<str:series>/<int:year>/', include("f1t.apps.tahmin.urls")),
 ]
