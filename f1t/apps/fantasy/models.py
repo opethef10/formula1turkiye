@@ -35,6 +35,7 @@ class Championship(models.Model):
     is_fantasy = models.BooleanField(default=False)
     is_tahmin = models.BooleanField(default=False)
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
+    sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -275,12 +276,13 @@ class RaceDriver(models.Model):
             return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
         fastest_lap_point = self.race.championship.fastest_lap_point
+        sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
         return round(
             (
                 self._feature_point() +
                 self._sprint_point() +
                 (self.fastest_lap * fastest_lap_point) +
-                (self.sprint_fastest_lap * fastest_lap_point)
+                (self.sprint_fastest_lap * sprint_fastest_lap_point)
             ) * coefficient,
             1
         )
