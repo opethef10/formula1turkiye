@@ -205,14 +205,14 @@ class Race(models.Model):
     @cached_property
     def next(self):
         try:
-            return self.get_next_by_datetime(championship=self.championship)
+            return self.get_next_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 
     @cached_property
     def previous(self):
         try:
-            return self.get_previous_by_datetime(championship=self.championship)
+            return self.get_previous_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 

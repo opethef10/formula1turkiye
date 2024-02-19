@@ -240,7 +240,36 @@ class DriverResultsView(DetailView):
             "race__championship", "championship_constructor", "championship_constructor__constructor",
         ).filter(
             race__datetime__lte=timezone.now()
+        ).order_by(
+            'race__datetime'
         )
+        return context
+
+
+class DriverWinsView(DriverResultsView):
+    template_name = "fantasy/driver_wins.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result=1)
+        return context
+
+
+class DriverPolesView(DriverResultsView):
+    template_name = "fantasy/driver_poles.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(grid=1)
+        return context
+
+
+class DriverPodiumsView(DriverResultsView):
+    template_name = "fantasy/driver_podiums.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result__in=[1, 2, 3])
         return context
 
 
@@ -273,7 +302,7 @@ class RaceDetailView(DetailView):
 
     def get_object(self):
         return get_object_or_404(
-            Race,
+            Race.objects.select_related('championship'),
             championship=self.championship,
             round=self.kwargs.get('round')
         )
