@@ -7,12 +7,16 @@ urlpatterns = [
     # Formula paths
     path('circuits/', views.CircuitListView.as_view(), name='circuit_list'),
     path('circuits/<pk>/', views.CircuitDetailView.as_view(), name='circuit_detail'),
+
     path('drivers/', views.AllDriverListView.as_view(), name='all_driver_list'),
     path('drivers/<slug>/', views.DriverDetailView.as_view(), name='driver_detail'),
     path('drivers/<slug>/races/', views.DriverResultsView.as_view(), name='driver_results'),
     path('drivers/<slug>/wins/', views.DriverWinsView.as_view(), name='driver_wins'),
     path('drivers/<slug>/poles/', views.DriverPolesView.as_view(), name='driver_poles'),
+    path('drivers/<slug>/flaps/', views.DriverFastestLapsView.as_view(), name='driver_flaps'),
+    path('drivers/<slug>/hattricks/', views.DriverHatTricksView.as_view(), name='driver_hattricks'),
     path('drivers/<slug>/podiums/', views.DriverPodiumsView.as_view(), name='driver_podiums'),
+
     path('constructors/', views.ConstructorListView.as_view(), name='constructor_list'),
     path('constructors/<slug>/', views.ConstructorDetailView.as_view(), name='constructor_detail'),
 

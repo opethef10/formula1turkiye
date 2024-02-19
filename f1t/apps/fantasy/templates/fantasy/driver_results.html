@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ driver.name }} | {% block pagename %}Sonuçlar{% endblock %}{% endblock %}
+{% block title %}{{ driver.name }} | {% block pagename %}Yarışlar{% endblock %}{% endblock %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -19,12 +19,13 @@
             <th>#</th>
             <th>Yıl</th>
             <th>Yarış</th>
+            <th>Pist</th>
             <th>Takım</th>
             <th>Sprint Grid</th>
             <th>Sprint Yarış</th>
             <th>Sıralama</th>
             <th>Grid</th>
-            <th>Yarış</th>
+            <th>Sonuç</th>
 
         </thead>
           {% for result in race_results %}
@@ -32,6 +33,7 @@
                 <td></td>
                 <td><a href="{{ result.race.championship.get_absolute_url }}">{{ result.race.championship.year }}</a></td>
                 <td><a href="{{ result.race.get_absolute_url }}">{{ result.race.name }}</a></td>
+                <td><a href="{{ result.race.circuit.get_absolute_url }}">{{ result.race.circuit }}</a></td>
                 <td><a href="{{ result.championship_constructor.constructor.get_absolute_url }}">{{ result.championship_constructor.constructor }}</a></td>
                 <td>{{ result.grid_sprint|default_if_none:''}}</td>
                 <td>{{ result.sprint|default_if_none:'' }}</td>

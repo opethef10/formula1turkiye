@@ -197,10 +197,12 @@ class DriverDetailView(DetailView):
         # Fetching counts for grid and result instances in a single query
         annotated_grid_data = race_results.values('grid').annotate(grid_count=Count('*'))
         annotated_result_data = race_results.values('result').annotate(result_count=Count('*'))
+        annotated_flap_data = race_results.values('fastest_lap').annotate(flap_count=Count('*'))
 
         # Creating dictionaries to map counts for each position
         grid_counts = {data['grid']: data['grid_count'] for data in annotated_grid_data}
         result_counts = {data['result']: data['result_count'] for data in annotated_result_data}
+        flap_counts = {data['fastest_lap']: data['flap_count'] for data in annotated_flap_data}
 
         championships = Championship.objects.filter(
             id__in=race_results.values_list("race__championship", flat=True)
@@ -219,6 +221,8 @@ class DriverDetailView(DetailView):
         context["result_list"] = [result_counts.get(pos) for pos in positions]
         context["pole"] = grid_counts.get(1, 0)
         context["win"] = result_counts.get(1, 0)
+        context["flap"] = flap_counts.get(True, 0)
+        context["hattrick"] = race_results.filter(result=1,grid=1,fastest_lap=True).count()
         context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
         context["total_races"] = race_results.count()
         context["not_classified"] = result_counts.get(None, 0)
@@ -237,7 +241,7 @@ class DriverResultsView(DetailView):
         context = super().get_context_data(**kwargs)
         driver = self.object
         context['race_results'] = driver.race_instances.select_related(
-            "race__championship", "championship_constructor", "championship_constructor__constructor",
+            "race__championship", "race__circuit", "championship_constructor", "championship_constructor__constructor",
         ).filter(
             race__datetime__lte=timezone.now()
         ).order_by(
@@ -261,6 +265,24 @@ class DriverPolesView(DriverResultsView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['race_results'] = context['race_results'].filter(grid=1)
+        return context
+
+
+class DriverHatTricksView(DriverResultsView):
+    template_name = "fantasy/driver_hattricks.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result=1,grid=1,fastest_lap=True)
+        return context
+
+
+class DriverFastestLapsView(DriverResultsView):
+    template_name = "fantasy/driver_flaps.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(fastest_lap=True)
         return context
 
 
