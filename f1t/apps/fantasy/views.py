@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -293,6 +293,79 @@ class DriverPodiumsView(DriverResultsView):
         context = super().get_context_data(**kwargs)
         context['race_results'] = context['race_results'].filter(result__in=[1, 2, 3])
         return context
+
+
+class StatsForDriverView(ListView):
+    allow_empty = False
+    model = Driver
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        # Get query parameters from the URL
+        first_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series')
+        ).earliest('datetime')
+        last_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series')
+        ).latest('datetime')
+
+        start_year = int(self.request.GET.get('from_year', first_race.championship.year))
+        end_year = int(self.request.GET.get('to_year', last_race.championship.year))
+
+        first_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series'),
+            championship__year=start_year,
+        ).earliest('datetime')
+        last_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series'),
+            championship__year=end_year,
+        ).latest('datetime')
+
+        start_round = int(self.request.GET.get('from_round', first_race.round))
+        end_round = int(self.request.GET.get('to_round', last_race.round))
+
+        # Get Race objects for the starting and ending races
+        self.start_race = get_object_or_404(
+            Race,
+            championship__series=self.kwargs.get('series'),
+            championship__year=start_year,
+            round=start_round
+        )
+        self.end_race = get_object_or_404(
+            Race,
+            championship__series=self.kwargs.get('series'),
+            championship__year=end_year,
+            round=end_round
+        )
+
+class StatsForDriverWinView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_wins.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__result=1,
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            win_count=Count('race_instances__result'),
+            first_win=Max('race_instances__race__datetime')
+        ).order_by('-win_count', 'first_win')
+
+
+class StatsForDriverPoleView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_poles.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__grid=1,
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            win_count=Count('race_instances__result'),
+            first_win=Max('race_instances__race__datetime')
+        ).order_by('-win_count', 'first_win')
 
 
 class LastRaceRedirectView(RedirectView):

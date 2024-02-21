@@ -20,6 +20,10 @@ urlpatterns = [
     path('constructors/', views.ConstructorListView.as_view(), name='constructor_list'),
     path('constructors/<slug>/', views.ConstructorDetailView.as_view(), name='constructor_detail'),
 
+    # Series Stats
+    path('<str:series>/stats/drivers/wins/', views.StatsForDriverWinView.as_view(), name='stats_driver_wins'),
+    path('<str:series>/stats/drivers/poles/', views.StatsForDriverPoleView.as_view(), name='stats_driver_poles'),
+
     # Season paths
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
     path('<str:series>/<int:year>/drivers/', views.DriverStatsView.as_view(), name='driver_stats'),
