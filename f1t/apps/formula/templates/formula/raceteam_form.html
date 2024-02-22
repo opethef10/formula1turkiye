@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load form_tags widget_tweaks fantasy_tags %}
+
+{% block title %}Yeni Takım{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:season_list' view.championship.series %}">{{ championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:race_list' championship.series championship.year %}">{{ championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:team_list' championship.series championship.year %}">Takımlar</a></li>
+    <li class="breadcrumb-item">Yeni Takım</li>
+{% endblock %}
+
+{% block content %}
+    <h3>YENİ TAKIM KUR - <a href="{{ view.race.get_absolute_url }}">{{ view.race.name }}</a></h3>
+    <li>Kadronuzda en fazla 8 pilot olabilir, kadronuzu buna göre oluşturun.</li>
+    <li>Bütçenizi ({{ STARTING_BUDGET|with_currency }}) aşmayın.</li>
+    <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>
+    <li>Kadronuzu gönderdikten sonra düzenlemek istiyorsanız süresonuna kadar buradan düzenleyebilirsiniz.</li>
+    <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    <br/>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('input[name="race_drivers"]').each(function () {
+                $(this).attr("class", "")
+            });
+
+            function sumit() {
+                let budget = {{ STARTING_BUDGET|stringformat:".1f" }};
+                let sum = 0;
+                $('input[name="race_drivers"]:checked').each(function () {
+                    sum += parseFloat($(this).attr("price"));
+                });
+                budget = Math.round((budget - sum + Number.EPSILON) * 10) / 10;
+                $('#id_budget').val(budget);
+            }
+
+            sumit();
+
+            $('#id_race_drivers').change(function () {
+                sumit();
+            });
+        });
+    </script>
+{% endblock %}

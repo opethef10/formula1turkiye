@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static fantasy_tags %}
+
+{% block title %}Fantasy {{ view.championship }} Genel Klasman {% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item">Genel Klasman</li>
+{% endblock %}
+
+{% block content %}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                   href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        {% for tab_id in tabs %}
+            <div class="tab-pane {% if forloop.first %}show active{% else %}fade{% endif %}"
+                 id="{{ tab_id }}">
+                <br/>
+                <table id="table_{{ tab_id }}"
+                       class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Takım</th>
+                        <th>Toplam</th>
+                        {% for race in race_list %}
+                            <th>
+                                <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for user, race_team_list in race_team_dict.items %}
+                        <tr>
+                            <td></td>
+                            <td><a href="{% url 'formulapp:team_detail' view.championship.series view.championship.year user.username %}">{{ user.get_full_name }}</a></td>
+                            <td></td>
+                            {% for race_team in race_team_list %}
+                                <td>
+                                    {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            {% for tab_id in tabs %}
+                var {{ tab_id }} = $("#table_{{ tab_id }}").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "order": [[2, 'desc']],
+                        "info": false,
+
+                        columnDefs: [
+                            {
+                                className: "dt-center",
+                                targets: "_all"
+                            },
+                            {
+                                searchable: false,
+                                orderable: false,
+                                targets: 0,
+                            },
+                            {
+                                render: function (data, type, row) {
+                                    let result = 0.0;
+                                    let num;
+                                    let nan_count = 0;
+                                    for (let i = 2; i < row.length; i++) {
+                                        num = parseFloat(row[i].replace(',', '.'));
+                                        if (isNaN(num)) {
+                                            num = 0.0;
+                                            nan_count += 1;
+                                        }
+                                        result += num;
+                                    }
+                                    {% if tab_id in 'qualy,grid,results' %}
+                                        result /= row.length - 2 - nan_count;
+                                        result = isNaN(result) ? "" : result;
+                                    {% endif %}
+
+                                    return "<b>" + result.toFixed(1) + "</b>";
+                                },
+                                targets: 2,
+                            }
+                        ]
+                    }
+                );
+                {{ tab_id }}.on('init.dt', function () {
+                    let i = 1;
+                    {{ tab_id }}.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                        this.data("<b>"+ i++ +"</b>");
+                    });
+                }).draw();
+                $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2), :empty").colorize();
+            {% endfor %}
+        });
+
+    </script>
+
+{% endblock %}

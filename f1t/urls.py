@@ -1,7 +1,7 @@
 """project URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -32,6 +32,7 @@ patterns = [
     path("contact/", ContactView.as_view(), name='contact'),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('__summernote/', include('django_summernote.urls')),
+    path("formula/", include("f1t.apps.formula.urls")),
     path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
     path("", include("f1t.apps.fantasy.urls")),
