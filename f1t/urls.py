@@ -35,6 +35,7 @@ patterns = [
     path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
     path("", include("f1t.apps.fantasy.urls")),
+    path("", include("f1t.apps.ratings.urls")),
 ]
 
 if settings.DEBUG:

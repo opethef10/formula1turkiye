@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'f1t.apps.accounts',
     'f1t.apps.fantasy',
     'f1t.apps.tahmin',
+    'f1t.apps.ratings',
     "django_minify_html",
     "django_extensions",
     "django_countries",

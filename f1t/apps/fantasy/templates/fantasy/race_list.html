@@ -84,7 +84,7 @@
                     <a href="{{ race.get_tahmin_url }}"><i class="fa-solid fa-list-ol"></i> Tahmin</a>
                   {% endif %}
                 </td>
-              <td><a href="{% url 'formula:season_ratings' view.championship.series view.championship.year %}"><i class="fa-regular fa-star-half-stroke"></i>{{ race.rating.score|default_if_none:'' }}</a></td>
+              <td><a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"><i class="fa-regular fa-star-half-stroke"></i>{{ race.rating_instance.score|default_if_none:'' }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
