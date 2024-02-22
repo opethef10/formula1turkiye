@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yarışı Puanla{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' series %}">{{ series_display }}</a></li>
+    <li class="breadcrumb-item">Yarışı Puanla</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h2 class="my-3">YARIŞI PUANLA NEDİR?</h2>
+    <ul>
+        <li>Formula 1 Türkiye üyeleri olarak, 2016'dan beri her yarış sonrasında Facebook grubumuzda yaptığımız
+            oylamalarla her yarışın puanını belirliyoruz. Böylece, gittikçe büyüyen bir arşiv yaratıp son yılların
+            en güzel ya da en sıkıcı yarışlarını sıralamış oluyoruz.
+        </li>
+        <li>Not: Yarışı Puanla 2016 Bahreyn GP'si ile başladığından, 2016'nın ilk yarışı olan Avustralya GP'sinin puanı
+            yoktur.
+        </li>
+        <li>
+            Adminlerin yıllık iznine denk geldiğinden ötürü 2019 Fransa GP'si için Yarışı Puanla anketi yapılmamıştır.
+        </li>
+        <li>
+            2021 Belçika GP'si de göstermelik olarak yapıldığı için değerlendirmeye alınmamıştır.
+        </li>
+    </ul>
+  <br/>
+   <table id="table_series_rating_list" class="table table-responsive table-hover table-sm table-striped">
+        <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Yıl</th>
+            <th>Yarış</th>
+            <th>Kişi</th>
+            <th>Puan</th>
+            <th>Onur</th>
+            <th>Semih</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rating in rating_list %}
+            <tr class="align-middle">
+                <td></td>
+                <td><a href="{{ rating.race.championship.get_absolute_url }}">{{ rating.race.championship.year }}</a></td>
+                <td><i class="{{ rating.race.country.flag_css }}"></i> <a href="{{ rating.race.get_absolute_url }}">{{ rating.race.name }}</a></td>
+                <td>{{ rating.amount }}</td>
+                <td><b>{{ rating.score|default_if_none:'' }}</b></td>
+                <td>{{ rating.onur|default_if_none:'' }}</td>
+                <td>{{ rating.semih|default_if_none:'' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            var datatable = $("#table_series_rating_list").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "order": [[4, 'desc']],
+                    paging: true,
+                    pageLength: 25,
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, 'Tümü']
+                    ],
+                    "searching": false,
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            targets: "_all"
+                        },
+                        {
+                            orderable: false,
+                            targets: [2],
+                        }
+                    ],
+                }
+            );
+            datatable.on('init.dt', function () {
+                let i = 1;
+                datatable.cells(null, 0, {search: 'applied'}).every(function (cell) {
+                    this.data("<b>" + i++ + "</b>");
+                });
+            }).draw();
+        });
+
+    </script>
+
+{% endblock %}

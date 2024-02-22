@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yarışı Puanla {{ championship.year }}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item">Yarışı Puanla</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block content %}
+   <table id="table_season_rating_list" class="table table-responsive table-hover table-sm table-striped">
+        <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Yarış</th>
+            <th>Kişi</th>
+            <th>Puan</th>
+            <th>Onur</th>
+            <th>Semih</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rating in rating_list %}
+            <tr class="align-middle">
+                <td></td>
+                <td><i class="{{ rating.race.country.flag_css }}"></i> <a href="{{ rating.race.get_absolute_url }}">{{ rating.race.name }}</a></td>
+                <td>{{ rating.amount }}</td>
+                <td><b>{{ rating.score|default_if_none:'' }}</b></td>
+                <td>{{ rating.onur|default_if_none:'' }}</td>
+                <td>{{ rating.semih|default_if_none:'' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+              <th colspan="2">Ortalama:</th>
+              <th></th>
+              <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            var datatable = $("#table_season_rating_list").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "order": [[3, 'desc']],
+                    "searching": false,
+                    "info": false,
+                    columnDefs: [
+                        {
+                          className: "dt-center",
+                          targets: "_all"
+                        },
+                        {
+                            orderable: false,
+                            targets: [1],
+                        }
+                    ],
+                    footerCallback: function (row, data, start, end, display) {
+                      let api = this.api();
+
+                      // Remove the formatting to get numeric data for averaging
+                      let numericVal = function (i) {
+                        return typeof i === 'string'
+                          ? parseFloat(i.replace(/[^\d,.-]/g, '').replace(',', '.'))  // Remove any non-digit characters and parse as float
+                          : typeof i === 'number'
+                            ? i
+                            : NaN;
+                      };
+
+                      // Columns to calculate average for (2, 3, 4, 5)
+                      let columnsToAverage = [2, 3, 4, 5];
+
+                      // Average over all pages for specified columns
+                      let averages = columnsToAverage.map(function (column) {
+                        let columnData = api.column(column).data();
+                        let sum = columnData.reduce((a, b) => numericVal(a) + numericVal(b), 0);
+                        let count = columnData.length;
+                        return count > 0 ? sum / count : 0;
+                      });
+
+                      // Average over this page for specified columns
+                      let pageAverages = columnsToAverage.map(function (column) {
+                        let columnData = api.column(column, {page: 'current'}).data();
+                        let sum = columnData.reduce((a, b) => numericVal(a) + numericVal(b), 0);
+                        let count = columnData.length;
+                        return count > 0 ? sum / count : 0;
+                      });
+
+                      // Update footer for specified columns
+                      columnsToAverage.forEach(function (column, index) {
+                        api.column(column).footer().innerHTML = pageAverages[index].toFixed(2);
+                      });
+                    }
+
+                }
+            );
+            datatable.on('init.dt', function () {
+                let i = 1;
+                datatable.cells(null, 0, {search: 'applied'}).every(function (cell) {
+                    this.data("<b>" + i++ + "</b>");
+                });
+            }).draw();
+        });
+
+    </script>
+
+{% endblock %}

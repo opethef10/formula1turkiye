@@ -7,11 +7,22 @@ urlpatterns = [
     # Formula paths
     path('circuits/', views.CircuitListView.as_view(), name='circuit_list'),
     path('circuits/<pk>/', views.CircuitDetailView.as_view(), name='circuit_detail'),
+
     path('drivers/', views.AllDriverListView.as_view(), name='all_driver_list'),
     path('drivers/<slug>/', views.DriverDetailView.as_view(), name='driver_detail'),
     path('drivers/<slug>/races/', views.DriverResultsView.as_view(), name='driver_results'),
+    path('drivers/<slug>/wins/', views.DriverWinsView.as_view(), name='driver_wins'),
+    path('drivers/<slug>/poles/', views.DriverPolesView.as_view(), name='driver_poles'),
+    path('drivers/<slug>/flaps/', views.DriverFastestLapsView.as_view(), name='driver_flaps'),
+    path('drivers/<slug>/hattricks/', views.DriverHatTricksView.as_view(), name='driver_hattricks'),
+    path('drivers/<slug>/podiums/', views.DriverPodiumsView.as_view(), name='driver_podiums'),
+
     path('constructors/', views.ConstructorListView.as_view(), name='constructor_list'),
     path('constructors/<slug>/', views.ConstructorDetailView.as_view(), name='constructor_detail'),
+
+    # Series Stats
+    path('<str:series>/stats/drivers/wins/', views.StatsForDriverWinView.as_view(), name='stats_driver_wins'),
+    path('<str:series>/stats/drivers/poles/', views.StatsForDriverPoleView.as_view(), name='stats_driver_poles'),
 
     # Season paths
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
@@ -26,6 +37,10 @@ urlpatterns = [
     path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form'),
     path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
     path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
+
+    # Yarışı Puanla paths
+    path('<str:series>/<int:year>/puanla/', views.SeasonRatingView.as_view(), name='season_ratings'),
+    path('<str:series>/puanla/', views.SeriesRatingView.as_view(), name='series_ratings'),
 
     # Tahmin ligi paths
     path('<str:series>/<int:year>/', include("f1t.apps.tahmin.urls")),

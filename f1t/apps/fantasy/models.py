@@ -35,6 +35,7 @@ class Championship(models.Model):
     is_fantasy = models.BooleanField(default=False)
     is_tahmin = models.BooleanField(default=False)
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
+    sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -204,14 +205,14 @@ class Race(models.Model):
     @cached_property
     def next(self):
         try:
-            return self.get_next_by_datetime(championship=self.championship)
+            return self.get_next_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 
     @cached_property
     def previous(self):
         try:
-            return self.get_previous_by_datetime(championship=self.championship)
+            return self.get_previous_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 
@@ -275,12 +276,13 @@ class RaceDriver(models.Model):
             return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
         fastest_lap_point = self.race.championship.fastest_lap_point
+        sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
         return round(
             (
                 self._feature_point() +
                 self._sprint_point() +
                 (self.fastest_lap * fastest_lap_point) +
-                (self.sprint_fastest_lap * fastest_lap_point)
+                (self.sprint_fastest_lap * sprint_fastest_lap_point)
             ) * coefficient,
             1
         )
@@ -433,3 +435,11 @@ class ChampionshipConstructor(models.Model):
 
     def __str__(self):
         return f"{self.championship} - {self.constructor}"
+
+
+class Rating(models.Model):
+    race = models.OneToOneField(Race, on_delete=models.CASCADE, related_name='rating')
+    amount = models.PositiveSmallIntegerField(null=True, blank=True)
+    score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    onur = models.PositiveSmallIntegerField(null=True, blank=True)
+    semih = models.PositiveSmallIntegerField(null=True, blank=True)

@@ -20,11 +20,13 @@
     <li>Ülke: <i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</li>
     <li>Kısaltma: {{ driver.code|default_if_none:"" }}</li>
     <li>Doğum Tarihi: {{ driver.dob }}</li>
-    <li>{{ win }} galibiyet</li>
-    <li>{{ pole }} pol pozisyonu</li>
-    <li>{{ podium }} podyum</li>
-    <li>{{ not_classified }} klasman dışı</li>
     <li><a href="{% url 'formula:driver_results' driver.slug %}">{{ total_races }} yarış</a></li>
+    <li><a href="{% url 'formula:driver_wins' driver.slug %}">{{ win }} galibiyet</a></li>
+    <li><a href="{% url 'formula:driver_poles' driver.slug %}">{{ pole }} pol pozisyonu</a></li>
+    <li><a href="{% url 'formula:driver_flaps' driver.slug %}">{{ flap }} en hızlı tur</a></li>
+    <li><a href="{% url 'formula:driver_hattricks' driver.slug %}">{{ hattrick }} hat-trick</a></li>
+    <li><a href="{% url 'formula:driver_podiums' driver.slug %}">{{ podium }} podyum</a></li>
+    <li>{{ not_classified }} klasman dışı</li>
     <li>İlk yarış:  <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
     <li>Son yarış: <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
   </ul>
