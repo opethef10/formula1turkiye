@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'f1t.apps.accounts',
     'f1t.apps.fantasy',
     'f1t.apps.tahmin',
+    'f1t.apps.ratings',
     "django_minify_html",
     "django_extensions",
     "django_countries",
@@ -170,6 +171,9 @@ SITE_ID = 1
 SECONDS = 1
 MINUTES = 60 * SECONDS
 HOURS = 60 * MINUTES
+
+MAX_DRIVER_POSITION = 34
+MAX_RACES_IN_SEASON = 24
 
 # ==============================================================================
 # THIRD-PARTY SETTINGS

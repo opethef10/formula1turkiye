@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -18,7 +18,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
-from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver
+from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
 logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
@@ -32,7 +32,8 @@ class DriverStatsView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -88,10 +89,28 @@ class DriverStatsView(ListView):
         return context
 
 
-# @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class ChampionshipListView(ListView):
-    queryset = Championship.objects.filter(is_fantasy=True)
-    ordering = ["-year", "series"]
+class SeasonsListView(ListView):
+    allow_empty = False
+    model = Championship
+    template_name = "fantasy/seasons_list.html"
+
+    def get_queryset(self):
+        championships = Championship.objects.filter(series=self.kwargs.get("series")).order_by('year')
+
+        # Create a dictionary to organize championships by decade
+        championship_dict = {}
+        for championship in championships:
+            decade = championship.year // 10 * 10
+            if decade not in championship_dict:
+                championship_dict[decade] = []
+            championship_dict[decade].append(championship)
+
+        return championship_dict
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["series"] = f"Formula {self.kwargs.get('series')[-1]}"
+        return context
 
 
 class CircuitListView(ListView):
@@ -107,18 +126,26 @@ class AllDriverListView(ListView):
     template_name = "fantasy/all_driver_list.html"
 
 
-class DriverDetailView(DetailView):
-    model = Driver
+class ConstructorListView(ListView):
+    model = Constructor
+
+
+class ConstructorDetailView(DetailView):
+    model = Constructor
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        driver = self.object
-        positions = range(1,35)
-        race_range = range(1, 25)
+        constructor = self.object
+        positions = range(1, settings.MAX_DRIVER_POSITION + 1)
+        race_range = range(1, settings.MAX_RACES_IN_SEASON + 1)
         context["positions"] = positions
         context["race_range"] = race_range
 
-        race_results = driver.race_instances.select_related("race__championship").filter(race__datetime__lte=timezone.now())
+        race_results = RaceDriver.objects.filter(
+            race__datetime__lte=timezone.now(),
+            championship_constructor__constructor=constructor
+        )
+        # constructor.race_instances.select_related("race__championship").filter(race__datetime__lte=timezone.now())
         # Fetching counts for grid and result instances in a single query
         annotated_grid_data = race_results.values('grid').annotate(grid_count=Count('*'))
         annotated_result_data = race_results.values('result').annotate(result_count=Count('*'))
@@ -127,12 +154,62 @@ class DriverDetailView(DetailView):
         grid_counts = {data['grid']: data['grid_count'] for data in annotated_grid_data}
         result_counts = {data['result']: data['result_count'] for data in annotated_result_data}
 
+        # championships = Championship.objects.filter(
+        #     id__in=race_results.values_list("race__championship", flat=True)
+        # )
+        # race_results_dict = {
+        #     championship:
+        #         [None] * settings.MAX_RACES_IN_SEASON
+        #         for championship
+        #         in championships
+        # }
+        # for rr in race_results:
+        #     race_results_dict[rr.race.championship][rr.race.round - 1] = rr
+
+        # Creating grid_list and result_list using the counts
+        context["grid_list"] = [grid_counts.get(pos) for pos in positions]
+        context["result_list"] = [result_counts.get(pos) for pos in positions]
+        context["pole"] = grid_counts.get(1, 0)
+        context["win"] = result_counts.get(1, 0)
+        context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
+        context["total_races"] = race_results.values_list('race').distinct().count()
+        context["not_classified"] = result_counts.get(None, 0)
+        context["first_race"] = race_results.earliest("race__datetime").race
+        context["last_race"] = race_results.latest("race__datetime").race
+        context["race_results"] = race_results.order_by("race__datetime")
+        # context["race_results_dict"] = race_results_dict
+
+        return context
+
+
+class DriverDetailView(DetailView):
+    model = Driver
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        driver = self.object
+        positions = range(1, settings.MAX_DRIVER_POSITION + 1)
+        race_range = range(1, settings.MAX_RACES_IN_SEASON + 1)
+        context["positions"] = positions
+        context["race_range"] = race_range
+
+        race_results = driver.race_instances.select_related("race__championship").filter(race__datetime__lte=timezone.now())
+        # Fetching counts for grid and result instances in a single query
+        annotated_grid_data = race_results.values('grid').annotate(grid_count=Count('*'))
+        annotated_result_data = race_results.values('result').annotate(result_count=Count('*'))
+        annotated_flap_data = race_results.values('fastest_lap').annotate(flap_count=Count('*'))
+
+        # Creating dictionaries to map counts for each position
+        grid_counts = {data['grid']: data['grid_count'] for data in annotated_grid_data}
+        result_counts = {data['result']: data['result_count'] for data in annotated_result_data}
+        flap_counts = {data['fastest_lap']: data['flap_count'] for data in annotated_flap_data}
+
         championships = Championship.objects.filter(
             id__in=race_results.values_list("race__championship", flat=True)
         )
         race_results_dict = {
             championship:
-                [None] * 24
+                [None] * settings.MAX_RACES_IN_SEASON
                 for championship
                 in championships
         }
@@ -144,6 +221,8 @@ class DriverDetailView(DetailView):
         context["result_list"] = [result_counts.get(pos) for pos in positions]
         context["pole"] = grid_counts.get(1, 0)
         context["win"] = result_counts.get(1, 0)
+        context["flap"] = flap_counts.get(True, 0)
+        context["hattrick"] = race_results.filter(result=1,grid=1,fastest_lap=True).count()
         context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
         context["total_races"] = race_results.count()
         context["not_classified"] = result_counts.get(None, 0)
@@ -154,15 +233,152 @@ class DriverDetailView(DetailView):
 
         return context
 
+class DriverResultsView(DetailView):
+    model = Driver
+    template_name = "fantasy/driver_results.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        driver = self.object
+        context['race_results'] = driver.race_instances.select_related(
+            "race__championship", "race__circuit", "championship_constructor", "championship_constructor__constructor",
+        ).filter(
+            race__datetime__lte=timezone.now()
+        ).order_by(
+            'race__datetime'
+        )
+        return context
+
+
+class DriverWinsView(DriverResultsView):
+    template_name = "fantasy/driver_wins.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result=1)
+        return context
+
+
+class DriverPolesView(DriverResultsView):
+    template_name = "fantasy/driver_poles.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(grid=1)
+        return context
+
+
+class DriverHatTricksView(DriverResultsView):
+    template_name = "fantasy/driver_hattricks.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result=1,grid=1,fastest_lap=True)
+        return context
+
+
+class DriverFastestLapsView(DriverResultsView):
+    template_name = "fantasy/driver_flaps.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(fastest_lap=True)
+        return context
+
+
+class DriverPodiumsView(DriverResultsView):
+    template_name = "fantasy/driver_podiums.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['race_results'] = context['race_results'].filter(result__in=[1, 2, 3])
+        return context
+
+
+class StatsForDriverView(ListView):
+    allow_empty = False
+    model = Driver
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        # Get query parameters from the URL
+        first_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series')
+        ).earliest('datetime')
+        last_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series')
+        ).latest('datetime')
+
+        start_year = int(self.request.GET.get('from_year', first_race.championship.year))
+        end_year = int(self.request.GET.get('to_year', last_race.championship.year))
+
+        first_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series'),
+            championship__year=start_year,
+        ).earliest('datetime')
+        last_race = Race.objects.select_related('championship').filter(
+            championship__series=self.kwargs.get('series'),
+            championship__year=end_year,
+        ).latest('datetime')
+
+        start_round = int(self.request.GET.get('from_round', first_race.round))
+        end_round = int(self.request.GET.get('to_round', last_race.round))
+
+        # Get Race objects for the starting and ending races
+        self.start_race = get_object_or_404(
+            Race,
+            championship__series=self.kwargs.get('series'),
+            championship__year=start_year,
+            round=start_round
+        )
+        self.end_race = get_object_or_404(
+            Race,
+            championship__series=self.kwargs.get('series'),
+            championship__year=end_year,
+            round=end_round
+        )
+
+class StatsForDriverWinView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_wins.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__result=1,
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            win_count=Count('race_instances__result'),
+            first_win=Max('race_instances__race__datetime')
+        ).order_by('-win_count', 'first_win')
+
+
+class StatsForDriverPoleView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_poles.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__grid=1,
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            win_count=Count('race_instances__result'),
+            first_win=Max('race_instances__race__datetime')
+        ).order_by('-win_count', 'first_win')
+
 
 class LastRaceRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        champ_slug = self.kwargs.get('champ')
-        championship = get_object_or_404(Championship, slug=champ_slug)
+        championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
         latest_race = championship.latest_race()
 
         if latest_race:
-            return reverse('fantasy:race_detail', kwargs={'champ': champ_slug, 'round': latest_race.round})
+            return latest_race.get_absolute_url()
         else:
             raise Http404("No previous races found.")
 
@@ -175,12 +391,13 @@ class RaceDetailView(DetailView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_object(self):
         return get_object_or_404(
-            Race,
+            Race.objects.select_related('championship'),
             championship=self.championship,
             round=self.kwargs.get('round')
         )
@@ -214,7 +431,8 @@ class RaceListView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -224,7 +442,7 @@ class RaceListView(ListView):
         if self.request.user.is_authenticated:
             team_count = RaceTeam.objects.filter(
                 user=self.request.user,
-                race__championship__slug=self.kwargs.get('champ')
+                race__championship=self.championship
             ).count()
         else:
             team_count = None
@@ -241,7 +459,8 @@ class FantasyStandingsView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
 
     def get_queryset(self):
@@ -284,7 +503,8 @@ class FantasyUserProfileView(ListView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.user = get_object_or_404(
             User,
@@ -326,7 +546,8 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         super().setup(request, *args, **kwargs)
         self.championship = get_object_or_404(
             Championship,
-            slug=self.kwargs.get('champ')
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
         )
         self.next_race = self.championship.next_race("fantasy")
         self.race = self.next_race or self.championship.next_race("tahmin")
@@ -362,7 +583,12 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse(
-            "fantasy:team_detail", kwargs={'champ': self.championship.slug, "username": self.object.user.username}
+            "formula:team_detail",
+            kwargs={
+                'series': self.championship.series,
+                'year': self.championship.year,
+                "username": self.object.user.username
+            }
         )
 
     def form_valid(self, form):
@@ -396,7 +622,12 @@ class NewTeamView(TeamNewEditBaseView):
             race__championship=self.championship
         )
         if teams.count() > 1:
-            return redirect(reverse("fantasy:edit_team_form", kwargs={"champ": self.championship.slug}))
+            return redirect(
+                reverse(
+                    "formula:edit_team_form",
+                    kwargs={'series': self.championship.series, 'year': self.championship.year}
+                )
+            )
         else:
             return super().get(request, *args, **kwargs)
 
@@ -417,7 +648,12 @@ class EditTeamView(TeamNewEditBaseView):
             race__championship=self.championship
         )
         if teams.count() <= 1:
-            return redirect(reverse("fantasy:new_team_form", kwargs={"champ": self.championship.slug}))
+            return redirect(
+                reverse(
+                    "formula:new_team_form",
+                    kwargs={'series': self.championship.series, 'year': self.championship.year}
+                )
+            )
         else:
             return super().get(request, *args, **kwargs)
 
@@ -427,11 +663,19 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
     form_class = RaceDriverEditForm
     template_name = "fantasy/race_edit.html"
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['formset'] = RaceDriverFormSet(
             queryset=RaceDriver.objects.filter(
-                race__championship__slug=self.kwargs.get('champ'),
+                race__championship=self.championship,
                 race__round=self.kwargs.get('round')
             )
         )
@@ -456,7 +700,7 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(
             Race.objects.select_related("championship"),
-            championship__slug=self.kwargs.get('champ'),
+            championship=self.championship,
             round=self.kwargs.get('round')
         )
 

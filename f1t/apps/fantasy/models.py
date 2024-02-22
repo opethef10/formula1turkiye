@@ -35,6 +35,7 @@ class Championship(models.Model):
     is_fantasy = models.BooleanField(default=False)
     is_tahmin = models.BooleanField(default=False)
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
+    sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -90,7 +91,7 @@ class Championship(models.Model):
             return None
 
     def get_absolute_url(self):
-        return reverse("fantasy:race_list", kwargs={'champ': f"{self.year}-{self.series}"})
+        return reverse("formula:race_list", kwargs={'series': self.series, 'year': self.year})
 
 
 class Circuit(models.Model):
@@ -109,7 +110,7 @@ class Circuit(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("fantasy:circuit_detail", kwargs={'pk': self.pk})
+        return reverse("formula:circuit_detail", kwargs={'pk': self.pk})
 
 
 class Constructor(models.Model):
@@ -129,6 +130,9 @@ class Constructor(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("formula:constructor_detail", kwargs={'slug': self.slug})
 
 
 class Driver(models.Model):
@@ -157,7 +161,7 @@ class Driver(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("fantasy:driver_detail", kwargs={'slug': self.slug})
+        return reverse("formula:driver_detail", kwargs={'slug': self.slug})
 
 
 class Race(models.Model):
@@ -187,22 +191,28 @@ class Race(models.Model):
         return f"{self.championship.year} {self.name}"
 
     def get_absolute_url(self):
-        return reverse("fantasy:race_detail", kwargs={'champ': self.championship.slug, "round": self.round})
+        return reverse(
+            "formula:race_detail",
+            kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
+        )
 
     def get_tahmin_url(self):
-        return reverse("tahmin:race_tahmins", kwargs={'champ': self.championship.slug, "round": self.round})
+        return reverse(
+            "formula:tahmin:race_tahmins",
+            kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
+        )
 
     @cached_property
     def next(self):
         try:
-            return self.get_next_by_datetime(championship=self.championship)
+            return self.get_next_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 
     @cached_property
     def previous(self):
         try:
-            return self.get_previous_by_datetime(championship=self.championship)
+            return self.get_previous_by_datetime(championship__series=self.championship.series)
         except Race.DoesNotExist:
             return None
 
@@ -266,12 +276,13 @@ class RaceDriver(models.Model):
             return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
         fastest_lap_point = self.race.championship.fastest_lap_point
+        sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
         return round(
             (
                 self._feature_point() +
                 self._sprint_point() +
                 (self.fastest_lap * fastest_lap_point) +
-                (self.sprint_fastest_lap * fastest_lap_point)
+                (self.sprint_fastest_lap * sprint_fastest_lap_point)
             ) * coefficient,
             1
         )
