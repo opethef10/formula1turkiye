@@ -5,7 +5,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item">{{ view.championship.year }}</li>
 {% endblock %}
 
@@ -17,21 +17,21 @@
   <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
     {% if view.championship.is_fantasy %}
       <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
-        <a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
+        <a href="{% url 'formulapp:driver_stats' view.championship.series view.championship.year %}"
            class="btn btn-outline-primary">Sürücü İstatistikleri</a>
-        <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
+        <a href="{% url 'formulapp:team_list' view.championship.series view.championship.year %}"
            class="btn btn-outline-primary">Fantasy Lig Genel Klasman</a>
         {% if race_team_count > 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
+          <a href="{% url 'formulapp:edit_team_form' view.championship.series view.championship.year %}"
              class="btn btn-outline-primary">Alım Satım</a>
         {% elif race_team_count == 0 %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
+          <a href="{% url 'formulapp:new_team_form' view.championship.series view.championship.year %}"
              class="btn btn-outline-primary">Yeni Takım Kur</a>
         {% elif race_team_count == 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
+          <a href="{% url 'formulapp:edit_team_form' view.championship.series view.championship.year %}"
              class="btn btn-outline-primary">Takımı Düzenle</a>
         {% else %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
+          <a href="{% url 'formulapp:new_team_form' view.championship.series view.championship.year %}"
              class="btn btn-outline-primary">Yeni Takım / Alım Satım (Giriş Yapınız)</a>
         {% endif %}
       </div>
@@ -39,9 +39,9 @@
 
     {% if view.championship.is_tahmin %}
       <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
-        <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
+        <a href="{% url 'formulapp:tahmin:team_list' view.championship.series view.championship.year %}"
            class="btn btn-outline-primary">Tahmin Ligi Genel Klasman</a>
-        <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}"
+        <a href="{% url 'formulapp:tahmin:new_team_form' view.championship.series view.championship.year %}"
            class="btn btn-outline-primary">Yeni Tahmin</a>
       </div>
     {% endif %}

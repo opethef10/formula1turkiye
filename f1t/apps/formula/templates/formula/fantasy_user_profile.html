@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load fantasy_tags %}
+
+{% block title %}{{ view.user.get_full_name }} Fantasy Lig Profili{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a
+            href="{% url 'formulapp:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:team_list' view.championship.series view.championship.year %}">Takımlar</a></li>
+    <li class="breadcrumb-item">{{ view.user.get_full_name }}</li>
+{% endblock %}
+
+{% block content %}
+    <table id="table_team_detail"
+           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Ayak</th>
+            <th>Yarış</th>
+            <th>Taktik</th>
+            <th>Hak</th>
+            <th>Bütçe</th>
+            {% for idx in "01234567" %}
+                <th>{{ forloop.counter }}. Sürücü</th>
+            {% endfor %}
+            <th>Toplam Puan</th>
+            <th>Takım Değeri</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for race, race_team in race_team_dict.items %}
+            <tr>
+                <td>{{ race.round }}</td>
+                <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
+                <td>{{ race_team.tactic }}</td>
+                <td>{{ race_team.token }}</td>
+                <td>{{ race_team.budget|with_currency }}</td>
+                {% with race_team.raceteamdrivers.all as trd_list %}
+                    {% for idx in "01234567" %}
+                        {% with trd_list|index:forloop.counter0 as raceteamdriver %}
+                            <td>
+                                <a href="#">{{ raceteamdriver.racedriver.driver.surname }}</a>
+                                <small class="text-muted d-block">{{ raceteamdriver.total_point|default_if_none:"-" }}</small>
+                                <small class="text-muted d-block">{{ raceteamdriver.racedriver.price|with_currency }}</small>
+                            </td>
+                        {% endwith %}
+                    {% endfor %}
+                {% endwith %}
+
+                <td>{{ race_team.total_point }}</td>
+                <td>{{ race_team.total_worth|with_currency }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            $("#table_team_detail").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "order": [],
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            orderable: false,
+                            targets: "_all"
+                        }
+                    ]
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}

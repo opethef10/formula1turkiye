@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static form_tags widget_tweaks %}
+
+{% block title %}Yarışı Düzenle: {{ object.name }}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formulapp:season_list' object.championship.series %}">{{ object.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formulapp:race_list' object.championship.series object.championship.year %}">{{ object.championship.year }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formulapp:race_detail' object.championship.series object.championship.year object.round%}">{{ object.name }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        Yarışı Düzenle
+    </li>
+{% endblock %}
+
+
+{% block content %}
+    {{ form.errors }}
+    <iframe src="{{ object.wikilink }}#Race_classification" scrolling="no"
+            width="700px" height="680px"></iframe>
+    <h3 class="my-2">{{ object }}</h3>
+    <form class="form form-horizontal" method="post" novalidate>
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="form-group row">
+            <div class="col-lg-2"><b>Sürücü</b></div>
+            <div class="col-lg-1"><b>Tanzim</b></div>
+            <div class="text-center" style="width: 60px"><b>Fiyat</b></div>
+            <div class="text-center" style="width: 60px"><b>Sıralama</b></div>
+            <div class="text-center" style="width: 60px"><b>Sp.Grid</b></div>
+            <div class="text-center" style="width: 60px"><b>Sprint</b></div>
+            <div class="text-center" style="width: 60px"><b>Grid</b></div>
+            <div class="text-center" style="width: 60px"><b>Race</b></div>
+            <div class="text-center" style="width: 60px"><b>EHT</b></div>
+            <div class="text-center" style="width: 60px"><b>SpEHT</b></div>
+        </div>
+        {% for form in formset %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="form-group row">
+                {% for field in form %}
+                    {% if forloop.first %}
+                        <div class="col-lg-2">
+                            {% render_field field disabled="True" %}
+                        </div>
+                        {% elif forloop.counter == 2 %}
+                        <div class="col-lg-1">
+                            {% render_field field %}
+                        </div>
+                    {% else %}
+                        <div>
+                            {% render_field field style="width: 60px" %}
+                        </div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {#            {{form.as_table}}<br><br>#}
+        {% endfor %}
+        <button type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        jQuery(function ($) {
+            $('form').bind('submit', function () {
+                $(this).find(':input').prop('disabled', false);
+            });
+        });
+    </script>
+{% endblock %}
