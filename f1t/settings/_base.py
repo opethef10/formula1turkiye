@@ -182,6 +182,14 @@ MAX_RACES_IN_SEASON = 24
 SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
 
 # ==============================================================================
+# DJANGO COUNTRIES TEMPORARY SETTINGS
+# ==============================================================================
+from django_countries.widgets import LazyChoicesMixin
+
+LazyChoicesMixin.get_choices = lambda self: self._choices
+LazyChoicesMixin.choices = property(LazyChoicesMixin.get_choices, LazyChoicesMixin.set_choices)
+
+# ==============================================================================
 # PWA SETTINGS
 # ==============================================================================
 PWA_APP_NAME = 'Formula 1 Türkiye'
