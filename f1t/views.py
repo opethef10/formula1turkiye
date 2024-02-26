@@ -21,8 +21,8 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
-
-        for championship in Championship.objects.filter(year=2023):
+        current_year = timezone.now().year
+        for championship in Championship.objects.filter(year=current_year):
             fantasy_instances = None
             team_count = None
             if user.is_authenticated:
@@ -33,6 +33,7 @@ class HomeView(TemplateView):
                     team_count = fantasy_instances.count()
             context[f"fantasy_team_{championship.series}"] = user.username if fantasy_instances else None
             context[f"race_team_count_{championship.series}"] = team_count
+        context['current_year'] = current_year
 
         return context
 

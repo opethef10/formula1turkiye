@@ -39,34 +39,34 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="{% url "formula:race_list" "f1" "2023" %}" class="card-link">F1 Fantasy Lig 2023</a>
+                        <a href="{% url "formula:race_list" "f1" current_year %}" class="card-link">F1 Fantasy Lig {{ current_year }}</a>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                    <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 7. sezonunda bütün hızıyla
+                    <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 8. sezonunda bütün hızıyla
                         devam ediyor!</p>
                     <li class="list-group-item list-group-item-action">
                         <a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}" class="card-link">Fantasy Lig Nedir & Kurallar</a></li>
                     <li class="list-group-item list-group-item-action">
                     {% if race_team_count_f1 > 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f1" "2023" %}" class="card-link">Alım Satım</a>
+                        <a href="{% url 'formula:edit_team_form' "f1" current_year %}" class="card-link">Alım Satım</a>
                     {% elif race_team_count_f1 == 0 %}
-                        <a href="{% url 'formula:new_team_form' "f1" "2023" %}" class="card-link">Yeni Takım Kur</a>
+                        <a href="{% url 'formula:new_team_form' "f1" current_year %}" class="card-link">Yeni Takım Kur</a>
                     {% elif race_team_count_f1 == 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f1" "2023" %}" class="card-link">Takımı Düzenle</a>
+                        <a href="{% url 'formula:edit_team_form' "f1" current_year %}" class="card-link">Takımı Düzenle</a>
                     {% else %}
-                        <a href="{% url 'formula:new_team_form' "f1" "2023" %}" class="card-link">Yeni Takım / Alım
-                            Satım (Giriş Yapınız)</a>
+                        <a href="{% url 'formula:new_team_form' "f1" current_year %}" class="card-link">Yeni Takım / Alım
+                            Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}</a>
                     {% endif %}
                     </li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f1" "2023" %}" class="card-link">Genel Klasman</a></li>
+                            href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f1" "2023" %}" class="card-link">Son Yarış</a></li>
+                            href="{% url "formula:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:driver_stats' "f1" "2023" %}" class="card-link">Sürücü İstatistikleri</a></li>
+                            href="{% url 'formula:driver_stats' "f1" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f1 %}
                         <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:team_detail' "f1" "2023" fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
+                            href="{% url 'formula:team_detail' "f1" current_year fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
                     {% endif %}
                 </div>
             </div>
@@ -75,34 +75,34 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="{% url "formula:race_list" "f2" "2023" %}" class="card-link">F2 Fantasy Lig 2023</a>
+                        <a href="{% url "formula:race_list" "f2" current_year %}" class="card-link">F2 Fantasy Lig {{ current_year }}</a>
                     </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                    <p class="card-text">2018'de başladığımız Fantasy F2 ligi heyecanı, 6. sezonunda bütün hızıyla devam ediyor!</p>
+                    <h6 class="card-subtitle mb-2 text-muted">Yakında!</h6>
+                    <p class="card-text">2018'de başladığımız Fantasy F2 ligi heyecanı, 7. sezonunda bütün hızıyla devam ediyor!</p>
                     <li class="list-group-item list-group-item-action">
                       <a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}"
                          class="card-link">Fantasy Lig Nedir & Kurallar</a></li>
                     <li class="list-group-item list-group-item-action">
                     {% if race_team_count_f2 > 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f2" "2023" %}" class="card-link">Alım Satım</a>
+                        <a href="{% url 'formula:edit_team_form' "f2" current_year %}" class="card-link">Alım Satım</a>
                     {% elif race_team_count_f2 == 0 %}
-                        <a href="{% url 'formula:new_team_form' "f2" "2023" %}" class="card-link">Yeni Takım Kur</a>
+                        <a href="{% url 'formula:new_team_form' "f2" current_year %}" class="card-link">Yeni Takım Kur</a>
                     {% elif race_team_count_f2 == 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f2" "2023" %}" class="card-link">Takımı Düzenle</a>
+                        <a href="{% url 'formula:edit_team_form' "f2" current_year %}" class="card-link">Takımı Düzenle</a>
                     {% else %}
-                        <a href="{% url 'formula:new_team_form' "f2" "2023" %}" class="card-link">Yeni Takım / Alım
-                            Satım (Giriş Yapınız)</a>
+                        <a href="{% url 'formula:new_team_form' "f2" current_year %}" class="card-link">Yeni Takım / Alım
+                            Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}</a>
                     {% endif %}
                     </li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f2" "2023" %}" class="card-link">Genel Klasman</a></li>
+                            href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f2" "2023" %}" class="card-link">Son Yarış</a></li>
+                            href="{% url "formula:redirect_last_race" "f2" current_year %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:driver_stats' "f2" "2023" %}" class="card-link">Sürücü İstatistikleri</a></li>
+                            href="{% url 'formula:driver_stats' "f2" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f2 %}
                         <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:team_detail' "f2" "2023" fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
+                            href="{% url 'formula:team_detail' "f2" current_year fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
                     {% endif %}
                 </div>
             </div>
@@ -111,7 +111,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="{% url "formula:race_list" "f1" "2023" %}" class="card-link">F1 Tahmin Ligi 2023</a>
+                        <a href="{% url "formula:race_list" "f1" current_year %}" class="card-link">F1 Tahmin Ligi {{ current_year }}</a>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
                     <p class="card-text">Sıralama turlarından sonra açılacak form ile tahminlerinizi
@@ -119,14 +119,14 @@
                     <li class="list-group-item list-group-item-action">
                         <a href="{% url "django.contrib.flatpages.views.flatpage" url="tahmin/" %}" class="card-link">Tahmin Ligi Nedir & Kurallar</a></li>
                     <li class="list-group-item list-group-item-action">
-                        <a href="{% url "formula:tahmin:new_team_form" "f1" "2023" %}" class="card-link">Tahmin yap
+                        <a href="{% url "formula:tahmin:new_team_form" "f1" current_year %}" class="card-link">Tahmin yap
                             {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
                         </a>
                     </li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:team_list" "f1" "2023" %}" class="card-link">Genel Klasman</a></li>
+                            href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:redirect_last_race" "f1" "2023" %}" class="card-link">Son Yarış</a></li>
+                            href="{% url "formula:tahmin:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
                 </div>
             </div>
         </div>
