@@ -55,6 +55,9 @@ class RaceTahminView(ListView):
         )
 
     def get_queryset(self):
+        if not self.championship.is_tahmin:
+            raise Http404("Tahminler bu şampiyona için kapalıdır.")
+
         return self.race.tahmins.select_related(
             "user",
             *(f"prediction_{idx}" for idx in range(1, 11)),
@@ -91,7 +94,11 @@ class TeamListView(ListView):
             year=self.kwargs.get("year")
         )
 
+
     def get_queryset(self):
+        if not self.championship.is_tahmin:
+            raise Http404("Tahminler bu şampiyona için kapalıdır.")
+
         return Tahmin.objects.prefetch_related(
             *(f"prediction_{idx}__driver" for idx in range(1, 11)),
             "race__tahmins", "race__questions",
@@ -148,6 +155,9 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
         self.race = self.next_race or self.championship.latest_race()
 
     def get(self, request, *args, **kwargs):
+        if not self.championship.is_tahmin:
+            raise Http404("Tahminler bu şampiyona için kapalıdır.")
+
         if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:
