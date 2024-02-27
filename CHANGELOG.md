@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.0.4] - 2024-02-27
+### Added
+- FAQ page
+
+## [2.0.3] - 2024-02-27
+### Added
+- Race Ratings Page served from the database
+- Drivers page
+- Win, Pole, Podium, Pole, Fastest Lap stats pages
+- Constructors page
+
+### Changed
+- Changed page structures
+- Add pages to navigation bar
+
 ## [1.13.4] - 2023-11-14
 ### Added
 - Driver career table
