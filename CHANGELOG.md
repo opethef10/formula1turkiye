@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.0.5] - 2024-02-27
+### Added
+- Price img to new team form
+### Changed
+- Logout on POST request
+- Make non-tahmin seasons return 404
+
 ## [2.0.4] - 2024-02-27
 ### Added
 - FAQ page
