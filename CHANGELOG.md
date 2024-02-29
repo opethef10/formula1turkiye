@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.0.6] - 2024-02-29
+### Added
+- Leagues and products to the navbar
+
 ## [2.0.5] - 2024-02-27
 ### Added
 - Price img to new team form
