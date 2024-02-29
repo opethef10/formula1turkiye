@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Leagues and products to the navbar
 - Tabs to the driver detail page
+### Fixed
+- Driver birthdays shown as None
 ### Removed
 - Constructors' race detail table
 
