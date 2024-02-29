@@ -230,6 +230,13 @@ class DriverDetailView(DetailView):
         context["last_race"] = race_results.latest("race__datetime").race
         context["race_results"] = race_results.order_by("race__datetime")
         context["race_results_dict"] = race_results_dict
+        context["tabs"] = {
+            "result": "Yarış",
+            "grid": "Grid",
+            "qualy": "Sıralama",
+            "grid_sprint": "Sprint Grid",
+            "sprint": "Sprint",
+        }
 
         return context
 

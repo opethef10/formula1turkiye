@@ -32,7 +32,7 @@
                 <td>{{ driver.number|default_if_none:"" }}</td>
                 <td><i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</td>
                 <td>{{ driver.code|default_if_none:"" }}</td>
-                <td>{{ driver.dob }}</td>
+                <td>{{ driver.dob|default_if_none:"" }}</td>
             </tr>
         {% endfor %}
         </tbody>
