@@ -23,6 +23,28 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'formula:season_list' 'f2' %}">Formula 2</a>
             </li>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                      Liglerimiz
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                      <a class="dropdown-item" href="{% url 'formula:race_list' 'f1' '2024' %}">F1 Fantasy Lig 2024</a>
+                      <a class="dropdown-item" href="{% url 'formula:race_list' 'f2' '2024' %}">F2 Fantasy Lig 2024</a>
+                      <a class="dropdown-item" href="{% url 'formula:race_list' 'f1' '2024' %}">F1 Tahmin Ligi 2024</a>
+                  </div>
+              </li>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                      Ürünlerimiz
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                      <a class="dropdown-item" href="{% url "django.contrib.flatpages.views.flatpage" url="elo/" %}">Elo Sıralama Projesi</a>
+                      <a class="dropdown-item" href="{% url "ratings:series_ratings" "f1" %}">Yarışı Puanla</a>
+                      <a class="dropdown-item" href="{% url "django.contrib.flatpages.views.flatpage" url="quiz/" %}">Quiz Night</a>
+                  </div>
+              </li>
           </ul>
             {% if user.is_authenticated %}
                 <ul class="navbar-nav ml-auto">
