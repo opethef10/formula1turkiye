@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Driver URLs in race_detail page
 ### Fixed
 - Server error when constructors and drivers don't have results yet
+- Rating in Race List n+1 query problem
 
 ## [2.1.0] - 2024-02-29
 ### Added

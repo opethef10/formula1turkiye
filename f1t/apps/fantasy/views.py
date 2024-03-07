@@ -450,7 +450,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.select_related("circuit").order_by("round")
+        return self.championship.races.select_related("circuit", "rating_instance").order_by("round")
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
