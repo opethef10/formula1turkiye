@@ -174,9 +174,10 @@ class ConstructorDetailView(DetailView):
         context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
         context["total_races"] = race_results.values_list('race').distinct().count()
         context["not_classified"] = result_counts.get(None, 0)
-        context["first_race"] = race_results.earliest("race__datetime").race
-        context["last_race"] = race_results.latest("race__datetime").race
-        context["race_results"] = race_results.order_by("race__datetime")
+        if race_results.exists():
+            context["first_race"] = race_results.earliest("race__datetime").race
+            context["last_race"] = race_results.latest("race__datetime").race
+            context["race_results"] = race_results.order_by("race__datetime")
         # context["race_results_dict"] = race_results_dict
 
         return context
@@ -226,9 +227,10 @@ class DriverDetailView(DetailView):
         context["podium"] = sum(result_counts.get(pos, 0) for pos in (1, 2, 3))
         context["total_races"] = race_results.count()
         context["not_classified"] = result_counts.get(None, 0)
-        context["first_race"] = race_results.earliest("race__datetime").race
-        context["last_race"] = race_results.latest("race__datetime").race
-        context["race_results"] = race_results.order_by("race__datetime")
+        if race_results.exists():
+            context["first_race"] = race_results.earliest("race__datetime").race
+            context["last_race"] = race_results.latest("race__datetime").race
+            context["race_results"] = race_results.order_by("race__datetime")
         context["race_results_dict"] = race_results_dict
         context["tabs"] = {
             "result": "Yarış",
@@ -448,7 +450,7 @@ class RaceListView(ListView):
         )
 
     def get_queryset(self):
-        return self.championship.races.select_related("circuit").order_by("round")
+        return self.championship.races.select_related("circuit", "rating_instance").order_by("round")
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
