@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.1] - 2024-03-07
 ### Changed
+- FontAwesome Django app to webkit
 - Driver URLs in race_detail page
 ### Fixed
 - Server error when constructors and drivers don't have results yet
