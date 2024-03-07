@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     "django.contrib.redirects",
-    "fontawesomefree",
     'widget_tweaks',
     "pwa",
 ]
