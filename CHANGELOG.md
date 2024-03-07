@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.1.1] - 2024-03-07
+### Added
+### Fixed
+- Server error when constructors and drivers don't have results yet
+
 ## [2.1.0] - 2024-02-29
 ### Added
 - Leagues and products to the navbar
