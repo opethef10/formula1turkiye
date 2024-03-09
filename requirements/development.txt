@@ -1,2 +1,4 @@
 -r base.txt
 django-debug-toolbar==3.8.1
+fontawesomefree==6.5.1
+
