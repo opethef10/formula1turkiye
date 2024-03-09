@@ -83,7 +83,7 @@
                     {% for championship, results_by_year in race_results_dict.items %}
                         <tr>
                             <td class="text-center"><b><a
-                                href="{{ championship.get_absolute_url }}">{{ championship.year }}</a></b></td>
+                                href="{{ championship.get_absolute_url }}">{{ championship.year }} {{ championship.series|upper}}</a></b></td>
                             {% for race_driver in results_by_year %}
                                 <td class="text-center">
                                     {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
