@@ -68,7 +68,7 @@
         {% for race in race_list %}
             <tr class="align-middle">
                 <td>{{ race.round }}</td>
-                <td><i class="{{ race.country.flag_css }}"></i> <a href="{{ race.get_absolute_url }}">{{ race.name }}</a> <br> <a href="{{ race.circuit.get_absolute_url }}">{{ race.circuit}}</a></td>
+                <td><i class="{{ race.country.flag_css }}"></i> <a href="{{ race.get_absolute_url }}">{{ race.name }}</a> <br><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <a href="{{ race.circuit.get_absolute_url }}">{{ race.circuit}}</a></td>
                 <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
                 <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
