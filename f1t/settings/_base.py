@@ -57,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
-    'mobiledetect.middleware.DetectMiddleware',
 ]
 
 TEMPLATES = [
