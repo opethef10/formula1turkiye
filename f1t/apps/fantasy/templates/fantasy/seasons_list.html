@@ -8,12 +8,11 @@
 {% endblock %}
 
 {% block content %}
-    <table class="table table-responsive">
+    <table class="table table-responsive text-center">
         <tbody>
             {% for decade, championships in object_list.items %}
                 <tr>
                 {% for championship in championships %}
-                        <td></td>
                         <td>
                             <a href="{% url 'formula:race_list' championship.series championship.year %}">
                                 {{ championship.year }}

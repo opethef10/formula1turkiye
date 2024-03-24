@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.redirects",
     'widget_tweaks',
     "pwa",
+    "mobiledetect",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
+    'mobiledetect.middleware.DetectMiddleware',
 ]
 
 TEMPLATES = [
