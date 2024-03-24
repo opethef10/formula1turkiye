@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.1.4] - 2024-03-24
+### Changed
+- Improvements in visual aspects of website
+
 ## [2.1.3] - 2024-03-18
 ### Changed
 - Added series detail to driver detail page

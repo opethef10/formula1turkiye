@@ -32,7 +32,7 @@
   </ul>
 
   <table id="driver_results"
-           class="table table-responsive table-hover table-striped">
+           class="table table-responsive table-hover table-striped table-sm d-block d-lg-table">
         <thead class="thead-inverse">
         <tr>
             <th>Sıra</th>
@@ -71,10 +71,10 @@
 
                 <br/>
                 <table id="results_by_year_{{ tab_id }}"
-                       class="table table-bordered table-sm">
+                       class="table table-bordered table-responsive table-sm d-block d-lg-table">
                     <thead class="thead-inverse">
                     <tr>
-                        <th class="text-center">#</th>
+                        <th class="text-center">Şampiyona</th>
                         {% for _ in race_range %}
                             <th class="text-center">{{ forloop.counter }}</th>
                         {% endfor %}

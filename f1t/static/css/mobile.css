@@ -1,0 +1,33 @@
+@media (max-width: 1000px) {
+    html {
+        font-size: 24px;
+    }
+
+    .navbar-brand {
+        font-size: 1em; !important;
+    }
+
+    .navbar-dark {
+        font-size: 18px; !important;
+    }
+
+    nav .btn {
+        font-size: 18px; !important;
+    }
+
+    footer {
+        font-size: 18px !important;
+    }
+
+    footer .btn {
+        font-size: 1em;
+    }
+    footer p,
+    footer li {
+        font-size: 0.9em;
+    }
+    footer h5 {
+        font-size: 1.25em;
+    }
+}
+
