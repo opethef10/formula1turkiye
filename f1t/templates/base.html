@@ -22,7 +22,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
     {% endif %}
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    {% if request.device.is_mobile %}
+        <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    {% endif %}
     <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
     {% block stylesheet %}{% endblock %}
 </head>
