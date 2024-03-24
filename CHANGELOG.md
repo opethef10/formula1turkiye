@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.1.6] - 2024-03-24
+### Changed
+- Footer pusher length
+
 ## [2.1.5] - 2024-03-24
 ### Fixed
 - Mobile detect test error
