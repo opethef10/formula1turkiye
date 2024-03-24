@@ -24,6 +24,8 @@ INSTALLED_APPS.extend(
 )
 
 MIDDLEWARE.insert(5, "debug_toolbar.middleware.DebugToolbarMiddleware")
+MIDDLEWARE.append('mobiledetect.middleware.DetectMiddleware')
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',

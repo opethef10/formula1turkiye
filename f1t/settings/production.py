@@ -30,3 +30,5 @@ LOGGING['handlers']['file'] = {
 }
 LOGGING['loggers']['f1t']["handlers"] = ["file"]
 
+MIDDLEWARE.append('mobiledetect.middleware.DetectMiddleware')
+
