@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.2.0] - 2024-03-26
+## Added
+- Yarışı Puanla Form
+
 ## [2.1.6] - 2024-03-24
 ### Changed
 - Footer pusher length

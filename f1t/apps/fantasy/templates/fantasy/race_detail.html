@@ -18,7 +18,8 @@
         <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{{ race.next.get_absolute_url }}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
     {% if user.is_staff %}
-        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4">Sonuç / Fiyat Gir</a>
+        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Sonuç / Fiyat Gir</a>
+        <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Yarış Puanı Gir</a>
     {% endif %}
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
