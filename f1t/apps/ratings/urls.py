@@ -7,4 +7,6 @@ urlpatterns = [
     # Yarışı Puanla paths
     path('<str:series>/<int:year>/puanla/', views.SeasonRatingView.as_view(), name='season_ratings'),
     path('<str:series>/puanla/', views.SeriesRatingView.as_view(), name='series_ratings'),
+    path('<str:series>/<int:year>/<int:round>/puanla/', views.RatingCreateView.as_view(), name='create_ratings'),
 ]
+

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static form_tags widget_tweaks %}
+
+{% block title %}Puan Ekle{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.race.championship.series %}">{{ view.race.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_list' view.race.championship.series view.race.championship.year %}">{{ view.race.championship.year }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_detail' view.race.championship.series view.race.championship.year view.race.round%}">{{ view.race.name }}</a>
+    </li>
+    <li class="breadcrumb-item">Yarışı Puanla Formu</li>
+{% endblock %}
+
+{% block content %}
+    <h4>Yarışı Puanla Formu</h4>
+    <p><b>UYARI:</b> Yarışa verilen skorlar puan puan kaydedilmemektedir, bu formdaki puanların sonucunda toplam oy ve 2 sigma içerisinde yer alan oyların ağırlıklı ortalaması sunucu tarafında hesaplanıp veritabanına kaydedilmektedir. Bu nedenle daha önce puanı eklenmiş bir yarışın formunu açtığımızda Onur ve Semih girdileri veritabanından düzenlenmek için olduğu gibi çekilebilse de, 1'den 10'a kadar olan oy sayılarında bir kayıt olmadığından form her açıldığında (geri tuşu hariç, o önbellekte tutuyor form girdilerini) varsayılan olarak her oy 0 olarak görünecektir. Dolayısıyla her bir düzenlemede baştan oy sayılarını girmemiz gerekmektedir. Bu nedenle çok elzem olmadıkça bu formun düzenleme amaçlı kullanılması önerilmez. Baş ağrıtır, gider yeniden Facebook'u açtırır, gönderi aratır, baktırır. Lakin, bir yarışın oyları ilk defa giriliyorsa herhangi bir sıkıntı yaratmaz. Gönül rahatlığıyla veri girebilirsiniz.</p>
+    <p>Ha diyeceksen ki, neden kaydedilmiyor ulan? Fena olmazdı aslında, istatistik31 falan olurdu grafikli mrafikli ama Excel'de 150 küsür yarış sadece puan kaydettik, o yüzden aynen devamke.</p>
+    <small>NOT: Bu formu yalnızca yöneticiler ve onların yetkilendirdikleri kişiler görebilir. O yüzden burda üslup belə.</small>
+    <p></p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ml-2" id="deselect">Değişiklikleri Geri Al</button>
+    </form>
+{% endblock %}
+
