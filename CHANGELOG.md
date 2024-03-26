@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.2.1] - 2024-03-27
+### Changed
+- Mobile css max width value
+
 ## [2.2.0] - 2024-03-26
 ## Added
 - Yarışı Puanla Form
