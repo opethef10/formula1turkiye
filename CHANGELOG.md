@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.2.4] - 2024-04-08
+### Added
+- Pythonanywhere script files
+
 ## [2.2.3] - 2024-04-07
 ### Fixed
 - In Fantasy driver stats, the average values
