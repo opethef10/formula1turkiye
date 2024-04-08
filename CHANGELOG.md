@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.2.3] - 2024-04-07
+### Fixed
+- In Fantasy driver stats, the average values
+
 ## [2.2.1] - 2024-03-27
 ### Changed
 - Mobile css max width value
