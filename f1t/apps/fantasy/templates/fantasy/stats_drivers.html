@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Sürücü İstatistikleri{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.series %}">{{ view.series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:stats_series' view.series %}">İstatistikler</a></li>
+	<li class="breadcrumb-item">Sürücüler</li>
+{% endblock %}
+
+{% block content %}
+    <ul>
+		<li><a href="{% url "formula:stats_driver_wins" view.series %}" class="card-link">Galibiyet İstatistikleri</a></li>
+		<li><a href="{% url "formula:stats_driver_poles" view.series %}" class="card-link">Pol İstatistikleri</a></li>
+		<li><a href="{% url "formula:stats_driver_podiums" view.series %}" class="card-link">Podyum İstatistikleri</a></li>
+		<li><a href="{% url "formula:stats_driver_races" view.series %}" class="card-link">Yarış İstatistikleri</a></li>
+		<li><a href="{% url "formula:stats_driver_finishes" view.series %}" class="card-link">Finiş İstatistikleri</a></li>
+	</ul>
+{% endblock %}

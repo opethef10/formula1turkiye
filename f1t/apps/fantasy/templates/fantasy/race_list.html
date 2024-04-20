@@ -11,43 +11,42 @@
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+	<style>
+        table.dataTable.no-footer {
+            border-bottom: none !important;
+        }
+	</style>
 {% endblock %}
 
 {% block content %}
-  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-    {% if view.championship.is_fantasy %}
-      <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
-        <a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Sürücü İstatistikleri</a>
-        <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Fantasy Lig Genel Klasman</a>
-        {% if race_team_count > 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Alım Satım</a>
-        {% elif race_team_count == 0 %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Yeni Takım Kur</a>
-        {% elif race_team_count == 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Takımı Düzenle</a>
-        {% else %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Yeni Takım / Alım Satım (Giriş Yapınız)</a>
+
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not view.championship.previous %}disabled{% endif %}" href="{{ view.championship.previous.get_absolute_url }}">&larr; {{ view.championship.previous.short_str|upper|default_if_none:"" }}</a>
+        <h3 class="text-center">{{ view.championship }}</h3>
+        <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{{ view.championship.next.get_absolute_url }}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
+    </div>
+
+
+  <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group mr-4" role="group" aria-label="Menu Group Championship">
+        <button id="print_button" class="btn-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-print"></i> Takvimi Yazdır</button>
+		<a href="{% url 'formula:season_stats' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-chart-simple"></i> Sezon İstatistikleri</a>
+        {% if view.championship.is_fantasy %}
+            <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
+               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy Lig</a>
         {% endif %}
-      </div>
-    {% endif %}
+        {% if view.championship.is_tahmin %}
+            <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
+               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-list-ol"></i> Tahmin Ligi</a>
+        {% endif %}
+		{% if view.championship.is_puanla %}
+            <a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
+        {% endif %}
 
-    {% if view.championship.is_tahmin %}
-      <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
-        <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Tahmin Ligi Genel Klasman</a>
-        <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Yeni Tahmin</a>
-      </div>
-    {% endif %}
+    </div>
   </div>
-
-    <h3 class="my-3">Yarışlar</h3>
     <table id="table_race_list" class="table table-responsive table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>
@@ -56,7 +55,7 @@
             <th>1. Antrenman</th>
             <th>2. Antrenman</th>
             <th>3. Antrenman</th>
-            <th>Sprint Shootout</th>
+            <th>Sprint Sıralama</th>
             <th>Sprint</th>
             <th>Sıralama</th>
             <th>Yarış</th>
@@ -118,6 +117,50 @@
             );
         });
 
+$(document).ready(function() {
+  // Function to print the table
+  function printTable() {
+    var $table = $("#table_race_list").clone();
+
+    // Remove last two columns from the table header and body
+    $table.find("thead th:nth-last-child(-n+2), tbody td:nth-last-child(-n+2)").remove();
+    // $table.find("thead th:last-child, tbody td:last-child").remove();
+
+    // Create a new hidden iframe to print the table
+    var $iframe = $("<iframe>").css("display", "none").appendTo("body");
+    var iframeDocument = $iframe[0].contentWindow.document;
+
+    // Write the table HTML to the iframe document
+    iframeDocument.write("<html><head><title>{{ view.championship }} Yarış Takvimi • Formula 1 Türkiye</title>");
+
+    // Loop through all linked stylesheets and include them in the iframe
+    $("link[rel='stylesheet']").each(function() {
+      iframeDocument.write($(this)[0].outerHTML);
+    });
+
+    iframeDocument.write("</head><body>");
+    var championshipHeader = "<h1 class='text-center my-5'>{{ view.championship }} Yarış Takvimi • Formula 1 Türkiye</h1>";
+    iframeDocument.write(championshipHeader);
+    iframeDocument.write($table[0].outerHTML);
+    iframeDocument.write("</body></html>");
+    iframeDocument.close();
+
+    // Print the iframe content after a short delay to ensure rendering
+    setTimeout(function() {
+      $iframe[0].contentWindow.print();
+
+      // Remove the iframe after printing
+      setTimeout(function() {
+        $iframe.remove();
+      }, 1000); // Timeout to ensure printing completes before removing the iframe
+    }, 500); // Short delay before printing to ensure rendering
+  }
+
+  // Click event handler for the print button
+  $("#print_button").on("click", function() {
+    printTable();
+  });
+});
     </script>
 
 {% endblock %}

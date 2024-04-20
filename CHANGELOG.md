@@ -13,6 +13,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.3.0] - 2024-04-20
+### Added
+- Print season calendar
+- DEV to title in development mode
+- Short str method in championship model
+- Next and previous championships scroll through
+- is_puanla method to championship model
+- League menus
+- One explanatory line to the ratings main page
+- Season stats page
+- Many driver statistics pages
+- Formula section in the main page, separated from the leagues
+- Add F1 stats link to navbar
+### Changed
+- Navbar leagues dropdown links redirect to league main pages for current season
+- Homepage league links redirect to league main pages for current season
+- Championship menu to redirect to leagues
+- Sprint Shootout to Sprint Sıralama
+- Center the driver detail grid/finish counts
+### Fixed
+- League access for non existing league pages
+- Ratings average calculation
+- Unnecessary footer line for season calendars
+- Tahmin league race page breadcrumb
+- Tests failing due to closed championships
+
 ## [2.2.4] - 2024-04-08
 ### Added
 - Pythonanywhere script files

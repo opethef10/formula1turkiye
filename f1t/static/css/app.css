@@ -72,3 +72,23 @@ body {
 	border-bottom-left-radius:0;
 	border-right-width: 1px;
 }
+
+@media print {
+    @page {
+        size: A3; /* Set paper size to A4 */
+        margin: 0; /* Reset margins */
+    }
+    html {
+        font-size: 10pt !important;
+    }
+    html, body {
+        margin: auto;
+        padding: auto;
+        /*width: 210mm;  Set width to A4 width */
+        /*height: 297mm;  Set height to A4 height */
+        /*box-sizing: border-box;
+        /*transform-origin: top left;*/
+    }
+    a { text-decoration: none !important; }
+}
+
