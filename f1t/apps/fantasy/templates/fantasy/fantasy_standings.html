@@ -11,7 +11,7 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
-    <li class="breadcrumb-item">Genel Klasman</li>
+    <li class="breadcrumb-item">Fantasy Lig Genel Klasman</li>
 {% endblock %}
 
 {% block content %}
@@ -21,6 +21,31 @@
         <a class="btn btn-outline-primary {% if not view.championship.next or not view.championship.next.is_fantasy %}disabled{% endif %}" href="{% if not view.championship.next or not view.championship.next.is_fantasy %}#{% else %}{% url 'formula:team_list' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
 	
+	<div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
+		{% if view.championship.is_fantasy %}
+		  <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
+			<a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}" class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Fantasy Lig Kuralları</a>
+			<a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Sürücü İstatistikleri</a>
+			<a href="{% url 'formula:redirect_last_race' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Son Yarış Sonuçları</a>
+			<a class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"
+			{% if race_team_count > 1 %}
+			  href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}">Alım Satım
+			{% elif race_team_count == 0 %}
+			  href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}">Yeni Takım Kur
+			{% elif race_team_count == 1 %}
+			  href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}">Takımı Düzenle
+			{% else %}
+			  href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}">Yeni Takım / Alım Satım (Giriş Yapınız)
+			{% endif %}</a>
+			
+			{% if race_team_count >= 1 %}
+				<a class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}" href="{% url 'formula:team_detail' view.championship.series view.championship.year user.username %}">Lig Profil Sayfanız</a>
+			{% endif %}
+		  </div>
+		{% endif %}
+	</div>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}

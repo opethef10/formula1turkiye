@@ -14,53 +14,34 @@
 {% endblock %}
 
 {% block content %}
-  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-    {% if view.championship.is_fantasy %}
-      <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
-        <a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Sürücü İstatistikleri</a>
-        <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Fantasy Lig Genel Klasman</a>
-        {% if race_team_count > 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Alım Satım</a>
-        {% elif race_team_count == 0 %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Yeni Takım Kur</a>
-        {% elif race_team_count == 1 %}
-          <a href="{% url 'formula:edit_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Takımı Düzenle</a>
-        {% else %}
-          <a href="{% url 'formula:new_team_form' view.championship.series view.championship.year %}"
-             class="btn btn-outline-primary">Yeni Takım / Alım Satım (Giriş Yapınız)</a>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    {% if view.championship.is_tahmin %}
-      <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
-        <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Tahmin Ligi Genel Klasman</a>
-        <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}"
-           class="btn btn-outline-primary">Yeni Tahmin</a>
-      </div>
-    {% endif %}
-  </div>
-
-    <div class="row my-3 align-items-center justify-content-center">
-  <div class="col-6">
-    <h3>{{ view.championship }}</h3>
-  </div>
-  <div class="col-6 text-right">
-    <button id="print_button" class="btn-sm btn-primary">Takvimi Yazdır</button>
-  </div>
-</div>
 
     <div class="d-flex justify-content-between my-4">
         <a class="btn btn-outline-primary {% if not view.championship.previous %}disabled{% endif %}" href="{{ view.championship.previous.get_absolute_url }}">&larr; {{ view.championship.previous.short_str|upper|default_if_none:"" }}</a>
         <h3 class="text-center">{{ view.championship }}</h3>
         <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{{ view.championship.next.get_absolute_url }}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
+
+
+  <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group mr-4" role="group" aria-label="Menu Group Championship">
+        <button id="print_button" class="btn-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-print"></i> Takvimi Yazdır</button>
+		<a href="{% url 'formula:season_stats' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-chart-simple"></i> Sezon İstatistikleri</a>
+        {% if view.championship.is_fantasy %}
+            <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
+               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy Lig</a>
+        {% endif %}
+        {% if view.championship.is_tahmin %}
+            <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
+               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-list-ol"></i> Tahmin Ligi</a>
+        {% endif %}
+		{% if view.championship.is_puanla %}
+            <a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"
+			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
+        {% endif %}
+	
+    </div>
+  </div>
     <table id="table_race_list" class="table table-responsive table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>

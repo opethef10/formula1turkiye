@@ -452,18 +452,6 @@ class RaceListView(ListView):
     def get_queryset(self):
         return self.championship.races.select_related("circuit", "rating_instance").order_by("round")
 
-    def get_context_data(self, **kwargs):
-        if self.request.user.is_authenticated:
-            team_count = RaceTeam.objects.filter(
-                user=self.request.user,
-                race__championship=self.championship
-            ).count()
-        else:
-            team_count = None
-        context = super().get_context_data(**kwargs)
-        context["race_team_count"] = team_count
-        return context
-
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class FantasyStandingsView(ListView):
@@ -504,7 +492,16 @@ class FantasyStandingsView(ListView):
         for rt in self.get_queryset():
             race_team_dict[rt.user][rt.race.round - 1] = rt
 
+        if self.request.user.is_authenticated:
+            team_count = RaceTeam.objects.filter(
+                user=self.request.user,
+                race__championship=self.championship
+            ).count()
+        else:
+            team_count = None
+
         context = super().get_context_data(**kwargs)
+        context["race_team_count"] = team_count
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
         context["tabs"] = {
