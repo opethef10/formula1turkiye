@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Homepage league links redirect to league main pages for current season
 - Championship menu to redirect to leagues
 - Sprint Shootout to Sprint Sıralama
+- Center the driver detail grid/finish counts
 ### Fixed
 - League access for non existing league pages
 - Ratings average calculation
