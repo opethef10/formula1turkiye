@@ -56,6 +56,15 @@
             </tr>
         {% endfor %}
         </tbody>
+		<tfoot>
+            <tr>
+              <th colspan="3">Ortalama:</th>
+              <th></th>
+              <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
     </table>
 {% endblock %}
 
@@ -88,6 +97,58 @@
                             targets: [2],
                         }
                     ],
+					footerCallback: function (row, data, start, end, display) {
+                      let api = this.api();
+
+                      // Remove the formatting to get numeric data for averaging
+                      let numericVal = function (i) {
+                        return typeof i === 'string'
+                          ? parseFloat(i.replace(/[^\d,.-]/g, '').replace(',', '.'))  // Remove any non-digit characters and parse as float
+                          : typeof i === 'number'
+                            ? i
+                            : NaN;
+                      };
+
+                      // Columns to calculate average for (3, 4, 5, 6)
+                      let columnsToAverage = [3, 4, 5, 6];
+
+                      // Average over all pages for specified columns
+					  let averages = columnsToAverage.map(function (column) {
+						let columnData = api.column(column).data();
+						let sum = 0;
+						let count = 0;
+						columnData.each(function (value) {
+						  if (value.trim() !== "") { // Check if the cell is not empty
+							sum += numericVal(value);
+							count++;
+						  }
+						});
+						return count > 0 ? sum / count : 0;
+					  });
+
+					  // Average over this page for specified columns
+					  let pageAverages = columnsToAverage.map(function (column) {
+						let columnData = api.column(column, { page: 'current' }).data();
+						let sum = 0;
+						let count = 0;
+						columnData.each(function (value) {
+						  if (value.trim() !== "") { // Check if the cell is not empty
+							sum += numericVal(value);
+							count++;
+						  }
+						});
+						return count > 0 ? sum / count : 0;
+					  });
+
+                      // Update footer for specified columns
+                      columnsToAverage.forEach(function (column, index) {
+						let footer = api.column(column).footer();
+						if (footer) {
+							footer.innerHTML = averages[index].toFixed(2);
+						}
+                        <!-- api.column(column).footer().innerHTML = averages[index].toFixed(2); -->
+                      });
+                    },
                 }
             );
             datatable.on('init.dt', function () {

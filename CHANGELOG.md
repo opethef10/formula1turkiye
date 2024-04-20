@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Navbar leagues dropdown links redirect to league main pages for current season
 ### Fixed
 - League access for non existing league pages
+- Ratings average calculation
 
 ## [2.2.1] - 2024-03-27
 ### Changed

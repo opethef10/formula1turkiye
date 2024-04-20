@@ -95,24 +95,26 @@
                       let columnsToAverage = [2, 3, 4, 5];
 
                       // Average over all pages for specified columns
-                      let averages = columnsToAverage.map(function (column) {
-                        let columnData = api.column(column).data();
-                        let sum = columnData.reduce((a, b) => numericVal(a) + numericVal(b), 0);
-                        let count = columnData.length;
-                        return count > 0 ? sum / count : 0;
-                      });
-
-                      // Average over this page for specified columns
-                      let pageAverages = columnsToAverage.map(function (column) {
-                        let columnData = api.column(column, {page: 'current'}).data();
-                        let sum = columnData.reduce((a, b) => numericVal(a) + numericVal(b), 0);
-                        let count = columnData.length;
-                        return count > 0 ? sum / count : 0;
-                      });
+					  let averages = columnsToAverage.map(function (column) {
+						let columnData = api.column(column).data();
+						let sum = 0;
+						let count = 0;
+						columnData.each(function (value) {
+						  if (value.trim() !== "") { // Check if the cell is not empty
+							sum += numericVal(value);
+							count++;
+						  }
+						});
+						return count > 0 ? sum / count : 0;
+					  });
 
                       // Update footer for specified columns
                       columnsToAverage.forEach(function (column, index) {
-                        api.column(column).footer().innerHTML = pageAverages[index].toFixed(2);
+						let footer = api.column(column).footer();
+						if (footer) {
+							footer.innerHTML = averages[index].toFixed(2);
+						}
+                        <!-- api.column(column).footer().innerHTML = averages[index].toFixed(2); -->
                       });
                     }
 
