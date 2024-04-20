@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ratings average calculation
 - Unnecessary footer line for season calendars
 - Tahmin league race page breadcrumb
+- Tests failing due to closed championships
 
 ## [2.2.1] - 2024-03-27
 ### Changed
