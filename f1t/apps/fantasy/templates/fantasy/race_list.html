@@ -55,6 +55,12 @@
     <button id="print_button" class="btn-sm btn-primary">Takvimi Yazdır</button>
   </div>
 </div>
+
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not view.championship.previous %}disabled{% endif %}" href="{{ view.championship.previous.get_absolute_url }}">&larr; {{ view.championship.previous.short_str|upper|default_if_none:"" }}</a>
+        <h3 class="text-center">{{ view.championship }}</h3>
+        <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{{ view.championship.next.get_absolute_url }}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
+    </div>
     <table id="table_race_list" class="table table-responsive table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>

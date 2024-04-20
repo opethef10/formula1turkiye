@@ -56,6 +56,9 @@ class Championship(models.Model):
         
     def short_str(self):
         return f"{self.year} {self.series}"
+        
+    def is_puanla(self):
+        return self.races.filter(rating_instance__isnull=False).exists()
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -69,6 +72,20 @@ class Championship(models.Model):
             return self.qualifying_coefficient
         elif tactic == RaceTeam.FİNİŞ:
             return self.finish_coefficient
+            
+    @cached_property
+    def next(self):
+        try:
+            return Championship.objects.get(series=self.series, year=self.year + 1)
+        except Championship.DoesNotExist:
+            return None
+
+    @cached_property
+    def previous(self):
+        try:
+            return Championship.objects.get(series=self.series, year=self.year - 1)
+        except Championship.DoesNotExist:
+            return None
 
     def latest_race(self):
         try:
