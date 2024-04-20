@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Print season calendar
 - DEV to title in development mode
+- Short str method in championship model
 
 ## [2.2.1] - 2024-03-27
 ### Changed

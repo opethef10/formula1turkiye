@@ -53,6 +53,9 @@ class Championship(models.Model):
 
     def __str__(self):
         return f"{self.year} {self.get_series_display()} Şampiyonası"
+        
+    def short_str(self):
+        return f"{self.year} {self.series}"
 
     def save(self, *args, **kwargs):
         if not self.slug:
