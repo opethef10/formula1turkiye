@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Next and previous championships scroll through
 - is_puanla method to championship model
 - League menus
+- One explanatory line to the ratings main page
 ### Changed
 - Navbar leagues dropdown links redirect to league main pages for current season
 - Homepage league links redirect to league main pages for current season
