@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Short str method in championship model
 - Next and previous championships scroll through
 - is_puanla method to championship model
+### Fixed
+- League access for non existing league pages
 
 ## [2.2.1] - 2024-03-27
 ### Changed

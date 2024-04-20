@@ -478,6 +478,9 @@ class FantasyStandingsView(ListView):
         )
 
     def get_queryset(self):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
         return RaceTeam.objects.prefetch_related(
             "race_drivers", "race_drivers__race__championship"
         ).select_related(
@@ -567,6 +570,9 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         self.race = self.next_race or self.championship.next_race("tahmin")
 
     def get(self, request, *args, **kwargs):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
         if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:
