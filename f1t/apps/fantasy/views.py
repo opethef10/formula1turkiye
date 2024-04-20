@@ -89,6 +89,53 @@ class DriverStatsView(ListView):
         return context
 
 
+class SeasonStatsView(ListView):
+    template_name = "fantasy/season_stats.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_queryset(self):
+        return RaceDriver.objects.select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
+        ).filter(
+            race__championship=self.championship
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race_list = Race.objects.select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+        race_count = race_list.count()
+        race_driver_dict = {}
+        for rd in self.get_queryset():
+            if rd.driver not in race_driver_dict:
+                race_driver_dict[rd.driver] = [None] * race_count
+            race_driver_dict[rd.driver][rd.race.round - 1] = rd
+
+        context["race_driver_dict"] = race_driver_dict
+        context["championship"] = self.championship
+        context["race_list"] = race_list
+        context["tabs"] = {
+            "race_point": "Puan",
+            "qualy": "Sıralama",
+            "grid_sprint": "Sprint Grid",
+            "sprint": "Sprint",
+            "grid": "Grid",
+            "result": "Yarış",
+        }
+        return context
+
+
 class SeasonsListView(ListView):
     allow_empty = False
     model = Championship
@@ -304,15 +351,40 @@ class DriverPodiumsView(DriverResultsView):
         return context
 
 
+class StatsForSeriesView(TemplateView):
+    template_name = "fantasy/stats_series.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
+
+        if not Championship.objects.filter(series=self.series).exists():
+            raise Http404("Series not provided")
+
+
+class StatsForDriverTemplateView(TemplateView):
+    template_name = "fantasy/stats_drivers.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
+
+        if not Championship.objects.filter(series=self.series).exists():
+            raise Http404("Series not provided")
+
+
 class StatsForDriverView(ListView):
     allow_empty = False
     model = Driver
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        series = self.kwargs.get('series')
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
 
-        if not Championship.objects.filter(series=series).exists():
+        if not Championship.objects.filter(series=self.series).exists():
             raise Http404("Series not provided")
 
         # Get query parameters from the URL
@@ -320,7 +392,8 @@ class StatsForDriverView(ListView):
             championship__series=self.kwargs.get('series')
         ).earliest('datetime')
         last_race = Race.objects.select_related('championship').filter(
-            championship__series=self.kwargs.get('series')
+            championship__series=self.kwargs.get('series'),
+            datetime__lte=timezone.now()
         ).latest('datetime')
 
         start_year = int(self.request.GET.get('from_year', first_race.championship.year))
@@ -333,6 +406,7 @@ class StatsForDriverView(ListView):
         last_race = Race.objects.select_related('championship').filter(
             championship__series=self.kwargs.get('series'),
             championship__year=end_year,
+            datetime__lte=timezone.now()
         ).latest('datetime')
 
         start_round = int(self.request.GET.get('from_round', first_race.round))
@@ -377,9 +451,52 @@ class StatsForDriverPoleView(StatsForDriverView):
             race_instances__race__datetime__gte=self.start_race.datetime,
             race_instances__race__datetime__lte=self.end_race.datetime,
         ).annotate(
-            win_count=Count('race_instances__result'),
-            first_win=Max('race_instances__race__datetime')
-        ).order_by('-win_count', 'first_win')
+            pole_count=Count('race_instances__grid'),
+            first_pole=Max('race_instances__race__datetime')
+        ).order_by('-pole_count', 'first_pole')
+
+
+class StatsForDriverPodiumView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_podiums.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__result__in=[1, 2, 3],
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            podium_count=Count('race_instances__result'),
+            first_podium=Max('race_instances__race__datetime')
+        ).order_by('-podium_count', 'first_podium')
+
+
+class StatsForDriverRaceView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_races.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            race_count=Count('race_instances'),
+            first_race=Max('race_instances__race__datetime')
+        ).order_by('-race_count', 'first_race')
+
+
+class StatsForDriverFinishedView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_finished.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            race_count=Count('race_instances__result'),
+            first_race=Max('race_instances__race__datetime')
+        ).order_by('-race_count', 'first_race')
 
 
 class LastRaceRedirectView(RedirectView):
@@ -452,18 +569,6 @@ class RaceListView(ListView):
     def get_queryset(self):
         return self.championship.races.select_related("circuit", "rating_instance").order_by("round")
 
-    def get_context_data(self, **kwargs):
-        if self.request.user.is_authenticated:
-            team_count = RaceTeam.objects.filter(
-                user=self.request.user,
-                race__championship=self.championship
-            ).count()
-        else:
-            team_count = None
-        context = super().get_context_data(**kwargs)
-        context["race_team_count"] = team_count
-        return context
-
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
 class FantasyStandingsView(ListView):
@@ -478,6 +583,9 @@ class FantasyStandingsView(ListView):
         )
 
     def get_queryset(self):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
         return RaceTeam.objects.prefetch_related(
             "race_drivers", "race_drivers__race__championship"
         ).select_related(
@@ -501,7 +609,16 @@ class FantasyStandingsView(ListView):
         for rt in self.get_queryset():
             race_team_dict[rt.user][rt.race.round - 1] = rt
 
+        if self.request.user.is_authenticated:
+            team_count = RaceTeam.objects.filter(
+                user=self.request.user,
+                race__championship=self.championship
+            ).count()
+        else:
+            team_count = None
+
         context = super().get_context_data(**kwargs)
+        context["race_team_count"] = team_count
         context["race_list"] = race_list
         context["race_team_dict"] = race_team_dict
         context["tabs"] = {
@@ -567,6 +684,9 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         self.race = self.next_race or self.championship.next_race("tahmin")
 
     def get(self, request, *args, **kwargs):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
         if self.next_race is None:
             return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
         else:

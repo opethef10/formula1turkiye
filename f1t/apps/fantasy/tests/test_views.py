@@ -11,6 +11,8 @@ from .. import views
 CHAMPIONSHIP_TEST_DATA = dict(
     year=2022,
     series="f1",
+    is_fantasy=True,
+    is_tahmin=True,
     overtake_coefficient=2.1,
     qualifying_coefficient=3.2,
     finish_coefficient=1.8,

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static fantasy_tags %}
+
+{% block title %}Sezon İstatistikleri{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' championship.series championship.year %}">{{ championship.year }}</a></li>
+    <li class="breadcrumb-item">Sezon İstatistikleri</li>
+{% endblock %}
+
+{% block content %}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        {% for tab_id, title in tabs.items %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                   href="#{{ tab_id }}">{{ title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        {% for tab_id in tabs %}
+            <div class="tab-pane {% if forloop.first %}show active{% else %}fade{% endif %}"
+                 id="{{ tab_id }}">
+
+                <br/>
+                <table id="table_{{ tab_id }}"
+                       class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Sürücü</th>
+                        {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                            <th>Ortalama</th>
+                        {% else %}
+                            <th>Toplam</th>
+                        {% endif %}
+                        {% for race in race_list %}
+                            <th>
+                                <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
+                            </th>
+                        {% endfor %}
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for driver, race_driver_list in race_driver_dict.items %}
+                            <tr>
+                                {% with race_driver_list.0 as rd %}
+                                <td style="background-color: {{ rd.championship_constructor.bgcolor }}; color: {{ rd.championship_constructor.fontcolor }}">
+                                    <a style="color: {{ rd.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
+                                </td>
+                                {% endwith %}
+                                <!-- {% if tab_id not in "instances,price,discount" %} -->
+                                    <td></td>
+                                <!-- {% endif %} -->
+
+                                {% for race_driver in race_driver_list %}
+                                    <td>
+                                        <!-- {% if tab_id == "price" %} -->
+                                            <!-- {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }} -->
+                                        <!-- {% elif tab_id == "discount" %} -->
+                                            <!-- {{ race_driver|call_or_get_attr:tab_id|yesno:"1,," }} -->
+                                        <!-- {% else %} -->
+                                            {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                        <!-- {% endif %} -->
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    <!-- {% if tab_id == "instances" %} -->
+                        <!-- <table class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap"> -->
+
+                        <!-- {% for tactic, count_list in tactic_count_dict.items %} -->
+                            <!-- <tr> -->
+                                <!-- <td>{{ tactic }}</td> -->
+                                <!-- {% for count in count_list %} -->
+                                    <!-- <td> -->
+                                        <!-- {{ count|default_if_none:"-" }} -->
+                                    <!-- </td> -->
+                                <!-- {% endfor %} -->
+                                <!-- <td></td> -->
+                            <!-- </tr> -->
+                        <!-- {% endfor %} -->
+                        <!-- </table> -->
+                    <!-- {% endif %} -->
+                    </tbody>
+                    </table>
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            {% for tab_id in tabs %}
+                $("#table_{{ tab_id }}").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "info": false,
+                        <!-- {% if tab_id in "instances,price,discount" %} -->
+                            <!-- order: [], -->
+                        <!-- {% else %} -->
+						columnDefs: [
+							{
+								className: "dt-center",
+								targets: "_all"
+							},
+							{
+								render: function (data, type, row) {
+									let result = 0;
+									let num;
+									let nan_count = 0;
+									for (let i = 2; i < row.length; i++) {
+										num = parseInt(row[i]);
+										if (isNaN(num)) {
+											num = 0;
+											nan_count += 1;
+										}
+										result += num;
+									}
+									{% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+										result /= row.length - 2 - nan_count;
+										result = isNaN(result) ? 22 : result;
+									{% endif %}
+
+									return "<b>" + result.toFixed(1) + "</b>";
+								},
+								targets: 1,
+							},
+							{% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+							{
+								targets: "_all",
+
+								render: function (data, type, row, meta) {
+									var table = $('#table_{{ tab_id}}').dataTable().api();
+									if (type === 'display') {
+										var node = table.cell(meta.row, meta.col).nodes().to$();
+										var data_int = parseInt(data);
+										if (data_int === 1) {
+											node.addClass('bg_winner');
+										} else if (data_int === 2) {
+											node.addClass('bg_second');
+										} else if (data_int === 3) {
+											node.addClass('bg_third');
+										} else if (4 <= data_int && data_int <= 10) {
+											node.addClass('bg_points');
+										} else if (data_int > 10) {
+											node.addClass('bg_classified');
+										}
+									}
+									return data;
+								}
+							}
+							{% endif %}
+						],
+						{% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+							"order": [[1, 'asc']],
+						{% else %}
+							"order": [[1, 'desc']],
+						{% endif %}
+                        <!-- {% endif %} -->
+                    }
+                );
+                {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                {% else %}
+                    $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2), :empty").colorize();
+                {% endif %}
+
+            {% endfor %}
+        });
+
+    </script>
+
+{% endblock %}
