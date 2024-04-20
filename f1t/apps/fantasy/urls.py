@@ -21,8 +21,13 @@ urlpatterns = [
     path('constructors/<slug>/', views.ConstructorDetailView.as_view(), name='constructor_detail'),
 
     # Series Stats
+    path('<str:series>/stats/', views.StatsForSeriesView.as_view(), name='stats_series'),
+    path('<str:series>/stats/drivers/', views.StatsForDriverTemplateView.as_view(), name='stats_drivers'),
     path('<str:series>/stats/drivers/wins/', views.StatsForDriverWinView.as_view(), name='stats_driver_wins'),
     path('<str:series>/stats/drivers/poles/', views.StatsForDriverPoleView.as_view(), name='stats_driver_poles'),
+    path('<str:series>/stats/drivers/podiums/', views.StatsForDriverPodiumView.as_view(), name='stats_driver_podiums'),
+    path('<str:series>/stats/drivers/races/', views.StatsForDriverRaceView.as_view(), name='stats_driver_races'),
+    path('<str:series>/stats/drivers/finishes/', views.StatsForDriverFinishedView.as_view(), name='stats_driver_finishes'),
 
     # Season paths
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),

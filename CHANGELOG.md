@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - League menus
 - One explanatory line to the ratings main page
 - Season stats page
+- Many driver statistics pages
+- Formula section in the main page, separated from the leagues
 ### Changed
 - Navbar leagues dropdown links redirect to league main pages for current season
 - Homepage league links redirect to league main pages for current season

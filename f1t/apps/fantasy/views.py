@@ -351,15 +351,40 @@ class DriverPodiumsView(DriverResultsView):
         return context
 
 
+class StatsForSeriesView(TemplateView):
+    template_name = "fantasy/stats_series.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
+
+        if not Championship.objects.filter(series=self.series).exists():
+            raise Http404("Series not provided")
+
+
+class StatsForDriverTemplateView(TemplateView):
+    template_name = "fantasy/stats_drivers.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
+
+        if not Championship.objects.filter(series=self.series).exists():
+            raise Http404("Series not provided")
+
+
 class StatsForDriverView(ListView):
     allow_empty = False
     model = Driver
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        series = self.kwargs.get('series')
+        self.series = self.kwargs.get('series')
+        self.series_display = f"Formula {self.series[-1]}"
 
-        if not Championship.objects.filter(series=series).exists():
+        if not Championship.objects.filter(series=self.series).exists():
             raise Http404("Series not provided")
 
         # Get query parameters from the URL
@@ -367,7 +392,8 @@ class StatsForDriverView(ListView):
             championship__series=self.kwargs.get('series')
         ).earliest('datetime')
         last_race = Race.objects.select_related('championship').filter(
-            championship__series=self.kwargs.get('series')
+            championship__series=self.kwargs.get('series'),
+            datetime__lte=timezone.now()
         ).latest('datetime')
 
         start_year = int(self.request.GET.get('from_year', first_race.championship.year))
@@ -380,6 +406,7 @@ class StatsForDriverView(ListView):
         last_race = Race.objects.select_related('championship').filter(
             championship__series=self.kwargs.get('series'),
             championship__year=end_year,
+            datetime__lte=timezone.now()
         ).latest('datetime')
 
         start_round = int(self.request.GET.get('from_round', first_race.round))
@@ -424,9 +451,52 @@ class StatsForDriverPoleView(StatsForDriverView):
             race_instances__race__datetime__gte=self.start_race.datetime,
             race_instances__race__datetime__lte=self.end_race.datetime,
         ).annotate(
-            win_count=Count('race_instances__result'),
-            first_win=Max('race_instances__race__datetime')
-        ).order_by('-win_count', 'first_win')
+            pole_count=Count('race_instances__grid'),
+            first_pole=Max('race_instances__race__datetime')
+        ).order_by('-pole_count', 'first_pole')
+
+
+class StatsForDriverPodiumView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_podiums.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__result__in=[1, 2, 3],
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            podium_count=Count('race_instances__result'),
+            first_podium=Max('race_instances__race__datetime')
+        ).order_by('-podium_count', 'first_podium')
+
+
+class StatsForDriverRaceView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_races.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            race_count=Count('race_instances'),
+            first_race=Max('race_instances__race__datetime')
+        ).order_by('-race_count', 'first_race')
+
+
+class StatsForDriverFinishedView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_finished.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            race_count=Count('race_instances__result'),
+            first_race=Max('race_instances__race__datetime')
+        ).order_by('-race_count', 'first_race')
 
 
 class LastRaceRedirectView(RedirectView):

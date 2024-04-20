@@ -4,7 +4,7 @@
     <li class="breadcrumb-item">Ana Sayfa</li>
 {% endblock %}
 {% block content %}
-    <h4 class="my-3">Ürünlerimiz</h4>
+    <h4 class="my-4">Ürünlerimiz</h4>
     <div class="row">
         <div class="col-4">
             <div class="card">
@@ -33,7 +33,65 @@
             </div>
         </div>
     </div>
-    <h4 class="my-3">Liglerimiz</h4>
+	<h4 class="my-4">2024 Sezonu</h4>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url "formula:race_list" "f1" current_year %}" class="card-link">F1 {{ current_year }} Sezonu</a>
+                    </h5>					
+					<p class="card-text">{{current_year}} Formula 1 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'formula:season_stats' "f1" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'ratings:season_ratings' "f1" current_year %}" class="card-link">Yarış Puanları</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Tahmin Ligi Ana Sayfası</a></li>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url "formula:race_list" "f2" current_year %}" class="card-link">F2 {{ current_year }} Sezonu</a>
+                    </h5>					
+					<p class="card-text">{{current_year}} Formula 2 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:redirect_last_race" "f2" current_year %}" class="card-link">Son Yarış</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'formula:season_stats' "f2" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
+                </div>
+            </div>
+        </div>
+		<div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="#" class="card-link">Formula 1 Verileri</a>
+                    </h5>					
+					<p class="card-text">Formula 1 tarihine dair veriler ve istatistikler</p>
+                    <li class="list-group-item list-group-item-action"><a
+                            href="{% url "formula:stats_series" "f1" %}" class="card-link">İstatistikler</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'formula:circuit_list' %}">Pistler</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'formula:all_driver_list' %}">Sürücüler</a></li>
+					<li class="list-group-item list-group-item-action"><a
+                            href="{% url 'formula:constructor_list' %}">Markalar</a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="my-4">Liglerimiz</h4>
     <div class="row">
         <div class="col-4">
             <div class="card">

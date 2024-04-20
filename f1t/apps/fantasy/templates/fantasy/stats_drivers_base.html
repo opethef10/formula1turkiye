@@ -4,7 +4,9 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
-    <li class="breadcrumb-item"><a href="#">İstatistikler</a></li>
+	<li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.series %}">{{ view.series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:stats_series' view.series %}">İstatistikler</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:stats_drivers' view.series %}">Sürücüler</a></li>
     <li class="breadcrumb-item">En Çok Galibiyet</li>
 {% endblock %}
 
@@ -23,7 +25,7 @@
             <tr>
                 <td></td>
                 <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
-                <td>{{ driver.win_count }}</td>
+                <td><a href="{% url 'formula:driver_wins' driver.slug %}">{{ driver.win_count }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
