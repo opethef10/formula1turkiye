@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Navbar leagues dropdown links redirect to league main pages for current season
 - Homepage league links redirect to league main pages for current season
 - Championship menu to redirect to leagues
+- Sprint Shootout to Sprint Sıralama
 ### Fixed
 - League access for non existing league pages
 - Ratings average calculation

@@ -44,7 +44,7 @@
             <a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"
 			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
         {% endif %}
-	
+
     </div>
   </div>
     <table id="table_race_list" class="table table-responsive table-hover table-sm table-striped">
@@ -55,7 +55,7 @@
             <th>1. Antrenman</th>
             <th>2. Antrenman</th>
             <th>3. Antrenman</th>
-            <th>Sprint Shootout</th>
+            <th>Sprint Sıralama</th>
             <th>Sprint</th>
             <th>Sıralama</th>
             <th>Yarış</th>
@@ -121,41 +121,41 @@ $(document).ready(function() {
   // Function to print the table
   function printTable() {
     var $table = $("#table_race_list").clone();
-    
+
     // Remove last two columns from the table header and body
     $table.find("thead th:nth-last-child(-n+2), tbody td:nth-last-child(-n+2)").remove();
     // $table.find("thead th:last-child, tbody td:last-child").remove();
-    
+
     // Create a new hidden iframe to print the table
     var $iframe = $("<iframe>").css("display", "none").appendTo("body");
     var iframeDocument = $iframe[0].contentWindow.document;
-    
+
     // Write the table HTML to the iframe document
     iframeDocument.write("<html><head><title>{{ view.championship }} Yarış Takvimi • Formula 1 Türkiye</title>");
-    
+
     // Loop through all linked stylesheets and include them in the iframe
     $("link[rel='stylesheet']").each(function() {
       iframeDocument.write($(this)[0].outerHTML);
     });
-    
+
     iframeDocument.write("</head><body>");
     var championshipHeader = "<h1 class='text-center my-5'>{{ view.championship }} Yarış Takvimi • Formula 1 Türkiye</h1>";
     iframeDocument.write(championshipHeader);
     iframeDocument.write($table[0].outerHTML);
     iframeDocument.write("</body></html>");
     iframeDocument.close();
-    
+
     // Print the iframe content after a short delay to ensure rendering
     setTimeout(function() {
       $iframe[0].contentWindow.print();
-      
+
       // Remove the iframe after printing
       setTimeout(function() {
         $iframe.remove();
       }, 1000); // Timeout to ensure printing completes before removing the iframe
     }, 500); // Short delay before printing to ensure rendering
   }
-  
+
   // Click event handler for the print button
   $("#print_button").on("click", function() {
     printTable();
