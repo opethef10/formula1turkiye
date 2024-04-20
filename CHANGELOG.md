@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - is_puanla method to championship model
 - League menus
 - One explanatory line to the ratings main page
+- Season stats page
 ### Changed
 - Navbar leagues dropdown links redirect to league main pages for current season
 - Homepage league links redirect to league main pages for current season

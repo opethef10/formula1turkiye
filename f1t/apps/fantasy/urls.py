@@ -27,6 +27,7 @@ urlpatterns = [
     # Season paths
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
     path('<str:series>/<int:year>/drivers/', views.DriverStatsView.as_view(), name='driver_stats'),
+    path('<str:series>/<int:year>/stats/', views.SeasonStatsView.as_view(), name='season_stats'),
     path('<str:series>/<int:year>/', views.RaceListView.as_view(), name='race_list'),
     path('<str:series>/<int:year>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),
     path('<str:series>/<int:year>/<int:round>/', views.RaceDetailView.as_view(), name='race_detail'),

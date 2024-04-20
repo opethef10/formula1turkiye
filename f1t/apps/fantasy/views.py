@@ -89,6 +89,53 @@ class DriverStatsView(ListView):
         return context
 
 
+class SeasonStatsView(ListView):
+    template_name = "fantasy/season_stats.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_queryset(self):
+        return RaceDriver.objects.select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
+        ).filter(
+            race__championship=self.championship
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race_list = Race.objects.select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+        race_count = race_list.count()
+        race_driver_dict = {}
+        for rd in self.get_queryset():
+            if rd.driver not in race_driver_dict:
+                race_driver_dict[rd.driver] = [None] * race_count
+            race_driver_dict[rd.driver][rd.race.round - 1] = rd
+
+        context["race_driver_dict"] = race_driver_dict
+        context["championship"] = self.championship
+        context["race_list"] = race_list
+        context["tabs"] = {
+            "race_point": "Puan",
+            "qualy": "Sıralama",
+            "grid_sprint": "Sprint Grid",
+            "sprint": "Sprint",
+            "grid": "Grid",
+            "result": "Yarış",
+        }
+        return context
+
+
 class SeasonsListView(ListView):
     allow_empty = False
     model = Championship
