@@ -11,6 +11,11 @@
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+	<style>
+        table.dataTable.no-footer {
+            border-bottom: none !important;
+        }
+	</style>
 {% endblock %}
 
 {% block content %}

@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - League access for non existing league pages
 - Ratings average calculation
+- Unnecessary footer line for season calendars
 
 ## [2.2.1] - 2024-03-27
 ### Changed
