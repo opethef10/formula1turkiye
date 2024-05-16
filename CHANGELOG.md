@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.3.1] - 2024-05-17
 ### Added
 - Navigator menus
+- Footer to fantasy stats page
+
 ### Changed
 - Fantasy stats URL
 - Is staff access to superuser access in forms
