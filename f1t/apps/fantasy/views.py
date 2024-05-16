@@ -629,6 +629,7 @@ class FantasyStandingsView(ListView):
 
 class FantasyUserProfileView(ListView):
     template_name = "fantasy/fantasy_user_profile.html"
+    allow_empty = False
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -643,6 +644,9 @@ class FantasyUserProfileView(ListView):
         )
 
     def get_queryset(self):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
         return RaceTeam.objects.prefetch_related(
             "race_drivers", "race_drivers__race__championship",
             "raceteamdrivers", "raceteamdrivers__racedriver", "raceteamdrivers__racedriver__driver",
