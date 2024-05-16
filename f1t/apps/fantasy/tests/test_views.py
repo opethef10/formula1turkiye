@@ -93,7 +93,7 @@ class DriverListTests(ViewTestMixin, TestCase):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.url_name = 'driver_stats'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
-        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/drivers"
+        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/fantasy/stats"
         cls.template_name = "fantasy/driver_stats.html"
         cls.context_variable = 'race_driver_dict'
         cls.view = views.DriverStatsView
@@ -150,6 +150,19 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
         cls.user = User.objects.create_user(username='test_user', password='12345')
+        race = Race.objects.create(
+            name="Turkish GP",
+            championship=cls.championship,
+            round=1,
+            country="TR",
+            datetime=timezone.now()
+        )
+        team = cls.user.fantasy_instances.create(
+            race=race,
+            token=16,
+            tactic='F',
+            budget=Decimal("50.0")
+        )
         cls.url_name = 'team_detail'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year, "username": cls.user.username}
         cls.url_kwargs_404 = {'series': cls.championship.series, 'year': cls.championship.year, "username": "arbitrary"}

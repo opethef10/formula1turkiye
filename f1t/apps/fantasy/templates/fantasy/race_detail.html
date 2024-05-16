@@ -17,7 +17,9 @@
         <h3 class="text-center">{{ race }}</h3>
         <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{{ race.next.get_absolute_url }}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
-    {% if user.is_staff %}
+	
+	<a href="{% url 'formula:team_list' view.championship.series view.championship.year %}" class="btn btn-primary mb-4 mr-2">Fantasy Lig Genel Klasman</a>
+    {% if user.is_superuser %}
         <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Sonuç / Fiyat Gir</a>
         <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Yarış Puanı Gir</a>
     {% endif %}
