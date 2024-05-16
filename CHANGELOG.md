@@ -14,12 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ## [2.3.1] - 2024-05-17
+### Added
+- Navigator menus
 ### Changed
 - Fantasy stats URL
 - Is staff access to superuser access in forms
 - Admin page navbar link is accessible by the staff
 - Fantasy user profile when there is no championship or team
--
+
 ## [2.3.0] - 2024-04-20
 ### Added
 - Print season calendar

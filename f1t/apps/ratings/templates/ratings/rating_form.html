@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static form_tags widget_tweaks %}
 
-{% block title %}Puan Ekle{% endblock %}
+{% block title %}Yarışı Puanla: {{ view.race }}{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -16,7 +16,12 @@
 {% endblock %}
 
 {% block content %}
-    <h4>Yarışı Puanla Formu</h4>
+	<div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not view.race.previous %}disabled{% endif %}" href="{% url 'ratings:create_ratings' view.race.previous.championship.series view.race.previous.championship.year view.race.previous.round %}">&larr; {{ view.race.previous|default_if_none:"" }}</a>
+        <h3 class="text-center">Yarışı Puanla: {{ view.race }}</h3>
+        <a class="btn btn-outline-primary {% if not view.race.next %}disabled{% endif %}" href="{% url 'ratings:create_ratings' view.race.next.championship.series view.race.next.championship.year view.race.next.round %}">{{ view.race.next|default_if_none:"" }} &rarr;</a>
+    </div>
+	
     <p><b>UYARI:</b> Yarışa verilen skorlar puan puan kaydedilmemektedir, bu formdaki puanların sonucunda toplam oy ve 2 sigma içerisinde yer alan oyların ağırlıklı ortalaması sunucu tarafında hesaplanıp veritabanına kaydedilmektedir. Bu nedenle daha önce puanı eklenmiş bir yarışın formunu açtığımızda Onur ve Semih girdileri veritabanından düzenlenmek için olduğu gibi çekilebilse de, 1'den 10'a kadar olan oy sayılarında bir kayıt olmadığından form her açıldığında (geri tuşu hariç, o önbellekte tutuyor form girdilerini) varsayılan olarak her oy 0 olarak görünecektir. Dolayısıyla her bir düzenlemede baştan oy sayılarını girmemiz gerekmektedir. Bu nedenle çok elzem olmadıkça bu formun düzenleme amaçlı kullanılması önerilmez. Baş ağrıtır, gider yeniden Facebook'u açtırır, gönderi aratır, baktırır. Lakin, bir yarışın oyları ilk defa giriliyorsa herhangi bir sıkıntı yaratmaz. Gönül rahatlığıyla veri girebilirsiniz.</p>
     <p>Ha diyeceksen ki, neden kaydedilmiyor ulan? Fena olmazdı aslında, istatistik31 falan olurdu grafikli mrafikli ama Excel'de 150 küsür yarış sadece puan kaydettik, o yüzden aynen devamke.</p>
     <small>NOT: Bu formu yalnızca yöneticiler ve onların yetkilendirdikleri kişiler görebilir. O yüzden burda üslup belə.</small>
