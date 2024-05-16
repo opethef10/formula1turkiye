@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Navigator menus
 - Footer to fantasy stats page
 - Amount of votes indicator in ratings column in season page
+- Most races without win page
 ### Changed
 - Fantasy stats URL
 - Is staff access to superuser access in forms

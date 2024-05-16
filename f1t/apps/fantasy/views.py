@@ -485,6 +485,22 @@ class StatsForDriverRaceView(StatsForDriverView):
         ).order_by('-race_count', 'first_race')
 
 
+class StatsForDriverWithoutWinView(StatsForDriverView):
+    template_name = "fantasy/stats_drivers_most_races_without_win.html"
+
+    def get_queryset(self):
+        return Driver.objects.filter(
+            race_instances__race__championship__series=self.kwargs.get('series'),
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).exclude(
+            race_instances__result=1,
+        ).annotate(
+            race_count=Count('race_instances'),
+            first_race=Max('race_instances__race__datetime')
+        ).order_by('-race_count', 'first_race')
+
+
 class StatsForDriverFinishedView(StatsForDriverView):
     template_name = "fantasy/stats_drivers_most_finished.html"
 

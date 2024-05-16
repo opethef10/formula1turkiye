@@ -27,6 +27,7 @@ urlpatterns = [
     path('<str:series>/stats/drivers/poles/', views.StatsForDriverPoleView.as_view(), name='stats_driver_poles'),
     path('<str:series>/stats/drivers/podiums/', views.StatsForDriverPodiumView.as_view(), name='stats_driver_podiums'),
     path('<str:series>/stats/drivers/races/', views.StatsForDriverRaceView.as_view(), name='stats_driver_races'),
+    path('<str:series>/stats/drivers/without_win/', views.StatsForDriverWithoutWinView.as_view(), name='stats_driver_without_win'),
     path('<str:series>/stats/drivers/finishes/', views.StatsForDriverFinishedView.as_view(), name='stats_driver_finishes'),
 
     # Season paths
