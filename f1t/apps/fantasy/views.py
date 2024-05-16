@@ -839,4 +839,4 @@ class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
         )
 
     def test_func(self):
-        return self.request.user.is_staff
+        return self.request.user.is_superuser
