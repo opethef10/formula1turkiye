@@ -27,11 +27,11 @@ urlpatterns = [
     path('<str:series>/stats/drivers/poles/', views.StatsForDriverPoleView.as_view(), name='stats_driver_poles'),
     path('<str:series>/stats/drivers/podiums/', views.StatsForDriverPodiumView.as_view(), name='stats_driver_podiums'),
     path('<str:series>/stats/drivers/races/', views.StatsForDriverRaceView.as_view(), name='stats_driver_races'),
+    path('<str:series>/stats/drivers/without_win/', views.StatsForDriverWithoutWinView.as_view(), name='stats_driver_without_win'),
     path('<str:series>/stats/drivers/finishes/', views.StatsForDriverFinishedView.as_view(), name='stats_driver_finishes'),
 
     # Season paths
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
-    path('<str:series>/<int:year>/drivers/', views.DriverStatsView.as_view(), name='driver_stats'),
     path('<str:series>/<int:year>/stats/', views.SeasonStatsView.as_view(), name='season_stats'),
     path('<str:series>/<int:year>/', views.RaceListView.as_view(), name='race_list'),
     path('<str:series>/<int:year>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),
@@ -40,6 +40,7 @@ urlpatterns = [
 
     # Fantasy paths
     path('<str:series>/<int:year>/teams/', views.FantasyStandingsView.as_view(), name='team_list'),
+    path('<str:series>/<int:year>/fantasy/stats/', views.DriverStatsView.as_view(), name='driver_stats'),
     path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form'),
     path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
     path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),

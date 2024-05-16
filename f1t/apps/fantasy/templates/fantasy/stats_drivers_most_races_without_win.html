@@ -1,0 +1,32 @@
+{% extends 'fantasy/stats_drivers_base.html' %}
+{% block title %}Yarış İstatistikleri{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.series %}">{{ view.series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:stats_series' view.series %}">İstatistikler</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:stats_drivers' view.series %}">Sürücüler</a></li>
+    <li class="breadcrumb-item">Galibiyetsiz En Çok Yarış</li>
+{% endblock %}
+
+{% block content %}
+    <table id="driver_results"
+         class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th>Sürücü</th>
+            <th>Yarışlar</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for driver in driver_list %}
+            <tr>
+                <td></td>
+                <td><a href="{{ driver.get_absolute_url }}">{{ driver.name }}</a></td>
+                <td><a href="{% url 'formula:driver_results' driver.slug %}">{{ driver.race_count }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -77,5 +77,5 @@ class RatingCreateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
     
     def test_func(self):
-        return self.request.user.is_staff
+        return self.request.user.is_superuser
 
