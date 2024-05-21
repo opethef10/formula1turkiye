@@ -43,6 +43,7 @@ urlpatterns = [
     path('<str:series>/<int:year>/fantasy/stats/', views.DriverStatsView.as_view(), name='driver_stats'),
     path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form'),
     path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
+    path('<str:series>/<int:year>/teams/me/', views.FantasyProfileRedirectView.as_view(), name='redirect_my_team'),
     path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
 
     # Tahmin ligi paths

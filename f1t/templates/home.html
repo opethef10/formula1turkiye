@@ -124,7 +124,7 @@
                             href="{% url 'formula:driver_stats' "f1" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f1 %}
                         <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:team_detail' "f1" current_year fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
+                            href="{% url 'formula:redirect_my_team' "f1" current_year %}" class="card-link">Profil Sayfanız</a></li>
                     {% endif %}
                 </div>
             </div>
@@ -160,7 +160,7 @@
                             href="{% url 'formula:driver_stats' "f2" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f2 %}
                         <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:team_detail' "f2" current_year fantasy_team_f1 %}" class="card-link">Profil Sayfanız</a></li>
+                            href="{% url 'formula:redirect_my_team' "f2" current_year %}" class="card-link">Profil Sayfanız</a></li>
                     {% endif %}
                 </div>
             </div>
