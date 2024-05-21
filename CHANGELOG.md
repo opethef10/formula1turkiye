@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Token, budget and tactic columns to the fantasy standings
 - Driver links to fantasy league profile
+- Fantasy profile redirect view
 
 ## [2.3.1] - 2024-05-17
 ### Added

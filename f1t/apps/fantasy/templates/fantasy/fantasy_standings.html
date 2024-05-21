@@ -41,7 +41,7 @@
 			{% endif %}</a>
 			
 			{% if race_team_count >= 1 %}
-				<a class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}" href="{% url 'formula:team_detail' view.championship.series view.championship.year user.username %}">Lig Profil Sayfanız</a>
+				<a class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}" href="{% url 'formula:redirect_my_team' view.championship.series view.championship.year %}">Lig Profil Sayfanız</a>
 			{% endif %}
 		  </div>
 		{% endif %}

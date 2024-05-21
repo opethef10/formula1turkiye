@@ -650,6 +650,18 @@ class FantasyStandingsView(ListView):
         return context
 
 
+class FantasyProfileRedirectView(LoginRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse(
+            "formula:team_detail",
+            kwargs={
+                'series': self.kwargs.get("series"),
+                'year': self.kwargs.get("year"),
+                'username': self.request.user.username
+            }
+        )
+
+
 class FantasyUserProfileView(ListView):
     template_name = "fantasy/fantasy_user_profile.html"
     allow_empty = False
