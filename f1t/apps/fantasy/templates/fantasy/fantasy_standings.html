@@ -67,6 +67,9 @@
                     <tr>
                         <th>Sıra</th>
                         <th>Takım</th>
+                        <th><small>Hak</small></th>
+                        <th><small>Büt.</small></th>
+                        <th><small>Tak.</small></th>
                         <th>Toplam</th>
                         {% for race in race_list %}
                             <th>
@@ -81,11 +84,20 @@
                         <tr>
                             <td></td>
                             <td><a href="{% url 'formula:team_detail' view.championship.series view.championship.year user.username %}">{{ user.get_full_name }}</a></td>
-                            <td></td>
                             {% for race_team in race_team_list %}
+                                {% if forloop.counter0 == 0 %}
+                                    <td>{{ race_team.token }}</td>
+                                {% elif forloop.counter0 == 1 %}
+                                    <td>{{ race_team.budget|with_currency }}</td>
+                                {% elif forloop.counter0 == 2 %}
+                                    <td>{{ race_team.tactic }}</td>
+                                {% elif forloop.counter0 == 3 %}
+                                    <td></td>
+                                {% else %}
                                 <td>
                                     {{ race_team|call_or_get_attr:tab_id|default_if_none:"-" }}
                                 </td>
+                                {% endif %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
@@ -108,7 +120,7 @@
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
-                        "order": [[2, 'desc']],
+                        "order": [[5, 'desc']],
                         "info": false,
 
                         columnDefs: [
@@ -126,7 +138,7 @@
                                     let result = 0.0;
                                     let num;
                                     let nan_count = 0;
-                                    for (let i = 2; i < row.length; i++) {
+                                    for (let i = 5; i < row.length; i++) {
                                         num = parseFloat(row[i].replace(',', '.'));
                                         if (isNaN(num)) {
                                             num = 0.0;
@@ -135,13 +147,13 @@
                                         result += num;
                                     }
                                     {% if tab_id in 'qualy,grid,results' %}
-                                        result /= row.length - 2 - nan_count;
+                                        result /= row.length - 5 - nan_count;
                                         result = isNaN(result) ? "" : result;
                                     {% endif %}
 
                                     return "<b>" + result.toFixed(1) + "</b>";
                                 },
-                                targets: 2,
+                                targets: 5,
                             }
                         ]
                     }
@@ -152,7 +164,9 @@
                         this.data("<b>"+ i++ +"</b>");
                     });
                 }).draw();
-                $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2), :empty").colorize();
+                $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2),:nth-child(3),:nth-child(4),:nth-child(5),:nth-child(6) :empty").colorize();
+                $("#table_{{ tab_id }} tbody td:nth-child(3)").colorize();
+                $("#table_{{ tab_id }} tbody td:nth-child(4)").colorize({theme: "one-color"});
             {% endfor %}
         });
 

@@ -620,10 +620,17 @@ class FantasyStandingsView(ListView):
             championship=self.championship
         ).order_by("round")
         race_count = race_list.count()
+        table_rows = race_count + 4
+        latest_race_round = 0
 
-        race_team_dict = {user: [None] * race_count for user in user_list}
+        race_team_dict = {user: [None] * table_rows for user in user_list}
         for rt in self.get_queryset():
-            race_team_dict[rt.user][rt.race.round - 1] = rt
+            race_team_dict[rt.user][rt.race.round - 1 + 4] = rt
+            if rt.race.round >= latest_race_round:
+                latest_race_round = rt.race.round
+                race_team_dict[rt.user][0] = rt
+                race_team_dict[rt.user][1] = rt
+                race_team_dict[rt.user][2] = rt
 
         if self.request.user.is_authenticated:
             team_count = RaceTeam.objects.filter(
