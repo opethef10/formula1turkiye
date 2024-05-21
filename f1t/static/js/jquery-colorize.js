@@ -26,7 +26,12 @@
                   color_min: "#312F9D",
                   color_mid: "#FFFFFF",
                   color_max: "#C80000"
-                }
+                },
+                "one-color": {
+                    color_min: "#c1edd5",
+                    color_mid: "#94dfba",
+                    color_max: "#27cf7b"
+                },
             },
             theme: "default",
             center: undefined,
