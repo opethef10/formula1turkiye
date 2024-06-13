@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.3.4] - 2024-06-13
+### Fixed
+- Slow queries in the admin pages
+
 ## [2.3.3] - 2024-05-21
 ### Added
 - Questions in tahmin results page
