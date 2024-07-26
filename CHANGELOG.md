@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.0] - 2024-07-26
+### Added
+- Greenflag magazine
+### Fixed
+- Margins and paddings in base and footer
+
+## [2.3.5] - 2024-06-22
+### Fixed
+- Wiki frame width
+
 ## [2.3.4] - 2024-06-13
 ### Fixed
 - Slow queries in the admin pages

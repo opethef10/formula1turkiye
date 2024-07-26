@@ -30,6 +30,7 @@ patterns = [
     path("accounts/", include("f1t.apps.accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("contact/", ContactView.as_view(), name='contact'),
+    path("greenflag/", include("f1t.apps.greenflag.urls")),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('__summernote/', include('django_summernote.urls')),
     path('', include('pwa.urls')),

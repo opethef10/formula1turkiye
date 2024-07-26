@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Green Flag Dergisi{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item">Green Flag</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block content %}
+ <h2 class="my-3">GREEN FLAG NEDİR?</h2>
+    <ul>
+        <li>Grubumuz üyelerinden Ata Rıza Çiçek'in 2024 yılında çıkarmaya başladığı mini dergidir.</li>
+        <li>Tablodaki bağlantılara tıklayıp ilgili yarışın dergisine ulaşabilirsiniz.</li>
+    </ul>
+  <br/>
+   <table id="table_series_rating_list" class="table table-responsive table-hover table-sm table-striped">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Sayı</th>
+            <th>Yarış</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for greenflag in greenflag_list %}
+            <tr class="align-middle">
+                <td>{{ forloop.counter }}</td>
+                <td><i class="{{ greenflag.race.country.flag_css }}"></i> <a href="{{ greenflag.get_absolute_url }}">{{ greenflag.race }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $(document).ready(function () {
+            var datatable = $("#table_series_rating_list").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "searching": false,
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            targets: "_all"
+                        },
+                        {
+                            orderable: false,
+                            targets: "_all",
+                        }
+                    ],
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}
