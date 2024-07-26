@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Green Flag - Sayı {{ greenflag.pk }}{% endblock %}
+{% block title %}Green Flag - Sayı {{ greenflag.pk }}: {{ greenflag.title }}{% endblock %}
 
 {% block body %}
     {% include 'includes/navbar.html' %}
