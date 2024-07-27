@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "django_minify_html",
     "django_extensions",
     "django_countries",
-    'clearcache',
+    # 'clearcache',
     'colorfield',
     'django_summernote',
     'django.contrib.admin',

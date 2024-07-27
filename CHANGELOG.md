@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.3] - 2024-07-27
+### Changed
+- Disable clearcache
+
 ## [2.4.2] - 2024-07-27
 ### Added
 - Race winner, polesitter etc
