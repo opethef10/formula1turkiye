@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.2] - 2024-07-27
+### Added
+- Race winner, polesitter etc
+### Fixed
+- Tahmin ligi Wiki height
+
 ## [2.4.1] - 2024-07-26
 ### Added
 - Title column to the Green Flag magazine

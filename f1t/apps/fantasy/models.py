@@ -6,6 +6,7 @@ from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import OuterRef, Subquery
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -53,10 +54,10 @@ class Championship(models.Model):
 
     def __str__(self):
         return f"{self.year} {self.get_series_display()} Şampiyonası"
-        
+
     def short_str(self):
         return f"{self.year} {self.series}"
-        
+
     def is_puanla(self):
         return self.races.filter(rating_instance__isnull=False).exists()
 
@@ -72,7 +73,7 @@ class Championship(models.Model):
             return self.qualifying_coefficient
         elif tactic == RaceTeam.FİNİŞ:
             return self.finish_coefficient
-            
+
     @cached_property
     def next(self):
         try:
@@ -243,6 +244,39 @@ class Race(models.Model):
             result__lte=10
         ).only("race", "driver", "result").order_by("result")
         return top10_drivers
+
+    def winner(self):
+        try:
+            return self.driver_instances.get(result=1)
+        except RaceDriver.DoesNotExist:
+            return None
+
+    def pole_sitter(self):
+        try:
+            return self.driver_instances.get(grid=1)
+        except RaceDriver.DoesNotExist:
+            return None
+
+
+    def qualifying_winner(self):
+        try:
+            return self.driver_instances.get(qualy=1)
+        except RaceDriver.DoesNotExist:
+            return None
+
+
+    def sprint_winner(self):
+        try:
+            return self.driver_instances.get(sprint=1)
+        except RaceDriver.DoesNotExist:
+            return None
+
+
+    def sprint_pole_sitter(self):
+        try:
+            return self.driver_instances.get(grid_sprint=1)
+        except RaceDriver.DoesNotExist:
+            return None
 
 
 class RaceDriver(models.Model):
