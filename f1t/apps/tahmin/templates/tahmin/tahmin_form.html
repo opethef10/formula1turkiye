@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% load static form_tags widget_tweaks %}
 
-{% block title %}Yeni Tahmin{% endblock %}
+{% block title %}Tahmin Yap{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}">Takımlar</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}">Tahmin Ligi</a></li>
     <li class="breadcrumb-item">Tahmin Yap</li>
 {% endblock %}
 
 {% block content %}
-    <h3>{{ view.race }}</h3>
+    <h2 class="my-3">Tahmin Yap - <a href="{{ view.race.get_absolute_url }}">{{ view.race }}</a></h2>
     <ul>
         <li>Tahmininizi gönderdikten sonra aynı sayfadan yarış saatine kadar tekrar değiştirebilirsiniz.</li>
         <li>Yarış başlangıcından önceki son tahmininiz geçerli sayılacaktır.</li>
@@ -34,18 +34,18 @@
         <li>İşlemlerinizi <b>{{ view.race.datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     </ul>
 
-    <h4>Puan Tablosu</h4>
+    <h3 class="my-4">Puan Tablosu</h3>
     <img src="{% static 'tahmin/tahmin2023puanları.jpg' %}"
          alt="Tahmin ligi 2023 puanları!">
-    <h4> Grid </h4>
+    <h3 class="my-4"> Grid </h3>
     <ul>
         <li>
             Olası cezalardan ötürü görünen grid dizilimin güncel olmayabileceğini unutmayın.
         </li>
     </ul>
     <iframe src="{{ view.race.wikilink }}#Qualifying_classification" scrolling="no"
-            width="900px" height="680px"></iframe>
-    <h4> Tahmin Formu </h4>
+            width="900px" height="900px"></iframe>
+    <h3 class="my-4"> Tahmin Formu </h3>
     <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
