@@ -52,16 +52,16 @@ class Question(models.Model):
 class Tahmin(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='tahmins')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tahmins')
-    prediction_1 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_1')
-    prediction_2 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_2')
-    prediction_3 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_3')
-    prediction_4 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_4')
-    prediction_5 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_5')
-    prediction_6 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_6')
-    prediction_7 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_7')
-    prediction_8 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_8')
-    prediction_9 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_9')
-    prediction_10 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='prediction_10')
+    prediction_1 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_1')
+    prediction_2 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_2')
+    prediction_3 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_3')
+    prediction_4 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_4')
+    prediction_5 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_5')
+    prediction_6 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_6')
+    prediction_7 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_7')
+    prediction_8 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_8')
+    prediction_9 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_9')
+    prediction_10 = models.ForeignKey(RaceDriver, on_delete=models.CASCADE, related_name='predictions_10')
     answer_1 = models.CharField(
         max_length=1,
         choices=Question.QUESTION_CHOICES
