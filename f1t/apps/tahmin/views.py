@@ -103,7 +103,7 @@ class TeamListView(ListView):
             *(f"prediction_{idx}__driver" for idx in range(1, 11)),
             "race__tahmins", "race__questions",
             "race__driver_instances",
-            *(f"race__driver_instances__prediction_{idx}" for idx in range(1, 11)),
+            *(f"race__driver_instances__predictions_{idx}" for idx in range(1, 11)),
             "race__championship",
         ).select_related(
             "user",

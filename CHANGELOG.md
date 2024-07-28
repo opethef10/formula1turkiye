@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.4.4] - 2024-07-28
 ### Fixed
 - Yarışı düzenle iframe height
+- Driver predictions_X related_name
 
 ## [2.4.3] - 2024-07-27
 ### Changed

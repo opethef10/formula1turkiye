@@ -396,7 +396,7 @@ class RaceDriver(models.Model):
 
     @cache
     def tahmin_count(self, position):
-        return getattr(self, f"prediction_{position}").count()
+        return getattr(self, f"predictions_{position}").count()
 
     def tahmin_score(self, position):
         if self.result == position:
