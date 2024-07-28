@@ -79,9 +79,11 @@ class RaceTahminView(ListView):
             tahmin_count_matrix[race_driver].append(sum(tahmin_count_matrix[race_driver]))
 
         context = super().get_context_data(**kwargs)
-        q1, q2 = self.race.questions.all()[:2]
-        context["tahmin_count_q1"] = self.race.tahmins.filter(answer_1=q1.answer).count()
-        context["tahmin_count_q2"] = self.race.tahmins.filter(answer_2=q2.answer).count()
+        questions = self.race.questions.all()[:2]
+        if len(questions) == 2:
+            q1, q2 = questions
+            context["tahmin_count_q1"] = self.race.tahmins.filter(answer_1=q1.answer).count()
+            context["tahmin_count_q2"] = self.race.tahmins.filter(answer_2=q2.answer).count()
         context["tahmin_count_matrix"] = tahmin_count_matrix
         context["tahmin_counts"] = [
             race_driver.tahmin_count(position)

@@ -52,16 +52,16 @@
             {% for racedriver in race.top10 %}
                 <td><b> {{ racedriver.driver.code|title }} </b></td>
             {% endfor %}
-            <td>{{ race.questions.all.0.answer|default_if_none:"N/A" }}</td>
-            <td>{{ race.questions.all.1.answer|default_if_none:"N/A" }}</td>
+            <td>{{ race.questions.all.0.answer|default_if_none:"" }}</td>
+            <td>{{ race.questions.all.1.answer|default_if_none:"" }}</td>
         </tr>
         <tr>
             <td><b>Doğru Tahmin Sayısı</b></td>
             {% for count in tahmin_counts %}
                 <td> {{ count }} </td>
             {% endfor %}
-            <td>{{ tahmin_count_q1 }}</td>
-            <td>{{ tahmin_count_q2 }}</td>
+            <td>{{ tahmin_count_q1|default_if_none:"" }}</td>
+            <td>{{ tahmin_count_q2|default_if_none:"" }}</td>
         </tr>
         <tr>
             <td><b>Puan</b></td>

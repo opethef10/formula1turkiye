@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.5] - 2024-07-28
+### Added
+- Initial tahmin tests
+### Fixed
+- Tahmin question unpacking error
+
 ## [2.4.4] - 2024-07-28
 ### Added
 - Tahmin count matrix
