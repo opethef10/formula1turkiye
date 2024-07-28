@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -48,7 +49,7 @@ class RaceTahminView(ListView):
         )
         self.race = get_object_or_404(
             Race.objects.prefetch_related(
-                "questions", "driver_instances", "tahmins", "driver_instances__driver"
+                "questions", "driver_instances", "tahmins", "driver_instances__driver", "driver_instances__championship_constructor"
             ).select_related("championship"),
             championship=self.championship,
             round=self.kwargs.get('round')
@@ -65,7 +66,23 @@ class RaceTahminView(ListView):
         )
 
     def get_context_data(self, **kwargs):
+        race_driver_list = self.race.driver_instances.select_related(
+            "driver", "championship_constructor"
+        ).order_by(F("result").asc(nulls_last=True))
+        tahmin_count_matrix = {}
+        for race_driver in race_driver_list:
+            tahmin_count_matrix[race_driver] = []
+            for position in range(1, 11):
+                tahmin_count_matrix[race_driver].append(
+                    race_driver.tahmin_count(position)
+                )
+            tahmin_count_matrix[race_driver].append(sum(tahmin_count_matrix[race_driver]))
+
         context = super().get_context_data(**kwargs)
+        q1, q2 = self.race.questions.all()[:2]
+        context["tahmin_count_q1"] = self.race.tahmins.filter(answer_1=q1.answer).count()
+        context["tahmin_count_q2"] = self.race.tahmins.filter(answer_2=q2.answer).count()
+        context["tahmin_count_matrix"] = tahmin_count_matrix
         context["tahmin_counts"] = [
             race_driver.tahmin_count(position)
             for position, race_driver
