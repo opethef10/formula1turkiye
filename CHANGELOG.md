@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.6] - 2024-08-09
+### Fixed
+- Driver stats from_year, to_year error
+
 ## [2.4.5] - 2024-07-28
 ### Added
 - Initial tahmin tests
