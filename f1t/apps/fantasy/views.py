@@ -399,15 +399,18 @@ class StatsForDriverView(ListView):
         start_year = int(self.request.GET.get('from_year', first_race.championship.year))
         end_year = int(self.request.GET.get('to_year', last_race.championship.year))
 
-        first_race = Race.objects.select_related('championship').filter(
-            championship__series=self.kwargs.get('series'),
-            championship__year=start_year,
-        ).earliest('datetime')
-        last_race = Race.objects.select_related('championship').filter(
-            championship__series=self.kwargs.get('series'),
-            championship__year=end_year,
-            datetime__lte=timezone.now()
-        ).latest('datetime')
+        try:
+            first_race = Race.objects.select_related('championship').filter(
+                championship__series=self.kwargs.get('series'),
+                championship__year=start_year,
+            ).earliest('datetime')
+            last_race = Race.objects.select_related('championship').filter(
+                championship__series=self.kwargs.get('series'),
+                championship__year=end_year,
+                datetime__lte=timezone.now()
+            ).latest('datetime')
+        except Race.DoesNotExist:
+            raise Http404("Start year or end year parameter is invalid.")
 
         start_round = int(self.request.GET.get('from_round', first_race.round))
         end_round = int(self.request.GET.get('to_round', last_race.round))
