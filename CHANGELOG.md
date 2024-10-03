@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ## [2.4.7] - 2024-10-03
+### Added
+- Fastest lap eligibility check for sprint and feature races
+- Fastest lap eligibility thresholds
 ### Fixed
 - Fastest lap points given outside top 10
 

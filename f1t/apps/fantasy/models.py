@@ -35,6 +35,10 @@ class Championship(models.Model):
     )
     is_fantasy = models.BooleanField(default=False)
     is_tahmin = models.BooleanField(default=False)
+    is_sprint_overtake_point = models.BooleanField(default=False)
+    is_feature_overtake_point = models.BooleanField(default=True)
+    fastest_lap_point_threshold = models.PositiveSmallIntegerField(default=10)
+    sprint_fastest_lap_point_threshold = models.PositiveSmallIntegerField(default=10)
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
@@ -329,8 +333,8 @@ class RaceDriver(models.Model):
         if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
             return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
-        eligible_for_fastest_lap = self.result is not None and 1 <= self.result <= 10  # TODO: Change this hardcoded logic
-        eligible_for_sprint_fastest_lap = self.sprint is not None and 1 <= self.sprint <= 10  # TODO: Change this hardcoded logic
+        eligible_for_fastest_lap = self.result is not None and 1 <= self.result <= self.race.championship.fastest_lap_point_threshold
+        eligible_for_sprint_fastest_lap = self.sprint is not None and 1 <= self.sprint <= self.race.championship.fastest_lap_point_threshold
         fastest_lap_point = self.race.championship.fastest_lap_point
         sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
         return round(
@@ -344,28 +348,28 @@ class RaceDriver(models.Model):
         )
 
     def _sprint_overtake_point(self):
-        if self.race.championship.get_series_display() == "Formula 1":
+        if not self.race.championship.is_sprint_overtake_point:
             return 0
         if not self.grid_sprint or not self.sprint:
             return 0
         elif self.grid_sprint < self.sprint:
             return 0
-        else:
-            raw = (self.grid_sprint - self.sprint)
-            bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
-            top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
-            return raw + bottom_to_top - top_to_top
+        raw = (self.grid_sprint - self.sprint)
+        bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.sprint)
+        top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid_sprint)
+        return raw + bottom_to_top - top_to_top
 
     def _feature_overtake_point(self):
+        if not self.race.championship.is_feature_overtake_point:
+            return 0
         if not self.grid or not self.result:
             return 0
         elif self.grid < self.result:
             return 0
-        else:
-            raw = (self.grid - self.result)
-            bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
-            top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
-            return raw + bottom_to_top - top_to_top
+        raw = (self.grid - self.result)
+        bottom_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.result)
+        top_to_top = max(0, self.OVERTAKE_DOUBLE_POINT_THRESHOLD - self.grid)
+        return raw + bottom_to_top - top_to_top
 
     def overtake_point(self, tactic=None):
         if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
