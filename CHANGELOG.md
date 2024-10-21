@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.4.9] - 2024-10-21
+### Fixed
+- Season stats page title
+
 ## [2.4.8] - 2024-10-18
 ### Added
 - F1Calendar.com crosscheck management command
