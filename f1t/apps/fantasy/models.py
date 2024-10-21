@@ -303,6 +303,9 @@ class RaceDriver(models.Model):
     grid = models.PositiveIntegerField(blank=True, null=True)
     result = models.PositiveIntegerField(blank=True, null=True)
     fastest_lap = models.BooleanField(default=False)
+    q1 = models.CharField(max_length=10, blank=True, default="")
+    q2 = models.CharField(max_length=10, blank=True, default="")
+    q3 = models.CharField(max_length=10, blank=True, default="")
 
     class Meta:
         constraints = [
