@@ -1,4 +1,5 @@
 import logging
+from statistics import mean, median
 
 from django.conf import settings
 from django.contrib import messages
@@ -132,6 +133,86 @@ class SeasonStatsView(ListView):
             "sprint": "Sprint",
             "grid": "Grid",
             "result": "Yarış",
+        }
+        return context
+
+
+class SeasonSupergridView(ListView):
+    template_name = "fantasy/season_supergrid.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_queryset(self):
+        return RaceDriver.objects.select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
+        ).filter(
+            race__championship=self.championship
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race_list = Race.objects.select_related("championship").prefetch_related("driver_instances").filter(
+            championship=self.championship
+        ).order_by("round")
+
+        race_driver_dict = {}
+        supergrid_dict = {}
+        race_dict = {}
+        for race in race_list:
+            race_dict[race] = race.best_qualifying_time()
+
+        for rd in self.get_queryset():
+            best = race_dict[rd.race]
+            mine = rd.best_session_time()
+            if best is None or mine is None:
+                continue
+            else:
+                ratio = mine / best
+            if rd.driver in race_driver_dict:
+                race_driver_dict[rd.driver].append(ratio)
+            else:
+                race_driver_dict[rd.driver] = [ratio]
+
+        for driver, ratios in race_driver_dict.items():
+            sorted_ratios = sorted(ratios)
+            print(driver, [round(100*rat,3) for rat in sorted_ratios])
+            mean_value = mean(sorted_ratios) if sorted_ratios else None
+            median_value = median(sorted_ratios) if sorted_ratios else None
+
+            eligible_for_stat = len(sorted_ratios) > race_list.count() // 3
+            first_80_percent_index = int(len(sorted_ratios) * 0.8)
+            first_80_percent = sorted_ratios[1:first_80_percent_index + 1]
+            trimmed_interval = sorted_ratios[round(len(sorted_ratios) * 0.125): round(len(sorted_ratios) * 0.875)]
+
+            if first_80_percent and eligible_for_stat:  # Check if the sliced list is not empty
+                mean_first_80_percent = mean(first_80_percent)
+            else:
+                mean_first_80_percent = None
+
+            if trimmed_interval and eligible_for_stat:  # Check if the sliced list is not empty
+                trimmed_mean = mean(trimmed_interval)
+            else:
+                trimmed_mean = None
+            supergrid_dict[driver] = [
+                f"{mean_first_80_percent:.3%}" if mean_first_80_percent else None,
+                f"{mean_value:.3%}" if mean_value else None,
+                f"{median_value:.3%}" if median_value else None,
+                f"{trimmed_mean:.3%}" if trimmed_mean else None,
+            ]
+        context["race_driver_dict"] = race_driver_dict
+        context["supergrid_dict"] = supergrid_dict
+        context["championship"] = self.championship
+        context["tabs"] = {
+            "supergrid": "Süpergrid",
         }
         return context
 

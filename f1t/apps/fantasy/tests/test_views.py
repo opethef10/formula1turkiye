@@ -112,6 +112,19 @@ class RaceListTests(ViewTestMixin, TestCase):
         cls.view = views.RaceListView
 
 
+class SupergridTests(ViewTestMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
+        cls.url_name = 'season_supergrid'
+        cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
+        cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
+        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/stats/supergrid"
+        cls.template_name = "fantasy/season_supergrid.html"
+        cls.context_variable = 'supergrid_dict'
+        cls.view = views.SeasonSupergridView
+
+
 class TeamListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
