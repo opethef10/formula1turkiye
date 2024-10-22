@@ -175,8 +175,7 @@ class SeasonSupergridView(ListView):
             mine = rd.best_session_time()
             if best is None or mine is None:
                 continue
-            else:
-                ratio = mine / best
+            ratio = (mine / best) - 1
             if rd.driver in race_driver_dict:
                 race_driver_dict[rd.driver].append(ratio)
             else:
@@ -184,7 +183,6 @@ class SeasonSupergridView(ListView):
 
         for driver, ratios in race_driver_dict.items():
             sorted_ratios = sorted(ratios)
-            print(driver, [round(100*rat,3) for rat in sorted_ratios])
             mean_value = mean(sorted_ratios) if sorted_ratios else None
             median_value = median(sorted_ratios) if sorted_ratios else None
 
@@ -203,10 +201,10 @@ class SeasonSupergridView(ListView):
             else:
                 trimmed_mean = None
             supergrid_dict[driver] = [
-                f"{mean_first_80_percent:.3%}" if mean_first_80_percent else None,
-                f"{mean_value:.3%}" if mean_value else None,
-                f"{median_value:.3%}" if median_value else None,
-                f"{trimmed_mean:.3%}" if trimmed_mean else None,
+                f"{mean_first_80_percent:.3%}" if mean_first_80_percent is not None else None,
+                f"{mean_value:.3%}" if mean_value is not None else None,
+                f"{median_value:.3%}" if median_value is not None else None,
+                f"{trimmed_mean:.3%}" if trimmed_mean is not None else None,
             ]
         context["race_driver_dict"] = race_driver_dict
         context["supergrid_dict"] = supergrid_dict
