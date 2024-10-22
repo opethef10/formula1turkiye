@@ -532,10 +532,56 @@ class LastRaceRedirectView(RedirectView):
         else:
             raise Http404("No previous races found.")
 
+class LastRaceFantasyRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+        latest_race = championship.latest_race()
+
+        if latest_race:
+            return latest_race.get_fantasy_url()
+        else:
+            raise Http404("No previous races found.")
+
 
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
 class RaceDetailView(DetailView):
     model = Race
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_object(self):
+        return get_object_or_404(
+            Race.objects.select_related('championship'),
+            championship=self.championship,
+            round=self.kwargs.get('round')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race = self.object
+        context["race_driver_list"] = race.driver_instances.select_related(
+            "championship_constructor", "championship_constructor__constructor", "driver", "race", "race__championship"
+        )
+        context["tabs"] = {
+            "quali": "Sıralama Turları",
+            "race": "Yarış",
+            "sprint": "Sprint",
+        }
+        return context
+
+class RaceFantasyView(DetailView):
+    model = Race
+    template_name = "fantasy/race_fantasy_detail.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)

@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.5.1] - 2024-10-22
 ### Fixed
 - Python3.12 deprecated unittest aliases
+### Added
+- Race detail page independent from fantasy
+- LastRaceFantasyRedirectView
+- RaceFantasyView
+- get_fantasy_url
+-
 
 ## [2.5.0] - 2024-10-21
 ### Added

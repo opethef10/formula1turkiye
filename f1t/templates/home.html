@@ -119,7 +119,7 @@
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
+                            href="{% url "formula:redirect_last_fantasy_result" "f1" current_year %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url 'formula:driver_stats' "f1" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f1 %}
@@ -155,7 +155,7 @@
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f2" current_year %}" class="card-link">Son Yarış</a></li>
+                            href="{% url "formula:redirect_last_fantasy_result" "f2" current_year %}" class="card-link">Son Yarış</a></li>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url 'formula:driver_stats' "f2" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
                     {% if fantasy_team_f2 %}

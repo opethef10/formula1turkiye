@@ -77,7 +77,7 @@
                 <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
                 <td>
                   {% if view.championship.is_fantasy %}
-                  <a href="{{ race.get_absolute_url }}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy</a> <br>
+                  <a href="{{ race.get_fantasy_url }}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy</a> <br>
                   {% endif %}
                   {% if view.championship.is_tahmin %}
                     <a href="{{ race.get_tahmin_url }}"><i class="fa-solid fa-list-ol"></i> Tahmin</a>
