@@ -20,6 +20,12 @@
         <h3 class="text-center">{{ view.championship.short_str|upper }} Sezon İstatistikleri</h3>
         <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{% if not view.championship.next %}#{% else %}{% url 'formula:season_stats' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
+    <div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
+            <a href="{% url 'formula:season_supergrid' championship.series championship.year %}"
+               class="btn btn-outline-primary">Süpergrid</a>
+        </div>
+    </div>
 	
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">

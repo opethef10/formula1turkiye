@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static fantasy_tags %}
+
+{% block title %}{{ view.championship.short_str|upper }} Süpergrid{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a
+        href="{% url 'formula:season_list' view.championship.series %}">{{ championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a
+        href="{% url 'formula:race_list' championship.series championship.year %}">{{ championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_stats' championship.series championship.year %}">Sezon
+        İstatistikleri</a></li>
+    <li class="breadcrumb-item">Süpergrid</li>
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not view.championship.previous %}disabled{% endif %}"
+           href="{% if not view.championship.previous %}#{% else %}{% url 'formula:season_supergrid' view.championship.series view.championship.previous.year %}{% endif %}">&larr; {{ view.championship.previous.short_str|upper|default_if_none:"" }}</a>
+        <h3 class="text-center">{{ view.championship.short_str|upper }} Süpergrid</h3>
+        <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}"
+           href="{% if not view.championship.next %}#{% else %}{% url 'formula:season_supergrid' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }}
+            &rarr;</a>
+    </div>
+
+                <h3 class="my-3">SÜPERGRİD NEDİR?</h3>
+                <ul>
+                <li>Her pilotun sezon boyunca pol derecelerine olan farklarını alıp çeşitli istatistik yöntemlerini
+                    kullanarak sürücülerin sezon boyu tek tur sıralamalarını çıkarmaya çalıştık. </li>
+                <li>Farklı pist uzunluklarını
+                normalize etmek için yüzdelik hesap kullanılmıştır. Yüzdeleri, 100 sn'lik bir turda atılacak
+                saniyelik fark olarak düşünebilirsiniz. </li>
+                <li>Örneğin bir pilotun yüzdesi 0.666% olarak gözüküyorsa o pilot sezon boyunca, 100 sn'lik bir turu 
+                    baz alırsak, pol pozisyonundan ortalama 0.666 sn uzaktadır demektir.</li>
+                <li>Her pilot kötü bir sıralama turu geçirebilir, yağmurlu bir sıralama turunda bir pilot Q1'de elenip
+                belki de pol pozisyonundan %10 yavaş kalabilir. Bu gibi anomalilerin verileri etkilememesi için,
+                    ana istatistik olarak pilotların derecelerinin
+                en iyi %80'inin ortalaması olarak seçtik. Sıralamayı da bu istatistiğe göre oluşturduk.</li>
+                <li>Sürücülerin bu ana istatistiğe dahil olması için sezonun en az 3'te 1'inde sıralama turu derecesi
+                kaydetmesi gerekir.</li>
+                <li>Ortalama, ortanca (medyan) ve budanmış (trimmed) ortalama istatistiklerini ek bilgi olarak ekledik.</li>
+                <li>Ortalama değer, uç derecelerin ortalamayı saptırmasına neden olduğu için en sağlıklı istatistik değil burda.</li>
+                <li>Ortanca değer daha güvenilir ve uç derecelerin saptırmasına daha bağışık olmakla birlikte, örneğin
+                    sezonun çoğunluğunda pol alan pilotun %0 olarak gösterilmesi yine bütün çerçeveyi yansıtmayan bir durum oluşturuyor.</li>
+                <li>Budanmış ortalama ise en iyi ve en kötü %12.5 dereceyi silen, deneysel amaçlarla tutulmuş bir istatistiktir.</li>
+                </ul>
+                <table id="table_supergrid"
+                       class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>#</th>
+                        <th>Sürücü</th>
+                        <th>En İyi %80</th>
+                        <th>Ortalama</th>
+                        <th>Ortanca</th>
+                        <th>Budanmış</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for driver, stats in supergrid_dict.items %}
+                        <tr>
+                            <td></td>
+                            <td>
+                                <a href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
+                            </td>
+                            {% for stat in stats %}
+                                <td>{{ stat|default_if_none:"" }}</td>
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        let numbersType = $.fn.dataTable.absoluteOrderNumber([
+            {value: '', position: 'bottom'}
+        ])
+        $(document).ready(function () {
+                var table = $("#table_supergrid").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "info": false,
+                        searching: false,
+                        order: [[2, "asc"], [4, "asc"], [3, "asc"], [5, "asc"]],
+                        columnDefs: [
+                            {
+                                className: "dt-center",
+                                targets: "_all"
+                            },
+                            {
+                                searchable: false,
+                                orderable: false,
+                                targets: 0,
+                            },
+                            {type: numbersType, targets: "_all"}
+                        ],
+                    }
+                );
+                table.on('init.dt', function () {
+                    let i = 1;
+                    table.cells(null, 0, {search: 'applied', order: 'applied'}).every(function (cell) {
+                        this.data("<b>" + i++ + "</b>");
+                    });
+                }).draw();
+        });
+
+    </script>
+
+{% endblock %}

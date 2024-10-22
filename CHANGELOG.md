@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.5.2] - 2024-10-22
+### Added
+- Supergrid
+
 ## [2.5.1] - 2024-10-22
 ### Fixed
 - Python3.12 deprecated unittest aliases
@@ -21,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - LastRaceFantasyRedirectView
 - RaceFantasyView
 - get_fantasy_url
--
 
 ## [2.5.0] - 2024-10-21
 ### Added

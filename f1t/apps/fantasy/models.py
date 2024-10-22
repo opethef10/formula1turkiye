@@ -22,6 +22,19 @@ with JSON_PATH.open() as json_file:
     )
 
 
+def convert_to_float(value):
+    """Convert 'minutes:seconds.milliseconds' string to total seconds as a float."""
+    if not value:
+        return None
+    try:
+        # Split the string into minutes and seconds
+        minutes, seconds = value.split(':')
+        # Convert to total seconds
+        total_seconds = float(minutes) * 60 + float(seconds)
+        return total_seconds
+    except ValueError:
+        return None
+
 class Championship(models.Model):
     CHAMPIONSHIP_CHOICES = [
         ("f1", "Formula 1"),
@@ -288,6 +301,12 @@ class Race(models.Model):
         except RaceDriver.DoesNotExist:
             return None
 
+    def best_qualifying_time(self):
+        """Find the minimum of the minimum values from all driver instances for this race."""
+        driver_minimums = [race_driver.best_session_time() for race_driver in self.driver_instances.all()]
+        # Filter out None values and return the minimum of the rest
+        return min((m for m in driver_minimums if m is not None), default=None)
+
 
 class RaceDriver(models.Model):
     DISCOUNT_COEFFICIENTS = (
@@ -424,6 +443,22 @@ class RaceDriver(models.Model):
                 return ceil((20 - count) ** 2 / 2)
         return 0
 
+    def q1_time(self):
+        return convert_to_float(self.q1)
+
+    def q2_time(self):
+        return convert_to_float(self.q2)
+
+    def q3_time(self):
+        return convert_to_float(self.q3)
+
+    def best_session_time(self):
+        """Find the minimum value among q1, q2, q3 after converting to floats."""
+        values = [self.q1, self.q2, self.q3]
+        # Convert all non-empty strings to float using the conversion function
+        float_values = [convert_to_float(v) for v in values if v]
+        # Return the minimum value if the list isn't empty, otherwise return None
+        return min(float_values) if float_values else None
 
 class RaceTeam(models.Model):
     GEÇİŞ = "G"
