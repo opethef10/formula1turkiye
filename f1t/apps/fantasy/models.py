@@ -221,6 +221,12 @@ class Race(models.Model):
             kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
         )
 
+    def get_fantasy_url(self):
+        return reverse(
+            "formula:fantasy_race_results",
+            kwargs={'series': self.championship.series, 'year': self.championship.year, "round": self.round}
+        )
+
     def get_tahmin_url(self):
         return reverse(
             "formula:tahmin:race_tahmins",
@@ -326,26 +332,30 @@ class RaceDriver(models.Model):
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.SIRALAMA else 1
         return round(POINTS["qualy"].get(self.qualy, 0) * coefficient, 1)
 
-    def _sprint_point(self):
-        return POINTS["sprint"][self.race.championship.get_series_display()].get(self.sprint, 0)
+    def sprint_point(self):
+        eligible_for_sprint_fastest_lap = self.sprint is not None and 1 <= self.sprint <= self.race.championship.fastest_lap_point_threshold
+        sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
+        return (
+            POINTS["sprint"][self.race.championship.get_series_display()].get(self.sprint, 0) +
+            self.sprint_fastest_lap * eligible_for_sprint_fastest_lap * sprint_fastest_lap_point
+        )
 
-    def _feature_point(self):
-        return POINTS["race"].get(self.result, 0)
+    def feature_point(self):
+        eligible_for_fastest_lap = self.result is not None and 1 <= self.result <= self.race.championship.fastest_lap_point_threshold
+        fastest_lap_point = self.race.championship.fastest_lap_point
+        return (
+            POINTS["race"].get(self.result, 0) +
+            self.fastest_lap * eligible_for_fastest_lap * fastest_lap_point
+        )
 
     def race_point(self, tactic=None):
         if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
             return None
         coefficient = self.race.championship.coefficient(tactic) if tactic == RaceTeam.FİNİŞ else 1
-        eligible_for_fastest_lap = self.result is not None and 1 <= self.result <= self.race.championship.fastest_lap_point_threshold
-        eligible_for_sprint_fastest_lap = self.sprint is not None and 1 <= self.sprint <= self.race.championship.fastest_lap_point_threshold
-        fastest_lap_point = self.race.championship.fastest_lap_point
-        sprint_fastest_lap_point = self.race.championship.sprint_fastest_lap_point
         return round(
             (
-                self._feature_point() +
-                self._sprint_point() +
-                self.fastest_lap * eligible_for_fastest_lap * fastest_lap_point +
-                self.sprint_fastest_lap * eligible_for_sprint_fastest_lap * sprint_fastest_lap_point
+                self.feature_point() +
+                self.sprint_point()
             ) * coefficient,
             1
         )

@@ -36,6 +36,8 @@ urlpatterns = [
     path('<str:series>/<int:year>/', views.RaceListView.as_view(), name='race_list'),
     path('<str:series>/<int:year>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),
     path('<str:series>/<int:year>/<int:round>/', views.RaceDetailView.as_view(), name='race_detail'),
+    path('<str:series>/<int:year>/<int:round>/fantasy/', views.RaceFantasyView.as_view(), name='fantasy_race_results'),
+    path('<str:series>/<int:year>/last/fantasy/', views.LastRaceFantasyRedirectView.as_view(), name='redirect_last_fantasy_result'),
     path('<str:series>/<int:year>/<int:round>/edit/', views.RaceDriverUpdateView.as_view(), name='race_edit'),
 
     # Fantasy paths
