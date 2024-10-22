@@ -61,7 +61,7 @@ class ViewTestMixin:
 
     def test_view_url_resolves_correct_view(self):
         view = resolve(self.url_reverse())
-        self.assertEquals(view.func.view_class, self.view)
+        self.assertEqual(view.func.view_class, self.view)
 
     def test_view_contains_navigation_links(self):
         homepage_url = reverse('home')
@@ -72,7 +72,7 @@ class ViewTestMixin:
 class DetailViewTestMixin(ViewTestMixin):
     def test_view_not_found_status_code(self):
         response = self.client.get(self.url_reverse(kwargs=self.url_kwargs_404))
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
 
 class SeasonsListTests(ViewTestMixin, TestCase):

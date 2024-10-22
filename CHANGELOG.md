@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.5.1] - 2024-10-22
+### Fixed
+- Python3.12 deprecated unittest aliases
+
 ## [2.5.0] - 2024-10-21
 ### Added
 - 1985-2024 quali results
