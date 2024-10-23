@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.5.3] - 2024-10-23
+### Added
+- Fantasy paths in all fantasy related pages
+### Deprecated
+- teams in fantasy paths
+
 ## [2.5.2] - 2024-10-22
 ### Added
 - Supergrid

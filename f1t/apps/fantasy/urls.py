@@ -42,12 +42,17 @@ urlpatterns = [
     path('<str:series>/<int:year>/<int:round>/edit/', views.RaceDriverUpdateView.as_view(), name='race_edit'),
 
     # Fantasy paths
-    path('<str:series>/<int:year>/teams/', views.FantasyStandingsView.as_view(), name='team_list'),
+    path('<str:series>/<int:year>/teams/', views.FantasyStandingsView.as_view(), name='team_list_deprecated'),
+    path('<str:series>/<int:year>/fantasy/', views.FantasyStandingsView.as_view(), name='team_list'),
     path('<str:series>/<int:year>/fantasy/stats/', views.DriverStatsView.as_view(), name='driver_stats'),
-    path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form'),
-    path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
-    path('<str:series>/<int:year>/teams/me/', views.FantasyProfileRedirectView.as_view(), name='redirect_my_team'),
-    path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
+    path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form_deprecated'),
+    path('<str:series>/<int:year>/fantasy/new/', views.NewTeamView.as_view(), name='new_team_form'),
+    path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form_deprecated'),
+    path('<str:series>/<int:year>/fantasy/edit/', views.EditTeamView.as_view(), name='edit_team_form'),
+    path('<str:series>/<int:year>/teams/me/', views.FantasyProfileRedirectView.as_view(), name='redirect_my_team_deprecated'),
+    path('<str:series>/<int:year>/fantasy/me/', views.FantasyProfileRedirectView.as_view(), name='redirect_my_team'),
+    path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail_deprecated'),
+    path('<str:series>/<int:year>/fantasy/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
 
     # Tahmin ligi paths
     path('<str:series>/<int:year>/', include("f1t.apps.tahmin.urls")),
