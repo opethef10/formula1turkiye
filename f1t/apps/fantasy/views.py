@@ -651,6 +651,7 @@ class RaceDetailView(DetailView):
         context["race_driver_list"] = race.driver_instances.select_related(
             "championship_constructor", "championship_constructor__constructor", "driver", "race", "race__championship"
         )
+        context["opts"] = race._meta
         context["tabs"] = {
             "quali": "Sıralama Turları",
             "race": "Yarış",
@@ -691,6 +692,7 @@ class RaceFantasyView(DetailView):
             "user",
             "race__championship"
         )
+        context["opts"] = race._meta
         context["tabs"] = {
             "drivers": "Sürücüler",
             "teams": "Takımlar",

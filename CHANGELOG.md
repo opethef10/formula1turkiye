@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.5.4] - 2024-10-23
+### Added
+- Admin change urls in race and fantasy detail
+### Changed
+- Admin only buttons to grey
+
 ## [2.5.3] - 2024-10-23
 ### Added
 - Fantasy paths in all fantasy related pages
