@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
 
+## [2.5.5] - 2024-10-23
+### Added
+- Question links to tahmin results page
+- test to scripts directory
+
 ## [2.5.4] - 2024-10-23
 ### Added
 - Admin change urls in race and fantasy detail

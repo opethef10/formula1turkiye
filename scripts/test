@@ -1,0 +1,3 @@
+#! /usr/bin/bash
+./manage.py test --settings=f1t.settings.tests
+
