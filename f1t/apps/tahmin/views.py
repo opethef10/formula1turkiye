@@ -14,7 +14,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTahminForm
-from .models import Tahmin
+from .models import Question, Tahmin
 from ..fantasy.models import Championship, Race
 
 logger = logging.getLogger("f1t")
@@ -96,6 +96,7 @@ class RaceTahminView(ListView):
             in enumerate(self.race.top10, 1)
         ]
         context["race"] = self.race
+        context["opts"] = Question._meta
         context["before_race"] = self.race.datetime > timezone.now()
         return context
 
