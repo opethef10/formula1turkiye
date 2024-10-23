@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static fantasy_tags %}
+{% load static fantasy_tags admin_urls %}
 
 {% block title %}{{ race }} - Tahmin Ligi{% endblock %}
 
@@ -37,6 +37,15 @@
             <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}" class="btn btn-primary ml-2">Tahmin Yap</a>
         </div>
     {% else %}
+        {% if user.is_superuser %}
+            <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Sonuç Gir</a>
+            {% if race.questions.all.0 %}
+                <a href="{% url opts|admin_urlname:'change' race.questions.all.0.pk %}" class="btn btn-secondary mb-4 mr-2">1. Soruyu Değiştir</a>
+            {% endif %}
+            {% if race.questions.all.1 %}
+                <a href="{% url opts|admin_urlname:'change' race.questions.all.1.pk %}" class="btn btn-secondary mb-4 mr-2">2. Soruyu Değiştir</a>
+            {% endif %}
+        {% endif %}
     <table id="top10"
            class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
