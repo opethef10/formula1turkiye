@@ -132,7 +132,7 @@ class TeamListTests(ViewTestMixin, TestCase):
         cls.url_name = 'team_list'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
         cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
-        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/teams"
+        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/fantasy"
         cls.template_name = "fantasy/fantasy_standings.html"
         cls.context_variable = 'raceteam_list'
         cls.view = views.FantasyStandingsView
@@ -179,7 +179,7 @@ class TeamDetailViewTests(DetailViewTestMixin, TestCase):
         cls.url_name = 'team_detail'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year, "username": cls.user.username}
         cls.url_kwargs_404 = {'series': cls.championship.series, 'year': cls.championship.year, "username": "arbitrary"}
-        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/teams/{cls.user.username}"
+        cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/fantasy/{cls.user.username}"
         cls.template_name = "fantasy/fantasy_user_profile.html"
         cls.context_variable = 'raceteam_list'
         cls.view = views.FantasyUserProfileView
