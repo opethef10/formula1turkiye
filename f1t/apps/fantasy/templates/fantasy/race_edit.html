@@ -20,22 +20,22 @@
 
 {% block content %}
     {{ form.errors }}
-	
+
 	<div class="d-flex justify-content-between my-4">
         <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{% url 'formula:race_edit' race.previous.championship.series race.previous.championship.year race.previous.round %}">&larr; {{ race.previous|default_if_none:"" }}</a>
         <h3 class="text-center">Yarışı Düzenle: {{ race }}</h3>
         <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{% url 'formula:race_edit' race.next.championship.series race.next.championship.year race.next.round %}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
-	
+
     <iframe src="{{ race.wikilink }}#Race_classification" scrolling="no"
             width="900px" height="900px"></iframe>
-	
+
     <form class="form form-horizontal" method="post" novalidate>
         {% csrf_token %}
         {{ formset.management_form }}
         <div class="form-group row">
-            <div class="col-lg-2"><b>Sürücü</b></div>
-            <div class="col-lg-1"><b>Tanzim</b></div>
+            <div class="text-center" style="width: 160px"><b>Sürücü</b></div>
+            <div class="text-center" style="width: 60px"><b>Tanzim</b></div>
             <div class="text-center" style="width: 60px"><b>Fiyat</b></div>
             <div class="text-center" style="width: 60px"><b>Sıralama</b></div>
             <div class="text-center" style="width: 60px"><b>Sp.Grid</b></div>
@@ -44,6 +44,9 @@
             <div class="text-center" style="width: 60px"><b>Race</b></div>
             <div class="text-center" style="width: 60px"><b>EHT</b></div>
             <div class="text-center" style="width: 60px"><b>SpEHT</b></div>
+            <div class="text-center" style="width: 70px"><b>Q1</b></div>
+            <div class="text-center" style="width: 70px"><b>Q2</b></div>
+            <div class="text-center" style="width: 70px"><b>Q3</b></div>
         </div>
         {% for form in formset %}
             {% if form.non_field_errors %}
@@ -55,19 +58,15 @@
             {% endif %}
             <div class="form-group row">
                 {% for field in form %}
+                    <div>
                     {% if forloop.first %}
-                        <div class="col-lg-2">
-                            {% render_field field disabled="True" %}
-                        </div>
-                        {% elif forloop.counter == 2 %}
-                        <div class="col-lg-1">
-                            {% render_field field %}
-                        </div>
+                        {% render_field field style="width: 160px" disabled="True" %}
+                    {% elif forloop.counter >= 11 %}
+                        {% render_field field style="width: 70px" %}
                     {% else %}
-                        <div>
-                            {% render_field field style="width: 60px" %}
-                        </div>
+                        {% render_field field style="width: 60px" %}
                     {% endif %}
+                    </div>
                     {% for error in field.errors %}
                         <div class="invalid-feedback">
                             {{ error }}
