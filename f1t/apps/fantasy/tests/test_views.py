@@ -29,7 +29,7 @@ class ViewTestMixin:
     urlstring_without_slash = ''
     template_name = ''
     context_variable = 'None'
-    view = views.DriverStatsView
+    view = views.FantasyStatsView
 
     def url_reverse(self, kwargs=None):
         if kwargs is None:
@@ -96,7 +96,7 @@ class DriverListTests(ViewTestMixin, TestCase):
         cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/fantasy/stats"
         cls.template_name = "fantasy/driver_stats.html"
         cls.context_variable = 'race_driver_dict'
-        cls.view = views.DriverStatsView
+        cls.view = views.FantasyStatsView
 
 
 class RaceListTests(ViewTestMixin, TestCase):

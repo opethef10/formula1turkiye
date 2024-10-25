@@ -26,7 +26,7 @@ HOURS = settings.HOURS
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class DriverStatsView(ListView):
+class FantasyStatsView(ListView):
     template_name = "fantasy/driver_stats.html"
 
     def setup(self, request, *args, **kwargs):
