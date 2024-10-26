@@ -235,7 +235,10 @@
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
-                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='elo/' %}" class="card-link">Elo Sıralama Projesi</a>
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='elo/' %}" class="card-link d-flex flex-column align-items-center">
+                        <i class="fas fa-chess-queen mb-3 text-primary" style="font-size: 40px;"></i>
+                        Elo Sıralama Projesi
+                    </a>
                 </h5>
                 <p class="card-text text-secondary">Elo puanlama sistemini kullanarak F1 tarihinin en iyi sıralama turu pilotları listesini hazırladık.</p>
             </div>
@@ -245,7 +248,10 @@
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
-                    <a href="{% url 'ratings:series_ratings' 'f1' %}" class="card-link">Yarışı Puanla</a>
+                    <a href="{% url 'ratings:series_ratings' 'f1' %}" class="card-link d-flex flex-column align-items-center">
+                        <i class="fas fa-star-half-stroke mb-3 text-primary" style="font-size: 40px;"></i>
+                        Yarışı Puanla
+                    </a>
                 </h5>
                 <p class="card-text text-secondary">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın puanını belirliyoruz.</p>
             </div>
@@ -255,7 +261,10 @@
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
-                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='quiz/' %}" class="card-link">Quiz Night</a>
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='quiz/' %}" class="card-link d-flex flex-column align-items-center">
+                        <i class="fas fa-question-circle mb-3 text-primary" style="font-size: 40px;"></i>
+                        Quiz Night
+                    </a>
                 </h5>
                 <p class="card-text text-secondary">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
             </div>
