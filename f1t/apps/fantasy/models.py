@@ -307,6 +307,11 @@ class Race(models.Model):
         # Filter out None values and return the minimum of the rest
         return min((m for m in driver_minimums if m is not None), default=None)
 
+    def pole_time(self):
+        qualifying_winner = self.qualifying_winner()
+        if qualifying_winner:
+            return qualifying_winner.qualifying_time()
+
 
 class RaceDriver(models.Model):
     DISCOUNT_COEFFICIENTS = (
@@ -459,6 +464,14 @@ class RaceDriver(models.Model):
         float_values = [convert_to_float(v) for v in values if v]
         # Return the minimum value if the list isn't empty, otherwise return None
         return min(float_values) if float_values else None
+
+    def qualifying_time(self):
+        for time in 'q3', 'q2', 'q1':
+            q_time = convert_to_float(getattr(self, time))
+            if q_time is not None:
+                return q_time
+        return None
+
 
 class RaceTeam(models.Model):
     GEÇİŞ = "G"

@@ -25,6 +25,31 @@
         <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Yarış Puanı Gir</a>
         <a href="{% url opts|admin_urlname:'change' race.pk %}" class="btn btn-secondary mb-4 mr-2">Yönetici Sayfasında Düzenle</a>
     {% endif %}
+    
+    <table id="table_race_list" class="table table-responsive table-sm align-middle text-center">
+        <thead class="thead-inverse">
+        <tr>
+            <th>1. Antrenman</th>
+            <th>2. Antrenman</th>
+            <th>3. Antrenman</th>
+            <th>Sprint Sıralama</th>
+            <th>Sprint</th>
+            <th>Sıralama</th>
+            <th>Yarış</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_shootout_datetime|date:"j F"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_datetime|date:"j F"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.quali_datetime|date:"j F"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
+            </tr>
+        </tbody>
+    </table>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
@@ -52,6 +77,8 @@
                             <th>Q1</th>
                             <th>Q2</th>
                             <th>Q3</th>
+                            <th>Fark</th>
+                            <th>%</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -65,6 +92,8 @@
                                 <td>{{ race_driver.q1|default_if_none:"" }}</td>
                                 <td>{{ race_driver.q2|default_if_none:"" }}</td>
                                 <td>{{ race_driver.q3|default_if_none:"" }}</td>
+                                <td>{{ race_driver.pole_margin|default_if_none:"" }}</td>
+                                <td>{{ race_driver.pole_ratio|default_if_none:"" }}</td>
                             </tr>
                         {% endfor %}
                         {% elif tab_id == "race" %}
@@ -109,6 +138,29 @@
                                     <td><b>{{ race_driver.sprint_point|default_if_none:"-" }}</b></td>
                                 </tr>
                             {% endfor %}
+                            {% elif tab_id == "sprint_quali" %}
+                            <tr>
+                                <th>#</th>
+                                <th>Sürücü</th>
+                                <th>Marka</th>
+                                <th>SQ1</th>
+                                <th>SQ2</th>
+                                <th>SQ3</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for race_driver in race_driver_list %}
+                                <tr>
+                                    <td>{{ race_driver.sprint|default_if_none:"" }}</td>
+                                    <td style="background-color: {{ race_driver.championship_constructor.bgcolor }}; color: {{ race_driver.championship_constructor.fontcolor }}">
+                                        <a style="color: {{ race_driver.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' race_driver.driver.slug %}"><b>{{ race_driver.driver }}</b></a>
+                                    </td>
+                                    <td><a href="{{ race_driver.championship_constructor.constructor.get_absolute_url }}">{{ race_driver.championship_constructor.constructor|default_if_none:"" }}</a></td>
+                                    <td>{{ race_driver.sq1|default_if_none:"" }}</td>
+                                    <td>{{ race_driver.sq2|default_if_none:"" }}</td>
+                                    <td>{{ race_driver.sq3|default_if_none:"" }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endif %}
                     </tbody>
                 </table>
@@ -137,6 +189,7 @@
                         paging: false,
                         order: [[0, 'asc']],
                         "info": false,
+                        searching: false,
                         columnDefs: [
                             {
                                 className: "dt-center",

@@ -44,7 +44,7 @@ urlpatterns = [
     # Fantasy paths
     path('<str:series>/<int:year>/teams/', views.FantasyStandingsView.as_view(), name='team_list_deprecated'),
     path('<str:series>/<int:year>/fantasy/', views.FantasyStandingsView.as_view(), name='team_list'),
-    path('<str:series>/<int:year>/fantasy/stats/', views.DriverStatsView.as_view(), name='driver_stats'),
+    path('<str:series>/<int:year>/fantasy/stats/', views.FantasyStatsView.as_view(), name='driver_stats'),
     path('<str:series>/<int:year>/teams/new/', views.NewTeamView.as_view(), name='new_team_form_deprecated'),
     path('<str:series>/<int:year>/fantasy/new/', views.NewTeamView.as_view(), name='new_team_form'),
     path('<str:series>/<int:year>/teams/edit/', views.EditTeamView.as_view(), name='edit_team_form_deprecated'),
