@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Qualifying times in race edit page
 - Sprint qualifying results in race detail
 - Qualifying margin and ratios in race detail page
+- Race datetimes in race detail
 ### Changed
 - DriverStatsView to FantasyStatsView
 - Disable race detail datatable searching

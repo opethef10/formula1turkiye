@@ -25,6 +25,31 @@
         <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Yarış Puanı Gir</a>
         <a href="{% url opts|admin_urlname:'change' race.pk %}" class="btn btn-secondary mb-4 mr-2">Yönetici Sayfasında Düzenle</a>
     {% endif %}
+    
+    <table id="table_race_list" class="table table-responsive table-sm align-middle text-center">
+        <thead class="thead-inverse">
+        <tr>
+            <th>1. Antrenman</th>
+            <th>2. Antrenman</th>
+            <th>3. Antrenman</th>
+            <th>Sprint Sıralama</th>
+            <th>Sprint</th>
+            <th>Sıralama</th>
+            <th>Yarış</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ race.fp1_datetime|date:"j F"}} <br> {{ race.fp1_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp2_datetime|date:"j F"}} <br> {{ race.fp2_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.fp3_datetime|date:"j F"}} <br> {{ race.fp3_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_shootout_datetime|date:"j F"}} <br> {{ race.sprint_shootout_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.sprint_datetime|date:"j F"}} <br> {{ race.sprint_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.quali_datetime|date:"j F"}} <br> {{ race.quali_datetime|time:"TIME_FORMAT" }}</td>
+                <td>{{ race.datetime|date:"j F" }} <br> {{ race.datetime|date:"TIME_FORMAT" }}</td>
+            </tr>
+        </tbody>
+    </table>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
