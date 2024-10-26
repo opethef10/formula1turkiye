@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
-## [2.5.6] - 2024-10-25
+## [2.5.6] - 2024-10-26
 ### Added
 - Qualifying times in race edit page
 - Sprint qualifying results in race detail
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DriverStatsView to FantasyStatsView
 - Disable race detail datatable searching
 - Home page order
+- Home page visuals
 
 ## [2.5.5] - 2024-10-23
 ### Added
