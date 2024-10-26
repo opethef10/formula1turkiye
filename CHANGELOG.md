@@ -15,7 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
-## [2.5.6] - 2024-10-26
+## [2.6.1] - 2024-10-26
+### Changed
+- Upgraded Bootstrap and JQuery
+- Row-col to card deck in home page
+- Fontawesome icons to our products
+- Header tag sizes
+### Removed
+- Homepage breadcrumb
+
+## [2.6.0] - 2024-10-26
 ### Added
 - Qualifying times in race edit page
 - Sprint qualifying results in race detail
