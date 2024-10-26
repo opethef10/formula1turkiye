@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.6.1] - 2024-10-26
 ### Changed
 - Upgraded Bootstrap and JQuery
+### Removed
+- Homepage breadcrumb
+
 ## [2.6.0] - 2024-10-26
 ### Added
 - Qualifying times in race edit page
