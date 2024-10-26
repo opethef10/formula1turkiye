@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.6.1] - 2024-10-26
 ### Changed
 - Upgraded Bootstrap and JQuery
+- Row-col to card deck in home page
 ### Removed
 - Homepage breadcrumb
 

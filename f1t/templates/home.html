@@ -5,9 +5,8 @@
 {% block content %}
 
 	<h4 class="mt-3 py-3 text-center font-weight-bold">2024 SEZONU</h4>
-    <div class="row">
+    <div class="card-deck">
     <!-- F1 Season Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -32,10 +31,8 @@
 
             </div>
         </div>
-    </div>
 
     <!-- F2 Season Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -54,10 +51,8 @@
                     </p>
             </div>
         </div>
-    </div>
 
     <!-- Formula 1 Historical Data Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm">
             <div class="card-body text-center bg-light">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -88,12 +83,10 @@
             </div>
         </div>
     </div>
-</div>
 
-    <h4 class="py-3 text-center font-weight-bold">LİGLERİMİZ</h4>
-    <div class="row">
+    <h4 class="mt-3 py-3 text-center font-weight-bold">LİGLERİMİZ</h4>
+    <div class="card-deck">
     <!-- F1 Fantasy League Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -102,7 +95,7 @@
                 <p class="card-text text-secondary">2017'de başladığımız Fantasy F1 ligi heyecanı, 8. sezonunda tüm hızıyla devam ediyor!</p>
                 <p>
                     <a href="{% url 'django.contrib.flatpages.views.flatpage' url='fantasy/' %}" class="card-link">
-                        <i class="fas fa-info-circle"></i> Fantasy Lig Nedir & Kurallar
+                        <i class="fas fa-info-circle"></i> Kurallar
                     </a>
                 </p>
                 <p>
@@ -148,9 +141,7 @@
                 {% endif %}
             </div>
         </div>
-    </div>
         <!-- F1 Prediction League Card -->
-        <div class="col-4">
             <div class="card border-light shadow-sm bg-light">
                 <div class="card-body text-center">
                     <h5 class="card-title font-weight-bold text-primary">
@@ -159,7 +150,7 @@
                     <p class="card-text text-secondary">Sıralama turlarından sonra açılacak form ile tahminlerinizi yarış saatine kadar yapabilirsiniz.</p>
                     <p>
                         <a href="{% url 'django.contrib.flatpages.views.flatpage' url='tahmin/' %}" class="card-link">
-                            <i class="fas fa-info-circle"></i> Tahmin Ligi Nedir & Kurallar
+                            <i class="fas fa-info-circle"></i> Kurallar
                         </a>
                     </p>
                     <p>
@@ -179,10 +170,8 @@
                     </p>
                 </div>
             </div>
-        </div>
 
     <!-- F2 Fantasy League Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -191,7 +180,7 @@
                 <p class="card-text text-secondary">2018'de başladığımız Fantasy F2 ligi heyecanı, 7. sezonunda tüm hızıyla devam ediyor!</p>
                 <p>
                     <a href="{% url 'django.contrib.flatpages.views.flatpage' url='fantasy/' %}" class="card-link">
-                        <i class="fas fa-info-circle"></i> Fantasy Lig Nedir & Kurallar
+                        <i class="fas fa-info-circle"></i> Kurallar
                     </a>
                 </p>
                 <p>
@@ -237,14 +226,12 @@
                 {% endif %}
             </div>
         </div>
-    </div>
 
 </div>
 
-<h4 class="py-3 text-center font-weight-bold">ÜRÜNLERİMİZ</h4>
-<div class="row">
+<h4 class="mt-3 py-3 text-center font-weight-bold">ÜRÜNLERİMİZ</h4>
+<div class="card-deck">
     <!-- Elo Sıralama Projesi Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -253,10 +240,8 @@
                 <p class="card-text text-secondary">Elo puanlama sistemini kullanarak F1 tarihinin en iyi sıralama turu pilotları listesini hazırladık.</p>
             </div>
         </div>
-    </div>
 
     <!-- Yarışı Puanla Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -265,10 +250,8 @@
                 <p class="card-text text-secondary">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın puanını belirliyoruz.</p>
             </div>
         </div>
-    </div>
 
     <!-- Quiz Night Card -->
-    <div class="col-4">
         <div class="card border-light shadow-sm bg-light">
             <div class="card-body text-center">
                 <h5 class="card-title font-weight-bold text-primary">
@@ -278,7 +261,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 {% endblock %}
