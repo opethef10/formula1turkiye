@@ -4,189 +4,282 @@
     <li class="breadcrumb-item">Ana Sayfa</li>
 {% endblock %}
 {% block content %}
-    <h4 class="my-4">Ürünlerimiz</h4>
+
+	<h4 class="py-3 text-center font-weight-bold">2024 SEZONU</h4>
     <div class="row">
-        <div class="col-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="elo/" %}" class="card-link">Elo Sıralama Projesi</a></h5>
-                    <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
-                        pilotları listesini hazırladık.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "ratings:series_ratings" "f1" %}" class="card-link">Yarışı Puanla</a></h5>
-                    <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
-                        puanını belirliyoruz.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="quiz/" %}" class="card-link">Quiz Night</a></h5>
-                    <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-	<h4 class="my-4">2024 Sezonu</h4>
-    <div class="row">
-        <div class="col-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url "formula:race_list" "f1" current_year %}" class="card-link">F1 {{ current_year }} Sezonu</a>
-                    </h5>					
-					<p class="card-text">{{current_year}} Formula 1 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:season_stats' "f1" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'ratings:season_ratings' "f1" current_year %}" class="card-link">Yarış Puanları</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Tahmin Ligi Ana Sayfası</a></li>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url "formula:race_list" "f2" current_year %}" class="card-link">F2 {{ current_year }} Sezonu</a>
-                    </h5>					
-					<p class="card-text">{{current_year}} Formula 2 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_race" "f2" current_year %}" class="card-link">Son Yarış</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:season_stats' "f2" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
-                </div>
-            </div>
-        </div>
-		<div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="#" class="card-link">Formula 1 Verileri</a>
-                    </h5>					
-					<p class="card-text">Formula 1 tarihine dair veriler ve istatistikler</p>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:stats_series" "f1" %}" class="card-link">İstatistikler</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:circuit_list' %}">Pistler</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:all_driver_list' %}">Sürücüler</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:constructor_list' %}">Markalar</a></li>
-                </div>
+    <!-- F1 Season Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'formula:race_list' 'f1' current_year %}" class="card-link">F1 {{ current_year }} Sezonu</a>
+                </h5>
+                <p class="card-text text-secondary">{{ current_year }} F1 sezonu takvimi, sonuçları, istatistikleri</p>
+                <p>
+                        <a href="{% url 'formula:redirect_last_race' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-flag-checkered"></i> Son Yarış
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:season_stats' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-chart-line"></i> Sezon İstatistikleri
+                        </a>
+                    </p>
+                <p>
+                        <a href="{% url 'ratings:season_ratings' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-star-half-stroke"></i> Yarış Puanları
+                        </a>
+                    </p>
+                
             </div>
         </div>
     </div>
 
-    <h4 class="my-4">Liglerimiz</h4>
-    <div class="row">
-        <div class="col-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url "formula:team_list" "f1" current_year %}" class="card-link">F1 Fantasy Lig {{ current_year }}</a>
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                    <p class="card-text">2017'de başladığımız Fantasy F1 ligi heyecanı, 8. sezonunda bütün hızıyla
-                        devam ediyor!</p>
-                    <li class="list-group-item list-group-item-action">
-                        <a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}" class="card-link">Fantasy Lig Nedir & Kurallar</a></li>
-                    <li class="list-group-item list-group-item-action">
-                    {% if race_team_count_f1 > 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f1" current_year %}" class="card-link">Alım Satım</a>
-                    {% elif race_team_count_f1 == 0 %}
-                        <a href="{% url 'formula:new_team_form' "f1" current_year %}" class="card-link">Yeni Takım Kur</a>
-                    {% elif race_team_count_f1 == 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f1" current_year %}" class="card-link">Takımı Düzenle</a>
-                    {% else %}
-                        <a href="{% url 'formula:new_team_form' "f1" current_year %}" class="card-link">Yeni Takım / Alım
-                            Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}</a>
-                    {% endif %}
-                    </li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_fantasy_result" "f1" current_year %}" class="card-link">Son Yarış</a></li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:driver_stats' "f1" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
-                    {% if fantasy_team_f1 %}
-                        <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:redirect_my_team' "f1" current_year %}" class="card-link">Profil Sayfanız</a></li>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url "formula:team_list" "f2" current_year %}" class="card-link">F2 Fantasy Lig {{ current_year }}</a>
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                    <p class="card-text">2018'de başladığımız Fantasy F2 ligi heyecanı, 7. sezonunda bütün hızıyla devam ediyor!</p>
-                    <li class="list-group-item list-group-item-action">
-                      <a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}"
-                         class="card-link">Fantasy Lig Nedir & Kurallar</a></li>
-                    <li class="list-group-item list-group-item-action">
-                    {% if race_team_count_f2 > 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f2" current_year %}" class="card-link">Alım Satım</a>
-                    {% elif race_team_count_f2 == 0 %}
-                        <a href="{% url 'formula:new_team_form' "f2" current_year %}" class="card-link">Yeni Takım Kur</a>
-                    {% elif race_team_count_f2 == 1 %}
-                        <a href="{% url 'formula:edit_team_form' "f2" current_year %}" class="card-link">Takımı Düzenle</a>
-                    {% else %}
-                        <a href="{% url 'formula:new_team_form' "f2" current_year %}" class="card-link">Yeni Takım / Alım
-                            Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}</a>
-                    {% endif %}
-                    </li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Genel Klasman</a></li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:redirect_last_fantasy_result" "f2" current_year %}" class="card-link">Son Yarış</a></li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:driver_stats' "f2" current_year %}" class="card-link">Sürücü İstatistikleri</a></li>
-                    {% if fantasy_team_f2 %}
-                        <li class="list-group-item list-group-item-action"><a
-                            href="{% url 'formula:redirect_my_team' "f2" current_year %}" class="card-link">Profil Sayfanız</a></li>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">F1 Tahmin Ligi {{ current_year }}</a>
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Başladı!</h6>
-                    <p class="card-text">Sıralama turlarından sonra açılacak form ile tahminlerinizi
-                        yarış saatine kadar yapabilirsiniz.</p>
-                    <li class="list-group-item list-group-item-action">
-                        <a href="{% url "django.contrib.flatpages.views.flatpage" url="tahmin/" %}" class="card-link">Tahmin Ligi Nedir & Kurallar</a></li>
-                    <li class="list-group-item list-group-item-action">
-                        <a href="{% url "formula:tahmin:new_team_form" "f1" current_year %}" class="card-link">Tahmin yap
-                            {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
+    <!-- F2 Season Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'formula:race_list' 'f2' current_year %}" class="card-link">F2 {{ current_year }} Sezonu</a>
+                </h5>
+                <p class="card-text text-secondary">{{ current_year }} F2 sezonu takvimi, sonuçları, istatistikleri</p>
+                <p>
+                        <a href="{% url 'formula:redirect_last_race' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-flag-checkered"></i> Son Yarış
                         </a>
-                    </li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
-                    <li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
-                </div>
+                    </p>
+                <p>
+                        <a href="{% url 'formula:season_stats' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-chart-line"></i> Sezon İstatistikleri
+                        </a>
+                    </p>
             </div>
         </div>
     </div>
+
+    <!-- Formula 1 Historical Data Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm">
+            <div class="card-body text-center bg-light">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="#" class="card-link">Formula 1 Verileri</a>
+                </h5>
+                <p class="card-text text-secondary">Formula 1 tarihine dair veriler ve istatistikler</p>
+               <p>
+                        <a href="{% url 'formula:stats_series' 'f1' %}" class="card-link">
+                            <i class="fas fa-chart-line"></i> İstatistikler
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:circuit_list' %}" class="card-link">
+                            <i class="fas fa-road"></i> Pistler
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:all_driver_list' %}" class="card-link">
+                            <i class="fas fa-user"></i> Sürücüler
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:constructor_list' %}" class="card-link">
+                            <i class="fas fa-car"></i> Markalar
+                        </a>
+                    </p>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <h4 class="py-3 text-center font-weight-bold">LİGLERİMİZ</h4>
+    <div class="row">
+    <!-- F1 Fantasy League Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'formula:team_list' 'f1' current_year %}" class="card-link">F1 Fantasy Lig {{ current_year }}</a>
+                </h5>
+                <p class="card-text text-secondary">2017'de başladığımız Fantasy F1 ligi heyecanı, 8. sezonunda tüm hızıyla devam ediyor!</p>
+                <p>
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='fantasy/' %}" class="card-link">
+                        <i class="fas fa-info-circle"></i> Fantasy Lig Nedir & Kurallar
+                    </a>
+                </p>
+                <p>
+                    {% if race_team_count_f1 > 1 %}
+                        <a href="{% url 'formula:edit_team_form' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Alım Satım
+                        </a>
+                    {% elif race_team_count_f1 == 0 %}
+                        <a href="{% url 'formula:new_team_form' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Yeni Takım Kur
+                        </a>
+                    {% elif race_team_count_f1 == 1 %}
+                        <a href="{% url 'formula:edit_team_form' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Takımı Düzenle
+                        </a>
+                    {% else %}
+                        <a href="{% url 'formula:new_team_form' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-sync-alt"></i> Yeni Takım / Alım Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
+                        </a>
+                    {% endif %}
+                </p>
+                <p>
+                    <a href="{% url 'formula:team_list' 'f1' current_year %}" class="card-link">
+                        <i class="fas fa-trophy"></i> Genel Klasman
+                    </a>
+                </p>
+                <p>
+                    <a href="{% url 'formula:redirect_last_fantasy_result' 'f1' current_year %}" class="card-link">
+                        <i class="fas fa-flag-checkered"></i> Son Yarış
+                    </a>
+                </p>
+                <p>
+                    <a href="{% url 'formula:driver_stats' 'f1' current_year %}" class="card-link">
+                        <i class="fas fa-chart-line"></i> Lig İstatistikleri
+                    </a>
+                </p>
+                {% if fantasy_team_f1 %}
+                    <p>
+                        <a href="{% url 'formula:redirect_my_team' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-user-circle"></i> Profil Sayfanız
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+        <!-- F1 Prediction League Card -->
+        <div class="col-4">
+            <div class="card border-light shadow-sm bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title font-weight-bold text-primary">
+                        <a href="{% url 'formula:tahmin:team_list' 'f1' current_year %}" class="card-link">F1 Tahmin Ligi {{ current_year }}</a>
+                    </h5>
+                    <p class="card-text text-secondary">Sıralama turlarından sonra açılacak form ile tahminlerinizi yarış saatine kadar yapabilirsiniz.</p>
+                    <p>
+                        <a href="{% url 'django.contrib.flatpages.views.flatpage' url='tahmin/' %}" class="card-link">
+                            <i class="fas fa-info-circle"></i> Tahmin Ligi Nedir & Kurallar
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:tahmin:new_team_form' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-list-ol"></i> Tahmin Yap {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:tahmin:team_list' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-trophy"></i> Genel Klasman
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'formula:tahmin:redirect_last_race' 'f1' current_year %}" class="card-link">
+                            <i class="fas fa-flag-checkered"></i> Son Yarış
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    <!-- F2 Fantasy League Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'formula:team_list' 'f2' current_year %}" class="card-link">F2 Fantasy Lig {{ current_year }}</a>
+                </h5>
+                <p class="card-text text-secondary">2018'de başladığımız Fantasy F2 ligi heyecanı, 7. sezonunda tüm hızıyla devam ediyor!</p>
+                <p>
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='fantasy/' %}" class="card-link">
+                        <i class="fas fa-info-circle"></i> Fantasy Lig Nedir & Kurallar
+                    </a>
+                </p>
+                <p>
+                    {% if race_team_count_f2 > 1 %}
+                        <a href="{% url 'formula:edit_team_form' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Alım Satım
+                        </a>
+                    {% elif race_team_count_f2 == 0 %}
+                        <a href="{% url 'formula:new_team_form' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Yeni Takım Kur
+                        </a>
+                    {% elif race_team_count_f2 == 1 %}
+                        <a href="{% url 'formula:edit_team_form' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-hand-holding-dollar"></i> Takımı Düzenle
+                        </a>
+                    {% else %}
+                        <a href="{% url 'formula:new_team_form' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-sync-alt"></i> Yeni Takım / Alım Satım {% if not user.is_authenticated %}(Üye olmanız gerekir){% endif %}
+                        </a>
+                    {% endif %}
+                </p>
+                <p>
+                    <a href="{% url 'formula:team_list' 'f2' current_year %}" class="card-link">
+                        <i class="fas fa-trophy"></i> Genel Klasman
+                    </a>
+                </p>
+                <p>
+                    <a href="{% url 'formula:redirect_last_fantasy_result' 'f2' current_year %}" class="card-link">
+                        <i class="fas fa-flag-checkered"></i> Son Yarış
+                    </a>
+                </p>
+                <p>
+                    <a href="{% url 'formula:driver_stats' 'f2' current_year %}" class="card-link">
+                        <i class="fas fa-chart-line"></i> Lig İstatistikleri
+                    </a>
+                </p>
+                {% if fantasy_team_f2 %}
+                    <p>
+                        <a href="{% url 'formula:redirect_my_team' 'f2' current_year %}" class="card-link">
+                            <i class="fas fa-user-circle"></i> Profil Sayfanız
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h4 class="py-3 text-center font-weight-bold">ÜRÜNLERİMİZ</h4>
+<div class="row">
+    <!-- Elo Sıralama Projesi Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='elo/' %}" class="card-link">Elo Sıralama Projesi</a>
+                </h5>
+                <p class="card-text text-secondary">Elo puanlama sistemini kullanarak F1 tarihinin en iyi sıralama turu pilotları listesini hazırladık.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yarışı Puanla Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'ratings:series_ratings' 'f1' %}" class="card-link">Yarışı Puanla</a>
+                </h5>
+                <p class="card-text text-secondary">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın puanını belirliyoruz.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Night Card -->
+    <div class="col-4">
+        <div class="card border-light shadow-sm bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold text-primary">
+                    <a href="{% url 'django.contrib.flatpages.views.flatpage' url='quiz/' %}" class="card-link">Quiz Night</a>
+                </h5>
+                <p class="card-text text-secondary">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
 {% endblock %}

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!--
 ## [major.minor.patch] - yyyy-mm-dd
 ### Added
 ### Changed
@@ -12,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Fixed
 ### Security
+-->
+
+## [2.5.6] - 2024-10-26
+### Added
+- Qualifying times in race edit page
+- Sprint qualifying results in race detail
+- Qualifying margin and ratios in race detail page
+- Race datetimes in race detail
+### Changed
+- DriverStatsView to FantasyStatsView
+- Disable race detail datatable searching
+- Home page order
+- Home page visuals
 
 ## [2.5.5] - 2024-10-23
 ### Added

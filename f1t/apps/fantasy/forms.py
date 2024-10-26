@@ -144,7 +144,7 @@ class EditTeamForm(forms.ModelForm):
 class RaceDriverEditForm(forms.ModelForm):
     class Meta:
         model = RaceDriver
-        fields = ["driver", "discount", "price", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap", "sprint_fastest_lap"]
+        fields = ["driver", "discount", "price", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap", "sprint_fastest_lap", "q1", "q2", "q3"]
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -152,6 +152,6 @@ class RaceDriverEditForm(forms.ModelForm):
 
 RaceDriverFormSet = modelformset_factory(
     RaceDriver,
-    fields=["driver", "discount", "price", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap", "sprint_fastest_lap"],
+    form=RaceDriverEditForm,
     extra=0
 )
