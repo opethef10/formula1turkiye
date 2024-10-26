@@ -109,6 +109,29 @@
                                     <td><b>{{ race_driver.sprint_point|default_if_none:"-" }}</b></td>
                                 </tr>
                             {% endfor %}
+                            {% elif tab_id == "sprint_quali" %}
+                            <tr>
+                                <th>#</th>
+                                <th>Sürücü</th>
+                                <th>Marka</th>
+                                <th>SQ1</th>
+                                <th>SQ2</th>
+                                <th>SQ3</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for race_driver in race_driver_list %}
+                                <tr>
+                                    <td>{{ race_driver.sprint|default_if_none:"" }}</td>
+                                    <td style="background-color: {{ race_driver.championship_constructor.bgcolor }}; color: {{ race_driver.championship_constructor.fontcolor }}">
+                                        <a style="color: {{ race_driver.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' race_driver.driver.slug %}"><b>{{ race_driver.driver }}</b></a>
+                                    </td>
+                                    <td><a href="{{ race_driver.championship_constructor.constructor.get_absolute_url }}">{{ race_driver.championship_constructor.constructor|default_if_none:"" }}</a></td>
+                                    <td>{{ race_driver.sq1|default_if_none:"" }}</td>
+                                    <td>{{ race_driver.sq2|default_if_none:"" }}</td>
+                                    <td>{{ race_driver.sq3|default_if_none:"" }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endif %}
                     </tbody>
                 </table>

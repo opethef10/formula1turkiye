@@ -656,6 +656,7 @@ class RaceDetailView(DetailView):
             "quali": "Sıralama Turları",
             "race": "Yarış",
             "sprint": "Sprint",
+            "sprint_quali": "Sprint Sıralama",
         }
         return context
 
