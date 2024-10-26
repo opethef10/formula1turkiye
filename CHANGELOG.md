@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Qualifying times in race edit page
 - Sprint qualifying results in race detail
+- Qualifying margin and ratios in race detail page
 ### Changed
 - DriverStatsView to FantasyStatsView
 

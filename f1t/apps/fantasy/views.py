@@ -648,9 +648,19 @@ class RaceDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         race = self.object
-        context["race_driver_list"] = race.driver_instances.select_related(
+        pole_time = race.pole_time()
+        race_driver_list = race.driver_instances.prefetch_related("race__driver_instances").select_related(
             "championship_constructor", "championship_constructor__constructor", "driver", "race", "race__championship"
         )
+        for race_driver in race_driver_list:
+            race_driver.pole_margin = None
+            race_driver.pole_ratio = None
+            qualifying_time = race_driver.qualifying_time()
+            if pole_time and qualifying_time:
+                race_driver.pole_margin = f"{qualifying_time - pole_time:.3f}"
+                race_driver.pole_ratio = f"{qualifying_time / pole_time - 1:.3%}"
+
+        context["race_driver_list"] = race_driver_list
         context["opts"] = race._meta
         context["tabs"] = {
             "quali": "Sıralama Turları",
