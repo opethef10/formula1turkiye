@@ -4,35 +4,7 @@
     <li class="breadcrumb-item">Ana Sayfa</li>
 {% endblock %}
 {% block content %}
-    <h4 class="my-4">Ürünlerimiz</h4>
-    <div class="row">
-        <div class="col-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="elo/" %}" class="card-link">Elo Sıralama Projesi</a></h5>
-                    <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
-                        pilotları listesini hazırladık.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "ratings:series_ratings" "f1" %}" class="card-link">Yarışı Puanla</a></h5>
-                    <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
-                        puanını belirliyoruz.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="quiz/" %}" class="card-link">Quiz Night</a></h5>
-                    <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+
 	<h4 class="my-4">2024 Sezonu</h4>
     <div class="row">
         <div class="col-4">
@@ -40,7 +12,7 @@
                 <div class="card-body">
                     <h5 class="card-title">
                         <a href="{% url "formula:race_list" "f1" current_year %}" class="card-link">F1 {{ current_year }} Sezonu</a>
-                    </h5>					
+                    </h5>
 					<p class="card-text">{{current_year}} Formula 1 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
@@ -48,10 +20,6 @@
                             href="{% url 'formula:season_stats' "f1" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
 					<li class="list-group-item list-group-item-action"><a
                             href="{% url 'ratings:season_ratings' "f1" current_year %}" class="card-link">Yarış Puanları</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f1" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Tahmin Ligi Ana Sayfası</a></li>
                 </div>
             </div>
         </div>
@@ -60,14 +28,12 @@
                 <div class="card-body">
                     <h5 class="card-title">
                         <a href="{% url "formula:race_list" "f2" current_year %}" class="card-link">F2 {{ current_year }} Sezonu</a>
-                    </h5>					
+                    </h5>
 					<p class="card-text">{{current_year}} Formula 2 sezonu takvimi, sonuçları, istatistikleri, yarış puanları</p>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:redirect_last_race" "f2" current_year %}" class="card-link">Son Yarış</a></li>
 					<li class="list-group-item list-group-item-action"><a
                             href="{% url 'formula:season_stats' "f2" current_year %}" class="card-link">Sezon İstatistikleri</a></li>
-					<li class="list-group-item list-group-item-action"><a
-                            href="{% url "formula:team_list" "f2" current_year %}" class="card-link">Fantasy Lig Ana Sayfası</a></li>
                 </div>
             </div>
         </div>
@@ -76,7 +42,7 @@
                 <div class="card-body">
                     <h5 class="card-title">
                         <a href="#" class="card-link">Formula 1 Verileri</a>
-                    </h5>					
+                    </h5>
 					<p class="card-text">Formula 1 tarihine dair veriler ve istatistikler</p>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:stats_series" "f1" %}" class="card-link">İstatistikler</a></li>
@@ -185,6 +151,35 @@
                             href="{% url "formula:tahmin:team_list" "f1" current_year %}" class="card-link">Genel Klasman</a></li>
                     <li class="list-group-item list-group-item-action"><a
                             href="{% url "formula:tahmin:redirect_last_race" "f1" current_year %}" class="card-link">Son Yarış</a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+        <h4 class="my-4">Ürünlerimiz</h4>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="elo/" %}" class="card-link">Elo Sıralama Projesi</a></h5>
+                    <p class="card-text">Elo puanlama sistemini kullanarak F1 tarihininin en iyi sıralama turu
+                        pilotları listesini hazırladık.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url "ratings:series_ratings" "f1" %}" class="card-link">Yarışı Puanla</a></h5>
+                    <p class="card-text">Her yarış sonrasında Facebook grubumuzda yaptığımız oylamalarla her yarışın
+                        puanını belirliyoruz.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 ">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url "django.contrib.flatpages.views.flatpage" url="quiz/" %}" class="card-link">Quiz Night</a></h5>
+                    <p class="card-text">Formula 1 Türkiye grup duvarında yaptığımız bir bilgi yarışması.</p>
                 </div>
             </div>
         </div>
