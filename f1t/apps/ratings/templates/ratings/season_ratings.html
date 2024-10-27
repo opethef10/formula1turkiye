@@ -36,17 +36,21 @@
             <th>Puan</th>
             <th>Onur</th>
             <th>Semih</th>
+            <th>Kazanan</th>
+            <th>Takım</th>
         </tr>
         </thead>
         <tbody>
-        {% for rating in rating_list %}
+        {% for race in race_list %}
             <tr class="align-middle">
                 <td></td>
-                <td><i class="{{ rating.race.country.flag_css }}"></i> <a href="{{ rating.race.get_absolute_url }}">{{ rating.race.name }}</a></td>
-                <td>{{ rating.amount }}</td>
-                <td><b>{{ rating.score|default_if_none:'' }}</b></td>
-                <td>{{ rating.onur|default_if_none:'' }}</td>
-                <td>{{ rating.semih|default_if_none:'' }}</td>
+                <td><i class="{{ race.country.flag_css }}"></i> <a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
+                <td>{{ race.rating_instance.amount }}</td>
+                <td><b>{{ race.rating_instance.score|default_if_none:'' }}</b></td>
+                <td>{{ race.rating_instance.onur|default_if_none:'' }}</td>
+                <td>{{ race.rating_instance.semih|default_if_none:'' }}</td>
+                <td><a href="{{ race.prefetched_winners.0.driver.get_absolute_url }}">{{ race.prefetched_winners.0.driver|default_if_none:'' }}</a></td>
+                <td><a href="{{ race.prefetched_winners.0.championship_constructor.constructor.get_absolute_url }}">{{ race.prefetched_winners.0.championship_constructor.constructor|default_if_none:'' }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -55,6 +59,8 @@
               <th colspan="2">Ortalama:</th>
               <th></th>
               <th></th>
+                <th></th>
+                <th></th>
                 <th></th>
                 <th></th>
             </tr>
