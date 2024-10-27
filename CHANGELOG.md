@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.6.2] - 2024-10-27
+### Fixed
+- Tahmin question choices bug
+
 ## [2.6.1] - 2024-10-26
 ### Changed
 - Upgraded Bootstrap and JQuery
