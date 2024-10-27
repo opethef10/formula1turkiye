@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Ana Sayfa{% endblock %}
 {% block crumbarea %}
 {% endblock %}
 {% block content %}
 
+    <div class="mt-4 text-center">
+        <img class="w-100" src="{% static 'img/f1t_banner.png' %}">
+    </div>
 	<h3 class="mt-3 py-3 text-center font-weight-bold">2024 SEZONU</h3>
     <div class="card-deck">
     <!-- F1 Season Card -->
