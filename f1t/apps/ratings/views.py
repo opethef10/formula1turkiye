@@ -1,14 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
 
-from f1t.apps.fantasy.models import Championship, Race
+from f1t.apps.fantasy.models import Championship, Race, RaceDriver
 from .models import Rating
 from .forms import RatingForm
 
+# Prefetch only the RaceDriver instances with result=1 (i.e., the winners)
+winner_prefetch = Prefetch(
+    'driver_instances',  # The many-to-many field name
+    queryset=RaceDriver.objects.select_related(
+        'driver', 'championship_constructor', 'championship_constructor__constructor'
+    ).filter(result=1),
+    to_attr='prefetched_winners'  # This attaches the winners to each Race as `prefetched_winners`
+)
 
 class SeasonRatingView(ListView):
     allow_empty = False
@@ -24,9 +33,10 @@ class SeasonRatingView(ListView):
         )
 
     def get_queryset(self):
-        return Rating.objects.select_related('race', 'race__championship').filter(
-            race__championship=self.championship
-        )
+        return Race.objects.prefetch_related(winner_prefetch).select_related(
+            'rating_instance', 'championship'
+        ).filter(championship=self.championship, rating_instance__gt=0)
+
 
 class SeriesRatingView(ListView):
     allow_empty = False
@@ -34,9 +44,9 @@ class SeriesRatingView(ListView):
     model = Rating
 
     def get_queryset(self):
-        return Rating.objects.select_related('race', 'race__championship').filter(
-            race__championship__series=self.kwargs.get("series")
-        )
+        return Race.objects.prefetch_related(winner_prefetch).select_related(
+            'rating_instance', 'championship'
+        ).filter(championship__series=self.kwargs.get("series"), rating_instance__gt=0)
 
     def get_context_data(self):
         context = super().get_context_data()
@@ -75,7 +85,7 @@ class RatingCreateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
         form.instance.score = form.cleaned_data['score']
         form.instance.amount = form.cleaned_data['amount']
         return super().form_valid(form)
-    
+
     def test_func(self):
         return self.request.user.is_superuser
 
