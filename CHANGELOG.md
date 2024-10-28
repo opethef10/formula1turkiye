@@ -15,7 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.7.3] - 2024-10-28
+### Changed
+- Driver detail page into responsive grid layout
+
 ## [2.7.2] - 2024-10-28
+### Changed
 - Made season stat card-flex mobile compatible
 
 ## [2.7.1] - 2024-10-28
