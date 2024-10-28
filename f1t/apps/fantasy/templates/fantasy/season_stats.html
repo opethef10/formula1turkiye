@@ -27,7 +27,11 @@
         </div>
     </div>
 
-<div class="card-deck mb-4 small">
+{% if request.device.is_mobile %}
+<div class="card-group mb-4 small">
+{% else %}
+<div class="card-deck mb-4">
+{% endif %}
     <!-- Winners Card -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white text-center font-weight-bold">
@@ -106,7 +110,7 @@
 <!-- Sprint Winners Card -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white text-center font-weight-bold">
-            Sprint Galibiyeti
+            Sprint{% if not request.device.is_mobile %} Galibiyeti{% endif %}
         </div>
         <div class="card-body p-2">
             <ul class="list-unstyled mb-0">
