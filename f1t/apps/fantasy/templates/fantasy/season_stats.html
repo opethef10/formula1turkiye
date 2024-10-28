@@ -14,7 +14,7 @@
     <li class="breadcrumb-item">Sezon İstatistikleri</li>
 {% endblock %}
 
-{% block content %}	
+{% block content %}
 	<div class="d-flex justify-content-between my-4">
         <a class="btn btn-outline-primary {% if not view.championship.previous %}disabled{% endif %}" href="{% if not view.championship.previous %}#{% else %}{% url 'formula:season_stats' view.championship.series view.championship.previous.year %}{% endif %}">&larr; {{ view.championship.previous.short_str|upper|default_if_none:"" }}</a>
         <h3 class="text-center">{{ view.championship.short_str|upper }} Sezon İstatistikleri</h3>
@@ -26,7 +26,104 @@
                class="btn btn-outline-primary">Süpergrid</a>
         </div>
     </div>
-	
+
+<div class="card-deck mb-4">
+    <!-- Winners Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center font-weight-bold">
+            Galibiyet
+        </div>
+        <div class="card-body p-2">
+            <ul class="list-unstyled mb-0">
+                {% for winner in winners %}
+                    <li class="small d-flex justify-content-between">
+                        <a href="{{ winner.get_absolute_url }}">
+                            {{ winner }}
+                        </a>
+                        <span>{{ winner.win_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Pole Sitters Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center font-weight-bold">
+            Pol Pozisyonu
+        </div>
+        <div class="card-body p-2">
+            <ul class="list-unstyled mb-0">
+                {% for pole_sitter in pole_sitters %}
+                    <li class="small d-flex justify-content-between">
+                        <a href="{{ pole_sitter.get_absolute_url }}">
+                            {{ pole_sitter }}
+                        </a>
+                        <span>{{ pole_sitter.win_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fastest Laps Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center font-weight-bold">
+            En Hızlı Tur
+        </div>
+        <div class="card-body p-2">
+            <ul class="list-unstyled mb-0">
+                {% for fastest_lap in fastest_laps %}
+                    <li class="small d-flex justify-content-between">
+                        <a href="{{ fastest_lap.get_absolute_url }}">
+                            {{ fastest_lap }}
+                        </a>
+                        <span>{{ fastest_lap.win_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Podium Holders Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center font-weight-bold">
+            Podyum
+        </div>
+        <div class="card-body p-2">
+            <ul class="list-unstyled mb-0">
+                {% for podium_holder in podium_holders %}
+                    <li class="small d-flex justify-content-between">
+                        <a href="{{ podium_holder.get_absolute_url }}">
+                            {{ podium_holder }}
+                        </a>
+                        <span>{{ podium_holder.win_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+<!-- Sprint Winners Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center font-weight-bold">
+            Sprint Galibiyeti
+        </div>
+        <div class="card-body p-2">
+            <ul class="list-unstyled mb-0">
+                {% for winner in sprint_winners %}
+                    <li class="small d-flex justify-content-between">
+                        <a href="{{ winner.get_absolute_url }}">
+                            {{ winner }}
+                        </a>
+                        <span>{{ winner.win_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
