@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.7.1] - 2024-10-28
+### Changed
+- Card flex texts are smaller
+
 ## [2.7.0] - 2024-10-28
 ### Added
 - Win, pole, fastest lap, podium, sprint win statistics in season stats page
