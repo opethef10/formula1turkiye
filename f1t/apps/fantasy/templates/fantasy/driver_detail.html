@@ -14,24 +14,45 @@
 {% endblock %}
 
 {% block content %}
-  <ul>
-    <li>Ad: {{ driver.name }}</li>
-    <li>Numara: {{ driver.number|default_if_none:"" }}</li>
-    <li>Ülke: <i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</li>
-    <li>Kısaltma: {{ driver.code|default_if_none:"" }}</li>
-    <li>Doğum Tarihi: {{ driver.dob }}</li>
-    <li><a href="{% url 'formula:driver_results' driver.slug %}">{{ total_races }} yarış</a></li>
-    <li><a href="{% url 'formula:driver_wins' driver.slug %}">{{ win }} galibiyet</a></li>
-    <li><a href="{% url 'formula:driver_poles' driver.slug %}">{{ pole }} pol pozisyonu</a></li>
-    <li><a href="{% url 'formula:driver_flaps' driver.slug %}">{{ flap }} en hızlı tur</a></li>
-    <li><a href="{% url 'formula:driver_hattricks' driver.slug %}">{{ hattrick }} hat-trick</a></li>
-    <li><a href="{% url 'formula:driver_podiums' driver.slug %}">{{ podium }} podyum</a></li>
-    <li>{{ not_classified }} klasman dışı</li>
-    <li>İlk yarış:  <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
-    <li>Son yarış: <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
-  </ul>
+  <div class="container">
+    <!-- Driver Name as Header -->
+    <h3 class="text-center">{{ driver.name }}</h3>
 
-  <table id="driver_results"
+    <!-- Three Column Layout -->
+    <div class="row my-4">
+        <!-- Column 1: Basic Information -->
+        <div class="col-md-4">
+            <ul class="list-unstyled">
+                <li><strong>Numara:</strong> {{ driver.number|default_if_none:"" }}</li>
+                <li><strong>Ülke:</strong> <i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</li>
+                <li><strong>Kısaltma:</strong> {{ driver.code|default_if_none:"" }}</li>
+                <li><strong>Doğum Tarihi:</strong> {{ driver.dob }}</li>
+            </ul>
+        </div>
+
+        <!-- Column 2: Race Statistics -->
+        <div class="col-md-4">
+            <ul class="list-unstyled">
+                <li><a href="{% url 'formula:driver_results' driver.slug %}">{{ total_races }} yarış</a></li>
+                <li><a href="{% url 'formula:driver_wins' driver.slug %}">{{ win }} galibiyet</a></li>
+                <li><a href="{% url 'formula:driver_poles' driver.slug %}">{{ pole }} pol pozisyonu</a></li>
+                <li><a href="{% url 'formula:driver_flaps' driver.slug %}">{{ flap }} en hızlı tur</a></li>
+                <li><a href="{% url 'formula:driver_hattricks' driver.slug %}">{{ hattrick }} hat-trick</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 3: Podiums and Other Stats -->
+        <div class="col-md-4">
+            <ul class="list-unstyled">
+                <li><a href="{% url 'formula:driver_podiums' driver.slug %}">{{ podium }} podyum</a></li>
+                <li>{{ not_classified }} klasman dışı</li>
+                <li><strong>İlk yarış:</strong> <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
+                <li><strong>Son yarış:</strong> <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<table id="driver_results"
            class="table table-responsive table-hover table-striped table-sm d-block d-lg-table text-center">
         <thead class="thead-inverse">
         <tr>
