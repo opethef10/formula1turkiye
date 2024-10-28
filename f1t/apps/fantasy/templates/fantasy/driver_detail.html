@@ -26,7 +26,7 @@
                 <li><strong>Numara:</strong> {{ driver.number|default_if_none:"" }}</li>
                 <li><strong>Ülke:</strong> <i class="{{ driver.country.flag_css }}"></i> {{ driver.country.name }}</li>
                 <li><strong>Kısaltma:</strong> {{ driver.code|default_if_none:"" }}</li>
-                <li><strong>Doğum Tarihi:</strong> {{ driver.dob }}</li>
+                <li><strong>Doğum Tarihi:</strong> {{ driver.dob }} ({{ driver.age|floatformat:1 }} yaş)</li>
             </ul>
         </div>
 
