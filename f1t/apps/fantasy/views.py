@@ -113,15 +113,51 @@ class SeasonStatsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        race_drivers = self.get_queryset()
         race_list = Race.objects.select_related("championship").filter(
             championship=self.championship
         ).order_by("round")
         race_count = race_list.count()
         race_driver_dict = {}
-        for rd in self.get_queryset():
+        for rd in race_drivers:
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
+
+        context['winners'] = Driver.objects.filter(
+            race_instances__result=1,
+            race_instances__race__championship=self.championship
+        ).annotate(
+            win_count=Count('race_instances__result'),
+        ).order_by('-win_count')
+
+        context['sprint_winners'] = Driver.objects.filter(
+            race_instances__sprint=1,
+            race_instances__race__championship=self.championship
+        ).annotate(
+            win_count=Count('race_instances__sprint'),
+        ).order_by('-win_count')
+
+        context['podium_holders'] = Driver.objects.filter(
+            race_instances__result__in=[1, 2, 3],
+            race_instances__race__championship=self.championship
+        ).annotate(
+            win_count=Count('race_instances__result'),
+        ).order_by('-win_count')
+
+        context['pole_sitters'] = Driver.objects.filter(
+            race_instances__grid=1,
+            race_instances__race__championship=self.championship
+        ).annotate(
+            win_count=Count('race_instances__grid'),
+        ).order_by('-win_count')
+
+        context['fastest_laps'] = Driver.objects.filter(
+            race_instances__fastest_lap=True,
+            race_instances__race__championship=self.championship
+        ).annotate(
+            win_count=Count('race_instances__fastest_lap'),
+        ).order_by('-win_count')
 
         context["race_driver_dict"] = race_driver_dict
         context["championship"] = self.championship
