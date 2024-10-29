@@ -56,7 +56,7 @@ class ContactView(SuccessMessageMixin, FormView):
         admin_emails = [email for name, email in settings.ADMINS]  # Extract emails from ADMINS
 
         email = EmailMessage(
-            subject=f"{self.subject} - {first_name} {last_name}",
+            subject=f"{settings.EMAIL_SUBJECT_PREFIX}{self.subject} - {first_name} {last_name}",
             body=form.cleaned_data['message'].strip(),
             from_email=None,  # You can specify a from address here if needed
             to=admin_emails,  # Use the admin emails from settings.
