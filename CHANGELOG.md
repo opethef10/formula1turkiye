@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.7.7] - 2024-10-29
+### Added
+- README.md for development
+
 ## [2.7.6] - 2024-10-29
 ### Fixed
 - Fantasy profile race url
