@@ -40,7 +40,7 @@
         {% for race, race_team in race_team_dict.items %}
             <tr>
                 <td>{{ race.round }}</td>
-                <td><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></td>
+                <td><a href="{{ race.get_fantasy_url }}">{{ race.name }}</a></td>
                 <td>{{ race_team.tactic }}</td>
                 <td>{{ race_team.token }}</td>
                 <td>{{ race_team.budget|with_currency }}</td>
