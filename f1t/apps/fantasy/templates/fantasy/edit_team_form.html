@@ -54,6 +54,12 @@
         $(document).ready(function () {
             let initial_budget = $('#id_budget').val();
             let initial_token = $('#id_token').val();
+            $('input[name="to_sell"]').each(function () {
+                $(this).attr("class", "")
+            });
+            $('input[name="to_buy"]').each(function () {
+                $(this).attr("class", "")
+            });
             $('#id_to_sell, #id_to_buy').removeClass('form-control');
 
             function sumit() {
