@@ -201,6 +201,17 @@ class Driver(models.Model):
     def get_absolute_url(self):
         return reverse("formula:driver_detail", kwargs={'slug': self.slug})
 
+    def age(self):
+        """Calculate the age of someone with floating point precision"""
+        today = timezone.now().date()  # Get the current date from timezone-aware datetime
+        birthdate = self.dob
+        # Calculate the birthday in the current year
+        birthday = birthdate.replace(year=today.year)
+        
+        # Calculate the age with floating-point precision
+        age = today.year - birthdate.year + ((today - birthday).days / 365.0)
+        return age
+
 
 class Race(models.Model):
     name = models.CharField(max_length=255)

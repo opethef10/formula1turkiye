@@ -32,9 +32,7 @@
 {% block javascript %}
     <script>
         $(document).ready(function () {
-            $('input[name="race_drivers"]').each(function () {
-                $(this).attr("class", "")
-            });
+            $('#id_to_sell, #id_to_buy').removeClass('form-control');
 
             function sumit() {
                 let budget = {{ STARTING_BUDGET|stringformat:".1f" }};
