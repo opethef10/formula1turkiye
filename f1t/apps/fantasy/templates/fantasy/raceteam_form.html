@@ -32,6 +32,12 @@
 {% block javascript %}
     <script>
         $(document).ready(function () {
+            $('input[name="to_sell"]').each(function () {
+                $(this).attr("class", "")
+            });
+            $('input[name="to_buy"]').each(function () {
+                $(this).attr("class", "")
+            });
             $('#id_to_sell, #id_to_buy').removeClass('form-control');
 
             function sumit() {
