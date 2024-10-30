@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     "pwa",
     "mobiledetect",
+    'django_recaptcha',
 ]
 
 MIDDLEWARE = [

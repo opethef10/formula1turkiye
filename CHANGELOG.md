@@ -15,7 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
-## [2.7.9] - 2024-10-29
+## [2.8.0] - 2024-10-30
+### Added
+- Recaptcha to contact form
+
+## [2.7.9] - 2024-10-30
 ### Fixed
 - Missing e-mail prefix in contact form
 - Driver Age function when birthdate is None

@@ -9,6 +9,17 @@
 {% endif %}
 
 {% for field in form %}
+    {% if field.name == "captcha" and form.captcha %}
+        <div class="form-group">
+            {{ form.captcha.label_tag|linebreaks }}
+            {{ form.captcha }}  <!-- Render the captcha field -->
+            {% for error in form.captcha.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
   <div class="form-group">
     {{ field.label_tag|linebreaks }}
     {% render_field field class=field|input_class %}
@@ -23,4 +34,5 @@
       </small>
     {% endif %}
   </div>
+    {% endif %}
 {% endfor %}
