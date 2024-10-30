@@ -203,11 +203,14 @@ class Driver(models.Model):
 
     def age(self):
         """Calculate the age of someone with floating point precision"""
+        if self.dob is None:
+            return
+
         today = timezone.now().date()  # Get the current date from timezone-aware datetime
         birthdate = self.dob
         # Calculate the birthday in the current year
         birthday = birthdate.replace(year=today.year)
-        
+
         # Calculate the age with floating-point precision
         age = today.year - birthdate.year + ((today - birthday).days / 365.0)
         return age

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.7.9] - 2024-10-29
 ### Fixed
 - Missing e-mail prefix in contact form
+- Driver Age function when birthdate is None
 
 ## [2.7.8] - 2024-10-29
 ### Changed
