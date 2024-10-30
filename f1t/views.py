@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.mail import EmailMessage, mail_admins
+from django.core.mail import EmailMessage
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -44,6 +44,18 @@ class ContactView(SuccessMessageMixin, FormView):
     success_message = "Mesajınız başarıyla gönderildi!"
     success_url = reverse_lazy('contact')
     subject = "Bize Ulaşın!"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        user = self.request.user  # Get the currently logged-in user
+
+        # Check if the user is authenticated and populate the initial data
+        if user.is_authenticated:
+            initial['first_name'] = user.first_name
+            initial['last_name'] = user.last_name
+            initial['email'] = user.email
+
+        return initial
 
     def form_valid(self, form):
         first_name, last_name, mail_address = [
