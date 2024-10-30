@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import EmailMessage
 from django.urls import reverse_lazy
@@ -42,6 +43,7 @@ class ContactView(SuccessMessageMixin, FormView):
     template_name = 'contact.html'
     form_class = ContactForm
     success_message = "Mesajınız başarıyla gönderildi!"
+    error_message = "Form gönderilemedi, form hatalarını düzelttikten sonra tekrar deneyin!"
     success_url = reverse_lazy('contact')
     subject = "Bize Ulaşın!"
 
@@ -78,3 +80,8 @@ class ContactView(SuccessMessageMixin, FormView):
         # Send the email
         email.send(fail_silently=False)
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        messages.error(self.request, self.error_message)
+        return response
