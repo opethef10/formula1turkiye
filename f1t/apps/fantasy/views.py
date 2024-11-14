@@ -549,36 +549,63 @@ class StatsForDriverView(ListView):
         self.series = self.kwargs.get('series')
         self.series_display = f"Formula {self.series[-1]}"
 
-        if not Championship.objects.filter(series=self.series).exists():
+        self.championship_list = Championship.objects.filter(series=self.series).order_by('year')
+        if not self.championship_list.exists():
             raise Http404("Series not provided")
 
-        # Get query parameters from the URL
-        first_race = Race.objects.select_related('championship').filter(
-            championship__series=self.kwargs.get('series')
-        ).earliest('datetime')
-        last_race = Race.objects.select_related('championship').filter(
+        self.race_list = Race.objects.select_related('championship').filter(
             championship__series=self.kwargs.get('series'),
-            datetime__lte=timezone.now()
-        ).latest('datetime')
-
-        start_year = int(self.request.GET.get('from_year', first_race.championship.year))
-        end_year = int(self.request.GET.get('to_year', last_race.championship.year))
+            datetime__lte = timezone.now(),
+        )
+        # Get query parameters from the URL
+        first_race = self.race_list.earliest('datetime')
+        last_race = self.race_list.filter().latest('datetime')
 
         try:
-            first_race = Race.objects.select_related('championship').filter(
-                championship__series=self.kwargs.get('series'),
+            start_year = int(self.request.GET.get('from_year', first_race.championship.year))
+            end_year = int(self.request.GET.get('to_year', last_race.championship.year))
+        except ValueError:
+            start_year = first_race.championship.year
+            end_year = last_race.championship.year
+            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
+
+        try:
+            first_race = self.race_list.filter(
                 championship__year=start_year,
             ).earliest('datetime')
-            last_race = Race.objects.select_related('championship').filter(
-                championship__series=self.kwargs.get('series'),
+            last_race = self.race_list.filter(
                 championship__year=end_year,
-                datetime__lte=timezone.now()
+                # datetime__lte=timezone.now()
             ).latest('datetime')
         except Race.DoesNotExist:
-            raise Http404("Start year or end year parameter is invalid.")
+            start_year = first_race.championship.year
+            end_year = last_race.championship.year
+            first_race = self.race_list.earliest('datetime')
+            last_race = self.race_list.filter(
+                # datetime__lte=timezone.now()
+            ).latest('datetime')
+            messages.error(request, "Hatalı parametre girdiniz. Parametreler geçerli yıl aralığında olmalıdır.")
 
-        start_round = int(self.request.GET.get('from_round', first_race.round))
-        end_round = int(self.request.GET.get('to_round', last_race.round))
+        try:
+            start_round = int(self.request.GET.get('from_round', first_race.round))
+            end_round = int(self.request.GET.get('to_round', last_race.round))
+        except ValueError:
+            # If the value cannot be converted to an integer, return to defaults
+            start_round = first_race.round
+            end_round = last_race.round
+            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
+
+        # Check if the parameters within the boundaries
+        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
+            start_round = first_race.round
+            end_round = last_race.round
+            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
+
+        # Check if 'from_round' is greater than 'to_round'
+        # if start_round > end_round:
+        #     start_round = first_race.round
+        #     end_round = last_race.round
+            # messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
 
         # Get Race objects for the starting and ending races
         self.start_race = get_object_or_404(
