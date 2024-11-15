@@ -14,11 +14,11 @@
                 <select id="fromRound" name="from_round" class="custom-select mr-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
-                        <option value="{{ race.round }}"
+                        <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
                             {% if race.round == view.start_race.round and race.championship.year == view.start_race.championship.year %}
                                 selected
                             {% endif %} >
-                            {{ race.round }} - {{ race }}
+                            {{ race.round }} - {{ race.name }}
                         </option>
                     {% endfor %}
                 </select>
@@ -33,11 +33,11 @@
                 <select id="toRound" name="to_round" class="custom-select mr-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
-                        <option value="{{ race.round }}"
+                        <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
                             {% if race.round == view.end_race.round and race.championship.year == view.end_race.championship.year %}
                                 selected
                             {% endif %} >
-                            {{ race.round }} - {{ race }}
+                            {{ race.round }} - {{ race.name }}
                         </option>
                     {% endfor %}
                 </select>
@@ -52,7 +52,7 @@
             </small>
         </div>
 
-        {{ view.start_race }} - {{ view.end_race }}
+        <p class="my-3">{{ view.start_race }} - {{ view.end_race }}</p>
     {% endblock %}
 
     {% block stats_table %}
@@ -117,10 +117,10 @@
 
                 let firstValidFromRound = null;
                 let firstValidToRound = null;
-            
+
                 // Filter the 'fromRound' based on the selected fromYear
                 Array.from(fromRoundSelect.options).forEach(option => {
-                    const raceYear = parseInt(option.text.split(" - ")[1], 10);  // Extracting the year from the option text
+                    const raceYear = parseInt(option.getAttribute('data-year'), 10);  // Extracting the year from the option text
 
                     if (raceYear === fromYearValue) {
                         option.style.display = 'block'; // Show rounds for the selected fromYear
@@ -135,7 +135,7 @@
 
                 // Filter the 'toRound' based on the selected toYear
                 Array.from(toRoundSelect.options).forEach(option => {
-                    const optionYear = parseInt(option.text.split(" - ")[1], 10);  // Extract the year from the option text
+                    const optionYear = parseInt(option.getAttribute('data-year'), 10);  // Extract the year from the option text
 
                     if (optionYear === toYearValue) {
                         option.style.display = 'block'; // Show rounds for the selected toYear
@@ -148,8 +148,8 @@
                     }
                 });
                 if (change) {
-                    selectVisibleOption(fromRoundSelect, false);
-                    selectVisibleOption(toRoundSelect, true);
+                    selectVisibleOption(fromRoundSelect, true);
+                    selectVisibleOption(toRoundSelect, false);
                 }
             }
             // Initial filtering when the page loads

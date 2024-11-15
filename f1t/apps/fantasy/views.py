@@ -556,7 +556,7 @@ class StatsForDriverView(ListView):
         self.race_list = Race.objects.select_related('championship').filter(
             championship__series=self.kwargs.get('series'),
             datetime__lte = timezone.now(),
-        )
+        ).order_by('datetime')
         # Get query parameters from the URL
         first_race = self.race_list.earliest('datetime')
         last_race = self.race_list.filter().latest('datetime')
