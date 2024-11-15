@@ -2,16 +2,98 @@
 
 {% block content %}
     {% block selection %}
-        <div class="my-4{% if request.device.is_mobile %} small{% endif %}">
+        {% if request.device.is_mobile %}
+        <div class="my-4 small">
+            <form method="get" action="{{ request.path }}" class="d-flex flex-column align-items-start">
+                <!-- First Row: ilk label, fromYear, fromRound, Süz button -->
+                <div class="d-flex mb-1">
+
+                    <!-- fromYear select -->
+                    <div class="mr-3">
+                        <select id="fromYear" name="from_year" class="custom-select custom-select-sm">
+                            {% for championship in view.championship_list %}
+                                <option value="{{ championship.year }}"
+                                        {% if championship.year == view.start_race.championship.year %}selected{% endif %}>
+                                    {{ championship.year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- fromRound select -->
+                    <div class="mr-3">
+                        <select id="fromRound" name="from_round" class="custom-select custom-select-sm">
+                            <option value="" disabled selected>Yarış seçiniz</option>
+                            {% for race in view.race_list %}
+                                <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
+                                    {% if race.round == view.start_race.round and race.championship.year == view.start_race.championship.year %}
+                                        selected
+                                    {% endif %}>
+                                    {{ race.round }} - {{ race.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Sıfırla Button -->
+                    <div>
+                        <a href="{{ request.path }}" class="btn btn-sm btn-secondary">{{ 'Sıfırla' }}</a>
+                    </div>
+                </div>
+
+                <!-- Second Row: son label, toYear, toRound, Sıfırla button -->
+                <div class="d-flex mb-1">
+                    <!-- toYear select -->
+                    <div class="mr-3">
+                        <select id="toYear" name="to_year" class="custom-select custom-select-sm">
+                            {% for championship in view.championship_list %}
+                                <option value="{{ championship.year }}"
+                                        {% if championship.year == view.end_race.championship.year %}selected{% endif %}>
+                                    {{ championship.year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- toRound select -->
+                    <div class="mr-3">
+                        <select id="toRound" name="to_round" class="custom-select custom-select-sm">
+                            <option value="" disabled selected>Yarış seçiniz</option>
+                            {% for race in view.race_list %}
+                                <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
+                                    {% if race.round == view.end_race.round and race.championship.year == view.end_race.championship.year %}
+                                        selected
+                                    {% endif %}>
+                                    {{ race.round }} - {{ race.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Süz Button -->
+                    <div>
+                        <button type="submit" class="btn btn-sm btn-primary">{{ 'Süz' }}</button>
+                    </div>
+                </div>
+            </form>
+
+            <small class="text-muted">
+                Belli yarış aralıklarındaki istatistikleri burdan seçebilirsiniz ya da bütün yarışları görmek için
+                süzgeci
+                sıfırlayabilirsiniz.
+            </small>
+        </div>
+        {% else %}
+        <div class="my-4">
             <form method="get" action="{{ request.path }}" class="form-inline">
                 <label for="fromYear" class="mr-2">İlk:</label>
-                <select id="fromYear" name="from_year" class="custom-select mr-3">
+                <select id="fromYear" name="from_year" class="custom-select custom-select-sm mr-3">
                     {% for championship in view.championship_list %}
                         <option value="{{ championship.year }}"
                                 {% if championship.year == view.start_race.championship.year %}selected{% endif %}>{{ championship.year }}</option>
                     {% endfor %}
                 </select>
-                <select id="fromRound" name="from_round" class="custom-select mr-3">
+                <select id="fromRound" name="from_round" class="custom-select custom-select-sm mr-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
                         <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -24,13 +106,13 @@
                 </select>
 
                 <label for="toYear" class="mr-2">Son:</label>
-                <select id="toYear" name="to_year" class="custom-select mr-3">
+                <select id="toYear" name="to_year" class="custom-select custom-select-sm mr-3">
                     {% for championship in view.championship_list %}
                         <option value="{{ championship.year }}"
                                 {% if championship.year == view.end_race.championship.year %}selected{% endif %}>{{ championship.year }}</option>
                     {% endfor %}
                 </select>
-                <select id="toRound" name="to_round" class="custom-select mr-3">
+                <select id="toRound" name="to_round" class="custom-select custom-select-sm mr-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
                         <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -43,14 +125,15 @@
                 </select>
 
 
-                <button type="submit" class="btn btn-primary mr-2">Süz</button>
-                <a href="{{ request.path }}" class="btn btn-secondary">Sıfırla</a>
+                <button type="submit" class="btn btn-sm btn-primary mr-2">Süz</button>
+                <a href="{{ request.path }}" class="btn btn-sm btn-secondary">Sıfırla</a>
             </form>
             <small class="text-muted">
                 Belli yarış aralıklarındaki istatistikleri burdan seçebilirsiniz ya da bütün yarışları görmek için süzgeci
                 sıfırlayabilirsiniz.
             </small>
         </div>
+        {% endif %}
 
         <p class="my-3">{{ view.start_race }} - {{ view.end_race }}</p>
     {% endblock %}
