@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.9.0] - 2024-11-15
+### Added
+- Year and round filters for statistics
+
 ## [2.8.0] - 2024-10-30
 ### Added
 - Recaptcha to contact form
