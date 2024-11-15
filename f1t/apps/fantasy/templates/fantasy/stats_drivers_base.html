@@ -226,7 +226,7 @@
             }
 
             // Function to filter 'from_round' and 'to_round' options based on the selected year
-            function filterRoundsByYear(change, left=false, right=false) {
+            function filterRoundsByYear(change, initialToYear, left=false, right=false) {
                 const fromYearValue = parseInt(fromYearSelect.value, 10);
                 const toYearValue = parseInt(toYearSelect.value, 10);
 
@@ -263,22 +263,33 @@
                     }
                 });
                 if (change) {
-                    selectVisibleOption(fromRoundSelect, true);
-                    selectVisibleOption(toRoundSelect, false);
+                    if (left){
+                        selectVisibleOption(fromRoundSelect, true);
+                        if(fromYearValue > initialToYear){
+                            selectVisibleOption(toRoundSelect, false);
+                        }
+                    }
+                    else{
+                        selectVisibleOption(toRoundSelect, false);
+                    }
                 }
             }
             // Initial filtering when the page loads
+            initialToYear = toYearSelect.value;
             filterToYearOptions();
-            filterRoundsByYear(false);
+            filterRoundsByYear(false, initialToYear);
             filterToRoundOptions(); // Only filter to_round options when fromRound changes
             // Add an event listener to update 'to_round' options when 'from_round' changes
             fromYearSelect.addEventListener('change', function() {
+                initialToYear = toYearSelect.value;
                 filterToYearOptions(); // Update toYear options when fromYear changes
-                filterRoundsByYear(true);
+                filterRoundsByYear(true, initialToYear, left=true, right=false);
             });
             toYearSelect.addEventListener('change', function() {
+                initialToYear = toYearSelect.value;
                 filterToYearOptions(); // Update toYear options when fromYear changes
-                filterRoundsByYear(true);
+                filterRoundsByYear(true, initialToYear, left=false, right=true);
+                filterToRoundOptions(); // Only filter to_round options when fromRound changes
             });
             fromRoundSelect.addEventListener('change', () => {
                 filterToRoundOptions(); // Only filter to_round options when fromRound changes
