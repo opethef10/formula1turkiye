@@ -192,6 +192,38 @@
                     }
                 });
             }
+            // Function to filter 'to_round' options based on the selected 'from_round' and 'from_year'
+            function filterToRoundOptions() {
+                const fromYearValue = parseInt(fromYearSelect.value, 10);
+                const fromRoundValue = parseInt(fromRoundSelect.value, 10);
+
+                let selectedToRoundValue = parseInt(toRoundSelect.value, 10);
+
+                // Loop through each option in the 'to_round' dropdown
+                Array.from(toRoundSelect.options).forEach(option => {
+                    const raceYear = parseInt(option.getAttribute('data-year'), 10);  // Extracting the year from the option text
+                    const toRoundValue = parseInt(option.value, 10);
+
+                    // If 'from_year' and 'to_year' are the same, filter based on 'from_round'
+                    if (fromYearValue === parseInt(toYearSelect.value, 10)) {
+                        // Hide 'to_round' options less than 'from_round' if the years are the same
+                        if (toRoundValue < fromRoundValue) {
+                            option.style.display = 'none'; // Hide options with value less than from_round
+                        }
+                        else if (raceYear != fromYearValue) {
+                            option.style.display = 'none'; // Hide options with value less than from_round
+                        }
+                        else {
+                            option.style.display = 'block'; // Show options with value greater or equal to from_round
+                        }
+
+                        // If the selected value is hidden, clear the selection
+                        if (selectedToRoundValue === toRoundValue && raceYear == fromYearValue && option.style.display === 'none') {
+                            selectVisibleOption(toRoundSelect, false); // Reset selection if the option is hidden
+                        }
+                    }
+                });
+            }
 
             // Function to filter 'from_round' and 'to_round' options based on the selected year
             function filterRoundsByYear(change, left=false, right=false) {
@@ -238,6 +270,7 @@
             // Initial filtering when the page loads
             filterToYearOptions();
             filterRoundsByYear(false);
+            filterToRoundOptions(); // Only filter to_round options when fromRound changes
             // Add an event listener to update 'to_round' options when 'from_round' changes
             fromYearSelect.addEventListener('change', function() {
                 filterToYearOptions(); // Update toYear options when fromYear changes
@@ -246,6 +279,9 @@
             toYearSelect.addEventListener('change', function() {
                 filterToYearOptions(); // Update toYear options when fromYear changes
                 filterRoundsByYear(true);
+            });
+            fromRoundSelect.addEventListener('change', () => {
+                filterToRoundOptions(); // Only filter to_round options when fromRound changes
             });
 
             var datatable = $("#driver_results").DataTable(
