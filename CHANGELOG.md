@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.9.1] - 2024-11-20
+### Changed
+- README.md to summarize to project
+
 ## [2.9.0] - 2024-11-15
 ### Added
 - Year and round filters for statistics
