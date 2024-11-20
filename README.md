@@ -19,11 +19,16 @@ python -m venv venv
 ```
 
 ### 2. Activate the Virtual Environment
-
-Activate the virtual environment:
+**On Windows**:
 
 ```bash
 venv\Scripts\activate
+```
+
+**On Linux**:
+
+```bash
+source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
@@ -36,7 +41,14 @@ pip install -r requirements/development.txt
 
 ### 4. Set Up the Database
 
-Copy db.sqlite3 to the project root folder
+Run the following commands to set up the database:
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+Follow the prompts to create a superuser account.
 
 ### 5. Run the Development Server
 
