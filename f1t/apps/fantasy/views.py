@@ -1,5 +1,5 @@
 import logging
-from statistics import mean, median
+from statistics import mean, median, stdev
 
 from django.conf import settings
 from django.contrib import messages
@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -23,6 +23,178 @@ from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, C
 
 logger = logging.getLogger("f1t")
 HOURS = settings.HOURS
+
+from itertools import combinations
+
+SIGMA = 2
+
+
+def get_teammate_pairs(driver, championship=None):
+    """
+    Get all possible driver pairs where one driver is the given driver, and the other driver
+    has shared the same constructor in any race.
+
+    Args:
+        driver (Driver): The driver to filter the pairs by their constructor.
+        championship (Championship, optional): The championship to filter the RaceDrivers.
+            Defaults to None.
+
+    Returns:
+        list: A list of tuples containing driver pairs where the given driver is compared with
+              their teammates who have shared the same constructor in any race.
+    """
+    # Start the RaceDriver queryset to find all races where the given driver participated
+    race_drivers = RaceDriver.objects.all().select_related("championship_constructor", "driver")
+
+    # Apply championship filter if a championship is provided
+    if championship:
+        race_drivers = race_drivers.filter(race__championship=championship)
+
+    # Find the constructors for the given driver
+    driver_constructors = race_drivers.filter(driver=driver).values_list('championship_constructor', flat=True)
+
+    if not driver_constructors:
+        return []  # If the driver doesn't have any constructor, return an empty list
+
+    # Find all other drivers who shared the same constructor(s) in any race
+    teammate_drivers = Driver.objects.filter(
+        race_instances__championship_constructor__in=driver_constructors
+    ).exclude(id=driver.id).distinct()
+
+    # Create pairs of the given driver with their teammates
+    driver_matches = [(driver, teammate) for teammate in teammate_drivers]
+
+    return driver_matches
+
+def get_driver_matches_with_same_constructor(championship=None):
+    """
+    Get all possible driver pairs who had the same championship_constructor
+    in the given championship. If no championship is provided, return all drivers.
+
+    Args:
+        championship (Championship, optional): The championship to filter the RaceDrivers.
+            Defaults to None.
+
+    Returns:
+        list: A list of tuples containing driver pairs who share the same constructor.
+    """
+    # Start the RaceDriver queryset
+    race_drivers = RaceDriver.objects.all().select_related("championship_constructor", "driver")
+
+    # Apply championship filter if a championship is provided
+    if championship:
+        race_drivers = race_drivers.filter(race__championship=championship)  # Group drivers by their constructor
+
+    constructor_groups = {}
+    for rd in race_drivers:
+        constructor = rd.championship_constructor
+        if constructor not in constructor_groups:
+            constructor_groups[constructor] = set()
+        constructor_groups[constructor].add(rd.driver)
+
+    # Generate all driver pairs for each constructor group
+    driver_matches = set()
+    for drivers in constructor_groups.values():
+        if len(drivers) > 1:  # Only consider groups with multiple drivers
+            driver_matches.update(combinations(drivers, 2))
+
+    return list(driver_matches)
+
+
+def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True, same_constructor=True):
+    """
+    Compare qualifying results between two drivers in a given championship.
+
+    Args:
+        driver1 (Driver): The first driver to compare.
+        driver2 (Driver): The second driver to compare.
+        championship (Championship): The championship to filter the RaceDrivers.
+        same_constructor (bool): Whether to restrict comparisons to same constructor races.
+
+    Returns:
+        dict: A dictionary containing the head-to-head results.
+    """
+    # Get RaceDriver objects for the given championship and drivers
+    race_drivers = RaceDriver.objects.filter(
+        driver__in=[driver1, driver2],
+        qualy__isnull=False  # Ignore races where qualy is None
+    ).select_related("championship_constructor", "driver", "race")
+
+    if championship:
+        race_drivers = race_drivers.filter(
+            race__championship=championship,
+        )
+
+    # Group results by race and optionally filter by constructor
+    results = {}
+    for rd in race_drivers:
+        race_id = rd.race.id
+        if race_id not in results:
+            results[race_id] = {}
+        results[race_id][rd.driver] = {
+            "qualy": rd.qualy,
+            "q1": rd.q1_time(),
+            "q2": rd.q2_time(),
+            "q3": rd.q3_time(),
+            "constructor": rd.championship_constructor,
+        }
+
+    # Compare qualifying results race by race
+    driver1_wins = 0
+    driver2_wins = 0
+    driver_ratios = []
+
+    for race_id, data in results.items():
+        if driver1 in data and driver2 in data:
+            # Enforce constructor condition if same_constructor is True
+            if same_constructor and data[driver1]["constructor"] != data[driver2]["constructor"]:
+                continue
+
+            qualy1 = data[driver1]["qualy"]
+            qualy2 = data[driver2]["qualy"]
+            if qualy1 < qualy2:
+                driver1_wins += 1
+            elif qualy2 < qualy1:
+                driver2_wins += 1
+
+            if data[driver1]["q3"] and data[driver2]["q3"]:
+                driver_ratio = (data[driver2]["q3"] / data[driver1]["q3"]) - 1
+            elif data[driver1]["q2"] and data[driver2]["q2"]:
+                driver_ratio = (data[driver2]["q2"] / data[driver1]["q2"]) - 1
+            elif data[driver1]["q1"] and data[driver2]["q1"]:
+                driver_ratio = (data[driver2]["q1"] / data[driver1]["q1"]) - 1
+            else:
+                driver_ratio = None
+
+            if driver_ratio is not None:
+                driver_ratios.append(driver_ratio)
+
+    driver_median_ratio = median(driver_ratios) if driver_ratios else None
+    mean_with_outliers = mean(driver_ratios) if driver_ratios else None
+    driver_stdev = stdev(driver_ratios) if len(driver_ratios) > 1 else None
+    lower_limit = mean_with_outliers - SIGMA * driver_stdev if driver_stdev else None
+    upper_limit = mean_with_outliers + SIGMA * driver_stdev if driver_stdev else None
+    driver_mean_ratio = mean([ratio for ratio in driver_ratios if lower_limit < ratio < upper_limit]) if driver_stdev else None
+
+    if swap and driver1_wins < driver2_wins:
+        driver1, driver2 = driver2, driver1
+        driver1_wins, driver2_wins = driver2_wins, driver1_wins
+        driver_median_ratio = -driver_median_ratio if driver_median_ratio is not None else None
+        driver_mean_ratio = -driver_mean_ratio if driver_mean_ratio is not None else None
+
+    total_comparisons = driver1_wins + driver2_wins
+    driver1_percentage = (driver1_wins / total_comparisons) if total_comparisons > 0 else 0
+
+    return {
+        "driver1": driver1,
+        "driver2": driver2,
+        "driver1_wins": driver1_wins,
+        "driver2_wins": driver2_wins,
+        "driver_median_ratio": f"{driver_median_ratio:.3%}" if driver_median_ratio is not None else None,
+        "driver_mean_ratio": f"{driver_mean_ratio:.3%}" if driver_mean_ratio is not None else None,
+        "total_comparisons": total_comparisons,
+        "driver1_percentage": f"{driver1_percentage:.1%}",
+    }
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
@@ -220,6 +392,54 @@ class SeasonStatsView(ListView):
             "grid": "Grid",
             "result": "Yarış",
         }
+        return context
+
+
+class SeasonHeadToHeadView(ListView):
+    template_name = "fantasy/season_quali_h2h.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_queryset(self):
+        """
+        Get a general RaceDriver queryset for this championship
+        where qualy is not null.
+        """
+        return RaceDriver.objects.filter(
+            race__championship=self.championship,
+            qualy__isnull=False
+        ).select_related("championship_constructor", "driver", "race")
+
+    def get_context_data(self, **kwargs):
+        """
+        Add head-to-head comparisons for all teammate matches to the context.
+        """
+        context = super().get_context_data(**kwargs)
+
+        # Get all possible teammate matches
+        driver_matches = get_driver_matches_with_same_constructor(self.championship)
+
+        # Perform head-to-head qualifying comparisons
+        comparisons = []
+        for driver1, driver2 in driver_matches:
+            result = head_to_head_qualy_comparison(driver1, driver2, self.championship)
+
+            # Skip 0-0 results
+            if result["driver1_wins"] > 0 or result["driver2_wins"] > 0:
+                comparisons.append(result)
+
+        # Sort comparisons by driver1_wins in descending order
+        sorted_comparisons = sorted(comparisons, key=lambda x: x["driver1_wins"], reverse=True)
+
+        # Add to context
+        context["championship"] = self.championship
+        context["qualy_comparisons"] = sorted_comparisons
         return context
 
 
@@ -453,6 +673,61 @@ class DriverDetailView(DetailView):
         }
 
         return context
+
+
+class DriverHeadToHeadView(DetailView):
+    model = Driver
+    template_name = "fantasy/driver_quali_h2h.html"
+
+    def get_context_data(self, **kwargs):
+        """
+        Add head-to-head comparisons for all teammate matches to the context.
+        """
+        context = super().get_context_data(**kwargs)
+
+        # Get all possible teammate matches
+        driver_matches = get_teammate_pairs(self.object)
+
+        # Perform head-to-head qualifying comparisons
+        comparisons = []
+        for driver1, driver2 in driver_matches:
+            result = head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=False)
+
+            # Skip 0-0 results
+            if result["driver1_wins"] > 0 or result["driver2_wins"] > 0:
+                comparisons.append(result)
+
+        # Sort comparisons by driver1_wins in descending order
+        sorted_comparisons = sorted(comparisons, key=lambda x: x["driver1_wins"], reverse=True)
+
+        # Calculate totals for wins and losses
+        total_driver1_wins = sum(comp["driver1_wins"] for comp in sorted_comparisons)
+        total_driver2_wins = sum(comp["driver2_wins"] for comp in sorted_comparisons)
+        total_percentage = total_driver1_wins / (total_driver1_wins + total_driver2_wins) if total_driver1_wins + total_driver2_wins > 0 else 0
+
+        # Add to context
+        context["qualy_comparisons"] = sorted_comparisons
+        context["total_driver1_wins"] = total_driver1_wins
+        context["total_driver2_wins"] = total_driver2_wins
+        context["total_percentage"] =  f"{total_percentage:.1%}"
+
+        # yearly_comparisons = []
+        # for championship_id in sorted(set(self.object.attended_races.values_list('championship', flat=True))):
+        #     championship = Championship.objects.get(id=championship_id)
+        #     for driver1, driver2 in driver_matches:
+        #         result = head_to_head_qualy_comparison(driver1, driver2, championship=championship, swap=False)
+        #
+        #         # Skip 0-0 results
+        #         if result["total_comparisons"]:
+        #             result["championship"] = championship
+        #             yearly_comparisons.append(result)
+        #
+        #
+        # # Add to context
+        # context["yearly_comparisons"] = yearly_comparisons
+
+        return context
+
 
 class DriverResultsView(DetailView):
     model = Driver

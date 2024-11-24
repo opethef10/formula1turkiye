@@ -15,9 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.10.0] - 2024-11-24
+### Added
+- Season quali h2h comparisons
+- Driver quali h2h comparisons
+
 ## [2.9.2] - 2024-11-22
 ### Changed
 - [.gitignore](.gitignore) to exclude [.python-version](.python-version) file
+
 ## [2.9.1] - 2024-11-20
 ### Changed
 - README.md to summarize to project
