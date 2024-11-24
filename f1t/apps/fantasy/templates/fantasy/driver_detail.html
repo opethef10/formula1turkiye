@@ -46,6 +46,7 @@
             <ul class="list-unstyled">
                 <li><a href="{% url 'formula:driver_podiums' driver.slug %}">{{ podium }} podyum</a></li>
                 <li>{{ not_classified }} klasman dışı</li>
+                <li><a href="{% url 'formula:driver_quali_h2h' driver.slug %}">Sıralama Karşılaştırmaları</a></li>
                 <li><strong>İlk yarış:</strong> <a href="{{ first_race.get_absolute_url }}">{{ first_race }}</a></li>
                 <li><strong>Son yarış:</strong> <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
             </ul>
