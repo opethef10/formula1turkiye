@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Copy Fantasy Elements</h1>
+<form method="post" class="form-horizontal">{% csrf_token %}
+    <fieldset>
+        {{ form.as_p }}
+    </fieldset>
+    <div>
+        <button type="submit" class="button button-primary">Run Command</button>
+    </div>
+    <div>
+        <a href=".." class="button">Cancel</a>
+    </div>
+</form>
+{% endblock %}

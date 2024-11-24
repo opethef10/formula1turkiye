@@ -4,6 +4,13 @@ from django.forms import modelformset_factory
 from .models import RaceTeam, RaceDriver
 
 
+class CopyFantasyElementsForm(forms.Form):
+    SERIES_CHOICES = [('f1', 'Formula 1'), ('f2', 'Formula 2')]
+    series = forms.ChoiceField(choices=SERIES_CHOICES, label="Series", help_text="This will copy RaceDrivers, RaceTeams, and RaceTeamDrivers to the next race. Does nothing if copy is already done previously.")
+    budget = forms.BooleanField(required=False, label="Increase budget by 5₺")
+    token = forms.BooleanField(required=False, label="Adjust token to 16")
+
+
 class RaceDriverMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, racedriver):
         return f"{racedriver.driver}: {racedriver.price}₺"

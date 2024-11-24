@@ -20,10 +20,13 @@
         <h3 class="text-center">{{ view.championship.short_str|upper }} Sezon İstatistikleri</h3>
         <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{% if not view.championship.next %}#{% else %}{% url 'formula:season_stats' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
+
     <div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
         <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
             <a href="{% url 'formula:season_supergrid' championship.series championship.year %}"
                class="btn btn-outline-primary">Süpergrid</a>
+            <a href="{% url 'formula:season_quali_h2h' championship.series championship.year %}"
+               class="btn btn-outline-primary">Sıralama Karşılaştırmaları</a>
         </div>
     </div>
 
@@ -219,7 +222,7 @@
         // Get the select elements
         const fromRoundSelect = document.getElementById('fromRound');
         const toRoundSelect = document.getElementById('toRound');
-        
+
        // Function to filter 'to_round' options based on the selected 'from_round'
         function filterToRoundOptions() {
             const fromRoundValue = parseInt(fromRoundSelect.value, 10);
@@ -230,7 +233,7 @@
             // Loop through each option in the 'to_round' dropdown
             Array.from(toRoundSelect.options).forEach(option => {
                 const toRoundValue = parseInt(option.value, 10);
-                
+
                 if (toRoundValue < fromRoundValue) {
                     option.style.display = 'none'; // Hide options with value less than from_round
                 } else {

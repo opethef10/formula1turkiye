@@ -16,6 +16,7 @@ urlpatterns = [
     path('drivers/<slug>/flaps/', views.DriverFastestLapsView.as_view(), name='driver_flaps'),
     path('drivers/<slug>/hattricks/', views.DriverHatTricksView.as_view(), name='driver_hattricks'),
     path('drivers/<slug>/podiums/', views.DriverPodiumsView.as_view(), name='driver_podiums'),
+    path('drivers/<slug>/quali_h2h/', views.DriverHeadToHeadView.as_view(), name='driver_quali_h2h'),
 
     path('constructors/', views.ConstructorListView.as_view(), name='constructor_list'),
     path('constructors/<slug>/', views.ConstructorDetailView.as_view(), name='constructor_detail'),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('<str:series>/', views.SeasonsListView.as_view(), name='season_list'),
     path('<str:series>/<int:year>/stats/', views.SeasonStatsView.as_view(), name='season_stats'),
     path('<str:series>/<int:year>/stats/supergrid/', views.SeasonSupergridView.as_view(), name='season_supergrid'),
+    path('<str:series>/<int:year>/stats/quali_h2h/', views.SeasonHeadToHeadView.as_view(), name='season_quali_h2h'),
     path('<str:series>/<int:year>/', views.RaceListView.as_view(), name='race_list'),
     path('<str:series>/<int:year>/last/', views.LastRaceRedirectView.as_view(), name='redirect_last_race'),
     path('<str:series>/<int:year>/<int:round>/', views.RaceDetailView.as_view(), name='race_detail'),

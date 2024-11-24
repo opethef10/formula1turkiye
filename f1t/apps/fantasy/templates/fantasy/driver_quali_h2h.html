@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static fantasy_tags %}
+
+{% block title %}{{ self.driver }} Sıralama Karşılaştırması{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:all_driver_list' %}">Sürücüler</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:driver_detail' driver.slug %}">{{ driver.name }}</a></li>
+    <li class="breadcrumb-item">Sıralama Karşılaştırması</li>
+{% endblock %}
+
+{% block content %}
+    <ul>
+        <li>% sütunu, soldaki pilotun seansların yüzde kaçını takım arkadaşının önünde tamamladığını gösterir.</li>
+        <li>Fark sütunu ise iki sürücünün birlikte derece kaydettiği son seanstaki yüzdelik farkın ortanca (medyan) değeridir.
+            Bu karşılaştırmalarda daha stabil bir sonuç verdiğinden yeğlediğimiz istatistik türüdür, bu nedenle kalın yazılmıştır.
+        </li>
+        <li>Ort. Fark sütunu ise benzer şekilde yüzdelik ortalama fark değeri olup uç değerlerde sapmaya daha müsaittir.
+            Bu yüzden gri renk ile yazılmıştır.
+        </li>
+        <li>Ortalama farktaki sapmaların etkisini azaltmak için 2 sigma aralığının dışındaki dereceler göz ardı edilmiştir.</li>
+        <li>Fark sütununda yüzdelik fark kullanılması, farklı pist uzunluklarını normalize etmek içindir.
+            Yüzdeleri, 100 sn'lik bir turda atılacak saniyelik fark olarak düşünebilirsiniz. </li>
+        <li>Örneğin fark değeri 0.666% olarak gözüküyorsa o pilot sezon boyunca, 100 sn'lik bir turu
+            baz alırsak, takım arkadaşından ortalama 0.666 sn hızlıdır demektir.</li>
+    </ul>
+
+    <table id="table_h2h"
+           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Sürücü</th>
+            <th></th>
+            <th></th>
+            <th>Takım Arkadaşı</th>
+            <th>%</th>
+            <th>Fark</th>
+            <th>Ort. Fark</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for comparison in qualy_comparisons %}
+            <tr>
+                <td><a href="{% url 'formula:driver_detail' comparison.driver1.slug %}"><b>{{ comparison.driver1.name }}</b></a></td>
+                <td>{{ comparison.driver1_wins }}</td>
+                <td>{{ comparison.driver2_wins }}</td>
+                <td><a href="{% url 'formula:driver_detail' comparison.driver2.slug %}"><b>{{ comparison.driver2.name }}</b></a></td>
+                <td>{{ comparison.driver1_percentage }}</td>
+                <td><b>{{ comparison.driver_median_ratio|default_if_none:"" }}</b></td>
+                <td class="text-muted">{{ comparison.driver_mean_ratio|default_if_none:"" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th><b>Toplam</b></th>
+            <th><b>{{ total_driver1_wins }}</b></th>
+            <th><b>{{ total_driver2_wins }}</b></th>
+            <th></th>
+            <th>{{ total_percentage }}</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </tfoot>
+    </table>
+
+{#   <table id="table_h2h_yearly"#}
+{#           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">#}
+{#        <thead class="thead-inverse">#}
+{#        <tr>#}
+{#            <th>Yıl</th>#}
+{#            <th>Kazanan</th>#}
+{#            <th></th>#}
+{#            <th></th>#}
+{#            <th>Kaybeden</th>#}
+{#            <th>%</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        {% for comparison in yearly_comparisons %}#}
+{#            <tr>#}
+{#                <td>{{ comparison.championship.year }}</td>#}
+{#                <td><a href="{% url 'formula:driver_detail' comparison.driver1.slug %}"><b>{{ comparison.driver1.name }}</b></a></td>#}
+{#                <td>{{ comparison.driver1_wins }}</td>#}
+{#                <td>{{ comparison.driver2_wins }}</td>#}
+{#                <td><a href="{% url 'formula:driver_detail' comparison.driver2.slug %}"><b>{{ comparison.driver2.name }}</b></a></td>#}
+{#                <td>{{ comparison.driver1_percentage }}</td>#}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        let numbersType = $.fn.dataTable.absoluteOrderNumber([
+            {value: '', position: 'bottom'}
+        ])
+        $(document).ready(function () {
+                var table = $("#table_h2h").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "info": false,
+                        searching: false,
+                        order: [[1, "desc"], [2, "desc"], [4, "desc"]],
+                        columnDefs: [
+                            {
+                                className: "dt-center",
+                                targets: "_all"
+                            },
+                            {
+                                searchable: false,
+                                orderable: false,
+                                targets: [0, 3],
+                            },
+                            {type: numbersType, targets: "_all"}
+                        ],
+                    }
+                );
+            var table = $("#table_h2h_yearly").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: false,
+                    "info": false,
+                    searching: false,
+                    order: [[0, "asc"]],
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            targets: "_all"
+                        },
+                        {
+                            searchable: false,
+                            orderable: false,
+                            targets: [1, 4],
+                        },
+                        {type: numbersType, targets: "_all"}
+                    ],
+                }
+            );
+        });
+
+    </script>
+
+{% endblock %}
