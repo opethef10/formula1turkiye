@@ -1,7 +1,11 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
 from django_summernote.admin import SummernoteModelAdmin
+from django.shortcuts import render, redirect
+from django.urls import path
 
+from .forms import CopyFantasyElementsForm
+from .management.commands.fantasycopy import Command
 from .models import *
 
 class SelectRelatedModelAdmin(admin.ModelAdmin):
@@ -30,8 +34,38 @@ class ChampionshipConstructorAdmin(SelectRelatedModelAdmin):
 
 admin.site.register(ChampionshipConstructor, ChampionshipConstructorAdmin)
 
-class ChampionshipAdmin(SelectRelatedModelAdmin):
-    pass
+class ChampionshipAdmin(admin.ModelAdmin):
+    change_list_template = "admin/championship_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("fantasycopy/", self.admin_site.admin_view(self.copy_fantasy_elements_view), name="copy_fantasy_elements"),
+        ]
+        return custom_urls + urls
+
+    def copy_fantasy_elements_view(self, request):
+        if request.method == "POST":
+            form = CopyFantasyElementsForm(request.POST)
+            if form.is_valid():
+                series = form.cleaned_data["series"]
+                budget = form.cleaned_data["budget"]
+                token = form.cleaned_data["token"]
+
+                try:
+                    # Invoke the command logic
+                    command = Command()
+                    command.handle(series=series, budget=budget, token=token)
+                    messages.success(request, "Fantasy elements copied successfully.")
+                    return redirect("..")
+                except Exception as e:
+                    messages.error(request, f"Error: {e}")
+        else:
+            form = CopyFantasyElementsForm()
+
+        return render(request, "admin/copy_fantasy_elements_form.html", {"form": form})
+
+
 
 class CircuitAdmin(SelectRelatedModelAdmin):
     pass
