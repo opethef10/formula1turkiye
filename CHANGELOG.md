@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.0] - 2024-12-02
+### Added
+- Ergast and Jolpica crosschecks for F1 results
+
 ## [2.10.0] - 2024-11-24
 ### Added
 - Season quali h2h comparisons
