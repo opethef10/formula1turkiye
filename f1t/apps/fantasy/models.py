@@ -5,6 +5,7 @@ from math import ceil
 from pathlib import Path
 
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import OuterRef, Subquery
 from django.urls import reverse
@@ -21,6 +22,11 @@ with JSON_PATH.open() as json_file:
         object_pairs_hook=lambda pairs: {int(k) if k.isnumeric() else k: v for k, v in pairs}
     )
 
+
+QUALI_TIME_VALIDATOR = RegexValidator(
+    regex=r'^(?:\d{1,2}:\d{2}\.\d{1,3})?$',
+    message="Enter a valid qualifying time format (e.g., '1:21.072' or leave it blank)."
+)
 
 def convert_to_float(value):
     """Convert 'minutes:seconds.milliseconds' string to total seconds as a float."""
@@ -347,9 +353,9 @@ class RaceDriver(models.Model):
     grid = models.PositiveIntegerField(blank=True, null=True)
     result = models.PositiveIntegerField(blank=True, null=True)
     fastest_lap = models.BooleanField(default=False)
-    q1 = models.CharField(max_length=10, blank=True, default="")
-    q2 = models.CharField(max_length=10, blank=True, default="")
-    q3 = models.CharField(max_length=10, blank=True, default="")
+    q1 = models.CharField(max_length=10, blank=True, default="", validators=[QUALI_TIME_VALIDATOR])
+    q2 = models.CharField(max_length=10, blank=True, default="", validators=[QUALI_TIME_VALIDATOR])
+    q3 = models.CharField(max_length=10, blank=True, default="", validators=[QUALI_TIME_VALIDATOR])
 
     class Meta:
         constraints = [
