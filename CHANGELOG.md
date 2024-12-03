@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.1] - 2024-12-03
+### Added
+- Quali time regex validator
+
 ## [2.11.0] - 2024-12-02
 ### Added
 - Ergast and Jolpica crosschecks for F1 results
