@@ -17,9 +17,9 @@
 
 {% block content %}
 	<div class="d-flex justify-content-between my-4">
-        <a class="btn btn-outline-primary {% if not view.race.previous %}disabled{% endif %}" href="{% url 'ratings:create_ratings' view.race.previous.championship.series view.race.previous.championship.year view.race.previous.round %}">&larr; {{ view.race.previous|default_if_none:"" }}</a>
+            <a class="btn btn-outline-primary {% if not view.race.previous %}disabled{% endif %}" href="{% if view.race.previous %}{% url 'ratings:create_ratings' view.race.previous.championship.series view.race.previous.championship.year view.race.previous.round %}{% endif %}">&larr; {{ view.race.previous|default_if_none:"" }}</a>
         <h3 class="text-center">Yarışı Puanla: {{ view.race }}</h3>
-        <a class="btn btn-outline-primary {% if not view.race.next %}disabled{% endif %}" href="{% url 'ratings:create_ratings' view.race.next.championship.series view.race.next.championship.year view.race.next.round %}">{{ view.race.next|default_if_none:"" }} &rarr;</a>
+        <a class="btn btn-outline-primary {% if not view.race.next %}disabled{% endif %}" href="{% if view.race.next %}{% url 'ratings:create_ratings' view.race.next.championship.series view.race.next.championship.year view.race.next.round %}{% endif %}">{{ view.race.next|default_if_none:"" }} &rarr;</a>
     </div>
 	
     <p><b>UYARI:</b> Yarışa verilen skorlar puan puan kaydedilmemektedir, bu formdaki puanların sonucunda toplam oy ve 2 sigma içerisinde yer alan oyların ağırlıklı ortalaması sunucu tarafında hesaplanıp veritabanına kaydedilmektedir. Bu nedenle daha önce puanı eklenmiş bir yarışın formunu açtığımızda Onur ve Semih girdileri veritabanından düzenlenmek için olduğu gibi çekilebilse de, 1'den 10'a kadar olan oy sayılarında bir kayıt olmadığından form her açıldığında (geri tuşu hariç, o önbellekte tutuyor form girdilerini) varsayılan olarak her oy 0 olarak görünecektir. Dolayısıyla her bir düzenlemede baştan oy sayılarını girmemiz gerekmektedir. Bu nedenle çok elzem olmadıkça bu formun düzenleme amaçlı kullanılması önerilmez. Baş ağrıtır, gider yeniden Facebook'u açtırır, gönderi aratır, baktırır. Lakin, bir yarışın oyları ilk defa giriliyorsa herhangi bir sıkıntı yaratmaz. Gönül rahatlığıyla veri girebilirsiniz.</p>

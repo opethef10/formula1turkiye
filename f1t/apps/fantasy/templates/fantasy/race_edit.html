@@ -36,9 +36,9 @@
 {% endif %}
 
     <div class="d-flex justify-content-between my-4">
-        <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{% url 'formula:race_edit' race.previous.championship.series race.previous.championship.year race.previous.round %}">&larr; {{ race.previous|default_if_none:"" }}</a>
+        <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{% if race.previous %}{% url 'formula:race_edit' race.previous.championship.series race.previous.championship.year race.previous.round %}{% endif %}">&larr; {{ race.previous|default_if_none:"" }}</a>
         <h3 class="text-center">Yarışı Düzenle: {{ race }}</h3>
-        <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{% url 'formula:race_edit' race.next.championship.series race.next.championship.year race.next.round %}">{{ race.next|default_if_none:"" }} &rarr;</a>
+        <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{% if race.next %}{% url 'formula:race_edit' race.next.championship.series race.next.championship.year race.next.round %}{% endif %}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
 
     <iframe src="{{ race.wikilink }}#Race_classification" scrolling="no"
