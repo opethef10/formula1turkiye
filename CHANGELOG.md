@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.4] - 2024-12-04
+### Fixed
+- is_fantasy and is_tahmin check in race_detail page
+
 ## [2.11.3] - 2024-12-03
 ### Added
 - Ergast and Jolpica crosschecks for fastest laps
