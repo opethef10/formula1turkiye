@@ -24,7 +24,7 @@ with JSON_PATH.open() as json_file:
 
 
 QUALI_TIME_VALIDATOR = RegexValidator(
-    regex=r'^(?:\d{1,2}:\d{2}\.\d{1,3})?$',
+    regex=r'^(?:\d{1,2}:[0-5]\d\.\d{1,3})?$',
     message="Enter a valid qualifying time format (e.g., '1:21.072' or leave it blank)."
 )
 
