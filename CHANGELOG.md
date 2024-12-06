@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.8] - 2024-12-06
+### Added
+- Pole position point field for F2
+
 ## [2.11.7] - 2024-12-06
 ### Fixed
 - Race edit number input arrow and scroll
