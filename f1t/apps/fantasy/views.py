@@ -490,6 +490,8 @@ class SeasonSupergridView(ListView):
                 race_driver_dict[rd.driver].append(ratio)
             else:
                 race_driver_dict[rd.driver] = [ratio]
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
 
         for driver, ratios in race_driver_dict.items():
             sorted_ratios = sorted(ratios)

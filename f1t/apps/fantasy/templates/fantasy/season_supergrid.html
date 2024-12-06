@@ -65,8 +65,8 @@
                     {% for driver, stats in supergrid_dict.items %}
                         <tr>
                             <td></td>
-                            <td>
-                                <a href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
+                            <td style="background-color: {{ driver.bgcolor }}; color: {{ driver.fontcolor }}">
+                                <a style="color: {{ driver.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
                             </td>
                             {% for stat in stats %}
                             <td class="{% if forloop.counter == 1 %}font-weight-bold"{% elif forloop.counter > 1 %}text-muted{% endif %}">{{ stat|default_if_none:"" }}</td>
