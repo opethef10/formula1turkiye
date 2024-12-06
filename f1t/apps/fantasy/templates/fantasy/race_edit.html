@@ -8,6 +8,15 @@
         border: 2px solid red;
         border-radius: 5px;
     }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
 </style>
 {% endblock %}
 
@@ -49,15 +58,15 @@
         {{ formset.management_form }}
         <div class="form-group row">
             <div class="text-center" style="width: 160px"><b>Sürücü</b></div>
-            <div class="text-center" style="width: 60px"><b>Tanzim</b></div>
-            <div class="text-center" style="width: 60px"><b>Fiyat</b></div>
-            <div class="text-center" style="width: 60px"><b>Sıralama</b></div>
-            <div class="text-center" style="width: 60px"><b>Sp.Grid</b></div>
-            <div class="text-center" style="width: 60px"><b>Sprint</b></div>
-            <div class="text-center" style="width: 60px"><b>Grid</b></div>
-            <div class="text-center" style="width: 60px"><b>Race</b></div>
-            <div class="text-center" style="width: 60px"><b>EHT</b></div>
-            <div class="text-center" style="width: 60px"><b>SpEHT</b></div>
+            <div class="text-center" style="width:50px"><b>Tanzim</b></div>
+            <div class="text-center" style="width:50px"><b>Fiyat</b></div>
+            <div class="text-center" style="width:50px"><b>Sıra.</b></div>
+            <div class="text-center" style="width:50px"><b>Sp.Grid</b></div>
+            <div class="text-center" style="width:50px"><b>Sprint</b></div>
+            <div class="text-center" style="width:50px"><b>Grid</b></div>
+            <div class="text-center" style="width:50px"><b>Race</b></div>
+            <div class="text-center" style="width:50px"><b>EHT</b></div>
+            <div class="text-center" style="width:50px"><b>SpEHT</b></div>
             <div class="text-center" style="width: 70px"><b>Q1</b></div>
             <div class="text-center" style="width: 70px"><b>Q2</b></div>
             <div class="text-center" style="width: 70px"><b>Q3</b></div>
@@ -78,7 +87,7 @@
                     {% elif forloop.counter >= 11 %}
                         {% render_field field style="width: 70px" %}
                     {% else %}
-                        {% render_field field style="width: 60px" %}
+                        {% render_field field style="width:50px" %}
                     {% endif %}
                     </div>
                     {% for error in field.errors %}
@@ -137,6 +146,13 @@
             $('form').bind('submit', function () {
                 $(this).find(':input').prop('disabled', false);
             });
+        });
+
+        // Disable mouse wheel scrolling over number inputs
+        document.addEventListener("wheel", function(event){
+            if(document.activeElement.type === "number"){
+                document.activeElement.blur();
+            }
         });
     </script>
 {% endblock %}
