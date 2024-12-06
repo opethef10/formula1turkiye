@@ -42,10 +42,10 @@
         <tbody>
         {% for comparison in qualy_comparisons %}
             <tr>
-                <td><a href="{% url 'formula:driver_detail' comparison.driver1.slug %}"><b>{{ comparison.driver1.name }}</b></a></td>
+                <td style="background-color: {{ comparison.driver1.bgcolor }}; color: {{ comparison.driver1.fontcolor }}"><a style="color: {{ comparison.driver1.fontcolor }}" href="{% url 'formula:driver_detail' comparison.driver1.slug %}"><b>{{ comparison.driver1.name }}</b></a></td>
                 <td>{{ comparison.driver1_wins }}</td>
                 <td>{{ comparison.driver2_wins }}</td>
-                <td><a href="{% url 'formula:driver_detail' comparison.driver2.slug %}"><b>{{ comparison.driver2.name }}</b></a></td>
+                <td style="background-color: {{ comparison.driver2.bgcolor }}; color: {{ comparison.driver2.fontcolor }}"><a style="color: {{ comparison.driver2.fontcolor }}" href="{% url 'formula:driver_detail' comparison.driver2.slug %}"><b>{{ comparison.driver2.name }}</b></a></td>
                 <td>{{ comparison.driver1_percentage }}</td>
                 <td><b>{{ comparison.driver_median_ratio|default_if_none:"" }}</b></td>
                 <td class="text-muted">{{ comparison.driver_mean_ratio|default_if_none:"" }}</td>

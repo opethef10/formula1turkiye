@@ -150,6 +150,11 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
             if same_constructor and data[driver1]["constructor"] != data[driver2]["constructor"]:
                 continue
 
+            driver1.bgcolor = data[driver1]["constructor"].bgcolor
+            driver1.fontcolor = data[driver1]["constructor"].fontcolor
+            driver2.bgcolor = data[driver2]["constructor"].bgcolor
+            driver2.fontcolor = data[driver2]["constructor"].fontcolor
+
             qualy1 = data[driver1]["qualy"]
             qualy2 = data[driver2]["qualy"]
             if qualy1 < qualy2:
@@ -231,6 +236,8 @@ class FantasyStatsView(ListView):
         for rd in self.get_queryset():
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
         tactic_count_dict = {tactic: [None] * race_count for tactic in {"Finiş", "Geçiş", "Sıralama"}}
@@ -334,6 +341,8 @@ class SeasonStatsView(ListView):
         for rd in race_drivers:
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
         context['winners'] = Driver.objects.filter(
@@ -486,6 +495,8 @@ class SeasonSupergridView(ListView):
                 race_driver_dict[rd.driver].append(ratio)
             else:
                 race_driver_dict[rd.driver] = [ratio]
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
 
         for driver, ratios in race_driver_dict.items():
             sorted_ratios = sorted(ratios)

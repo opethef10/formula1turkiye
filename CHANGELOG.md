@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.9] - 2024-12-06
+### Added
+- Driver color in supergrid
+- Driver color in H2H comparisons
+### Fixed
+- Driver color in season lists for drivers that don't attend to the first race
+
 ## [2.11.8] - 2024-12-06
 ### Added
 - Pole position point field for F2

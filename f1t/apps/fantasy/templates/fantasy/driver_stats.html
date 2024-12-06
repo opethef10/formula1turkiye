@@ -64,11 +64,9 @@
                     <tbody>
                         {% for driver, race_driver_list in race_driver_dict.items %}
                             <tr>
-                                {% with race_driver_list.0 as rd %}
-                                <td style="background-color: {{ rd.championship_constructor.bgcolor }}; color: {{ rd.championship_constructor.fontcolor }}">
-                                    <a style="color: {{ rd.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
+                                <td style="background-color: {{ driver.bgcolor }}; color: {{ driver.fontcolor }}">
+                                    <a style="color: {{ driver.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
                                 </td>
-                                {% endwith %}
                                 {% if tab_id not in "instances,price,discount" %}
                                     <td></td>
                                 {% endif %}
