@@ -150,6 +150,11 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
             if same_constructor and data[driver1]["constructor"] != data[driver2]["constructor"]:
                 continue
 
+            driver1.bgcolor = data[driver1]["constructor"].bgcolor
+            driver1.fontcolor = data[driver1]["constructor"].fontcolor
+            driver2.bgcolor = data[driver2]["constructor"].bgcolor
+            driver2.fontcolor = data[driver2]["constructor"].fontcolor
+
             qualy1 = data[driver1]["qualy"]
             qualy2 = data[driver2]["qualy"]
             if qualy1 < qualy2:
