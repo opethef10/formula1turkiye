@@ -231,6 +231,8 @@ class FantasyStatsView(ListView):
         for rd in self.get_queryset():
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
         tactic_count_dict = {tactic: [None] * race_count for tactic in {"Finiş", "Geçiş", "Sıralama"}}
@@ -334,6 +336,8 @@ class SeasonStatsView(ListView):
         for rd in race_drivers:
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
         context['winners'] = Driver.objects.filter(

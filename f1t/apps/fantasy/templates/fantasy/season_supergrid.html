@@ -69,7 +69,7 @@
                                 <a href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
                             </td>
                             {% for stat in stats %}
-                                <td>{{ stat|default_if_none:"" }}</td>
+                            <td class="{% if forloop.counter == 1 %}font-weight-bold"{% elif forloop.counter > 1 %}text-muted{% endif %}">{{ stat|default_if_none:"" }}</td>
                             {% endfor %}
 
                         </tr>
