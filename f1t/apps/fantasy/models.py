@@ -60,6 +60,7 @@ class Championship(models.Model):
     sprint_fastest_lap_point_threshold = models.PositiveSmallIntegerField(default=10)
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
+    pole_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -387,8 +388,10 @@ class RaceDriver(models.Model):
     def feature_point(self):
         eligible_for_fastest_lap = self.result is not None and 1 <= self.result <= self.race.championship.fastest_lap_point_threshold
         fastest_lap_point = self.race.championship.fastest_lap_point
+        pole_point = self.race.championship.pole_point if self.grid == 1 else 0
         return (
             POINTS["race"].get(self.result, 0) +
+            pole_point +
             self.fastest_lap * eligible_for_fastest_lap * fastest_lap_point
         )
 
