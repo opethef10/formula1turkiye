@@ -381,6 +381,15 @@ class SeasonStatsView(ListView):
             win_count=Count('race_instances__grid'),
         ).order_by('-win_count')
 
+        context['qualy_winners'] = Driver.objects.filter(
+            race_instances__qualy=1,
+            race_instances__race__championship=self.championship,
+            race_instances__race__datetime__gte=self.start_race.datetime,
+            race_instances__race__datetime__lte=self.end_race.datetime,
+        ).annotate(
+            win_count=Count('race_instances__qualy'),
+        ).order_by('-win_count')
+
         context['fastest_laps'] = Driver.objects.filter(
             race_instances__fastest_lap=True,
             race_instances__race__championship=self.championship,
