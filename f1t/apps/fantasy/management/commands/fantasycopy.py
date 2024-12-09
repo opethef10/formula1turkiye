@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from ...models import Championship, RaceDriver, RaceTeam, RaceTeamDriver
+from ...models import Championship, Race, RaceDriver, RaceTeam, RaceTeamDriver
 
 
 class Command(BaseCommand):
@@ -19,6 +19,9 @@ class Command(BaseCommand):
         championship = Championship.objects.get(series=series, year=timezone.now().year)
         prev_race = championship.latest_race()
         next_race = prev_race.next
+        if not next_race:
+            self.stderr.write("No next race found")
+            raise Race.DoesNotExist("No next race found")
         prev_race_drivers = prev_race.driver_instances.all()
         prev_raceteams = prev_race.team_instances.all()
 

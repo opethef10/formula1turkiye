@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.11.10] - 2024-12-09
+### Fixed
+- Fantasycopy Race.DoesNotExist error
+### Added
+- Qualy winners to backend (not shown in front end yet)
+
 ## [2.11.9] - 2024-12-06
 ### Added
 - Driver color in supergrid
