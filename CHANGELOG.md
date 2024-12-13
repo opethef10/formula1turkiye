@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.12.1] - 2024-12-13
 ### Changed
 - Upgraded django_countries
+- Upgraded Django, django-pwa, django-minify-html, django-pwa
 
 ## [2.12.0] - 2024-12-12
 ### Added
