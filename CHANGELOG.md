@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -->
 
 ## [2.12.0] - 2024-12-12
+### Added
+- Docker files
 ### Fixed
 - Mainpage banner size issue
 

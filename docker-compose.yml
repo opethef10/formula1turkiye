@@ -1,0 +1,10 @@
+name: formula1turkiye
+
+services:
+  app:
+    image: formula1turkiye
+    container_name: formula1turkiye_container
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app

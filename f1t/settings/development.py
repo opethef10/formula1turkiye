@@ -14,6 +14,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+# For Docker
+# `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
+INTERNAL_IPS = type(str("c"), (), {"__contains__": lambda *a: True, "copy": lambda self: self})()
+
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
