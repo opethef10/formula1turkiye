@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.12.2] - 2024-12-14
+### Changed
+- The update script won't work outside of a virtual environment
+### Added
+- Run copydb.py script in the update script
+
 ## [2.12.1] - 2024-12-13
 ### Changed
 - Upgraded django_countries
