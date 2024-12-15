@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load fantasy_tags %}
+
+{% block stylesheet %}
+<style>body {text-align: justify}</style>
+{% endblock %}
+
 {% block title %}{{ flatpage.title }}{% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -7,5 +13,5 @@
 {% endblock %}
 
 {% block content %}
-    {{ flatpage.content }}
+    {{ flatpage.content|render_markdown }}
 {% endblock %}

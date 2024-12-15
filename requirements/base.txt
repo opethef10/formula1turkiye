@@ -11,3 +11,5 @@ django-pwa==2.0.1
 django-mobile-detect==0.1
 requests==2.32.3
 django-recaptcha==4.0.0
+django-mdeditor==0.1.20
+markdown==3.7

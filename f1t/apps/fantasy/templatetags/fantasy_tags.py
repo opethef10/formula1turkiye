@@ -1,9 +1,17 @@
 from numbers import Number
 
 from django import template
+from django.template.defaultfilters import stringfilter
+from django.utils.safestring import mark_safe
+import markdown
 
 register = template.Library()
 
+@register.filter
+@stringfilter
+def render_markdown(value):
+    md = markdown.Markdown(extensions=["fenced_code"])
+    return mark_safe(md.convert(value))
 
 @register.filter
 def call_or_get_attr(obj, name):
