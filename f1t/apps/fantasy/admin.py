@@ -3,6 +3,7 @@ from django.contrib.flatpages.models import FlatPage
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render, redirect
 from django.urls import path
+from mdeditor.widgets import MDEditorWidget
 
 from .forms import CopyFantasyElementsForm
 from .management.commands.fantasycopy import Command
@@ -119,7 +120,13 @@ admin.site.register(RaceDriver, RaceDriverAdmin)
 admin.site.register(RaceTeam, RaceTeamAdmin)
 admin.site.register(RaceTeamDriver, RaceTeamDriverAdmin)
 
-class FlatPageAdmin(SummernoteModelAdmin):
+class MDEditorAdmin (admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': MDEditorWidget}
+    }
+
+
+class FlatPageAdmin(MDEditorAdmin):
     pass
 
 
