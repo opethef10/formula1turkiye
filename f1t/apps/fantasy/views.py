@@ -128,7 +128,7 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
     # Group results by race and optionally filter by constructor
     results = {}
     for rd in race_drivers:
-        race_id = rd.race.id
+        race_id = int(f"{rd.race.id}{rd.race.round:02}")
         if race_id not in results:
             results[race_id] = {}
         results[race_id][rd.driver] = {
@@ -137,12 +137,14 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
             "q2": rd.q2_time(),
             "q3": rd.q3_time(),
             "constructor": rd.championship_constructor,
+            "round": race_id,
         }
 
     # Compare qualifying results race by race
     driver1_wins = 0
     driver2_wins = 0
     driver_ratios = []
+    race_rounds = []
 
     for race_id, data in results.items():
         if driver1 in data and driver2 in data:
@@ -173,6 +175,7 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
 
             if driver_ratio is not None:
                 driver_ratios.append(driver_ratio)
+                race_rounds.append(race_id)
 
     driver_median_ratio = median(driver_ratios) if driver_ratios else None
     mean_with_outliers = mean(driver_ratios) if driver_ratios else None
@@ -186,6 +189,7 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
         driver1_wins, driver2_wins = driver2_wins, driver1_wins
         driver_median_ratio = -driver_median_ratio if driver_median_ratio is not None else None
         driver_mean_ratio = -driver_mean_ratio if driver_mean_ratio is not None else None
+        driver_ratios = [-d for d in driver_ratios]
 
     total_comparisons = driver1_wins + driver2_wins
     driver1_percentage = (driver1_wins / total_comparisons) if total_comparisons > 0 else 0
@@ -199,6 +203,8 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
         "driver_mean_ratio": f"{driver_mean_ratio:.3%}" if driver_mean_ratio is not None else None,
         "total_comparisons": total_comparisons,
         "driver1_percentage": f"{driver1_percentage:.1%}",
+        "driver_ratios": [round(d*100,3) for d in driver_ratios],
+        "rounds": race_rounds,
     }
 
 
