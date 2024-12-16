@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.14.0] - 2024-12-16
+### Added
+- Qualifying head to head graphs
+
 ## [2.13.1] - 2024-12-15
 ### Fixed
 - Django MDEditor linewrap issue

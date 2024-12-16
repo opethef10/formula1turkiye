@@ -37,8 +37,11 @@
             Yüzdeleri, 100 sn'lik bir turda atılacak saniyelik fark olarak düşünebilirsiniz. </li>
         <li>Örneğin fark değeri 0.666% olarak gözüküyorsa o pilot sezon boyunca, 100 sn'lik bir turu
             baz alırsak, takım arkadaşından ortalama 0.666 sn hızlıdır demektir.</li>
+        <li>Soldaki tablonun üzerinde fareyi gezdirerek ya da mobil cihazlarda dokunarak sağdaki sıralama karşılaştırma grafiklerini görebilirsiniz.</li>
     </ul>
 
+    <div class="row">
+    <div class="col-12 col-lg-6">
     <table id="table_h2h"
            class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
@@ -54,7 +57,7 @@
         </thead>
         <tbody>
         {% for comparison in qualy_comparisons %}
-            <tr>
+            <tr data-id="{{forloop.counter}}" class="clickable-row">
                 <td style="background-color: {{ comparison.driver1.bgcolor }}; color: {{ comparison.driver1.fontcolor }}"><a style="color: {{ comparison.driver1.fontcolor }}" href="{% url 'formula:driver_detail' comparison.driver1.slug %}"><b>{{ comparison.driver1.name }}</b></a></td>
                 <td>{{ comparison.driver1_wins }}</td>
                 <td>{{ comparison.driver2_wins }}</td>
@@ -66,11 +69,182 @@
         {% endfor %}
         </tbody>
     </table>
-
+    </div>
+        <div class="col-6">
+    {% for comparison in qualy_comparisons %}
+            <canvas id="myChart_{{ forloop.counter }}" class="d-none" width="480" height="480"></canvas>
+    {% endfor %}</div>
+        </div>
 {% endblock %}
+<style>
+    /* Adjust the canvas size for a narrower chart */
+    #myChart {
+        width: 480px; /* Squeeze the chart */
+        height: 480px; /* Squeeze the chart */
+    }
+</style>
+
 
 {% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Get all clickable rows and canvases
+    const rows = document.querySelectorAll(".clickable-row");
+    const canvases = document.querySelectorAll("canvas");
+
+    rows.forEach(row => {
+        // Add event listener for both mouseover and click
+        ["mouseover", "click"].forEach(eventType => {
+            row.addEventListener(eventType, function () {
+                // Get the data-id of the row
+                const id = this.getAttribute("data-id");
+
+                // Hide all canvases
+                canvases.forEach(canvas => canvas.classList.add("d-none"));
+
+                // Show the corresponding canvas
+                const targetCanvas = document.getElementById(`myChart_${id}`);
+                if (targetCanvas) {
+                    targetCanvas.classList.remove("d-none");
+                }
+            });
+        });
+    });
+
+    {% for comparison in qualy_comparisons %}
+     // Access data passed from Django view
+     var data = JSON.parse("{{ comparison.driver_ratios }}");
+     var rounds = JSON.parse("{{ comparison.rounds }}");
+
+    // Calculate 6-race rolling average
+    function calculateRollingAverage(data, windowSize) {
+        const rollingAvg = [];
+        const halfWindow = Math.floor(windowSize / 2);
+
+        // Iterate from halfWindow to data.length - halfWindow
+        for (let i = halfWindow; i < data.length - halfWindow; i++) {
+            const start = i - halfWindow;
+            const end = i + halfWindow; // Inclusive
+            const window = data.slice(start, end);
+
+            rollingAvg.push(window.reduce((a, b) => a + b, 0) / window.length);
+        }
+
+        return rollingAvg;
+    }
+
+    // Calculate mean and standard deviation
+    var mean = data.reduce((a, b) => a + b, 0) / data.length;
+    var stdDev = Math.sqrt(data.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / data.length);
+    var twoSigmaDown = mean - 2 * stdDev;
+    var twoSigmaUp = mean + 2 * stdDev;
+
+    // Filter data and rounds to remove points outside ±2σ bounds
+    var filteredData = [];
+    var filteredRounds = [];
+
+    data.forEach((value, index) => {
+        if (value >= twoSigmaDown && value <= twoSigmaUp) {
+            filteredData.push(value);
+            filteredRounds.push(rounds[index]%100); // REMEMBER THIS HACK TO GET DRIVER AND SEASON H2H BOTH
+        }
+    });
+
+    // Assign filtered data and rounds back to variables
+    data = filteredData;
+    rounds = filteredRounds;
+
+    var rollingAvg = calculateRollingAverage(data, 6);
+
+    // Calculate mean and standard deviation again
+    var mean = data.reduce((a, b) => a + b, 0) / data.length;
+    var stdDev = Math.sqrt(data.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / data.length);
+    var twoSigmaDown = mean - 2 * stdDev;
+    var twoSigmaUp = mean + 2 * stdDev;
+
+    // Chart.js code to render a scatter plot with rolling average
+    var ctx = document.getElementById('myChart_{{ forloop.counter }}').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: '{{comparison.driver1}} - {{comparison.driver2}}',
+                    data: data.map((value, index) => ({ x: rounds[index], y: value })), // Dots only
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                },
+                {
+                    label: '6 Yarışlık Hareketli Ortalama',
+                    type: 'line', // Rolling average as a line
+                    data: rollingAvg.map((value, index) => ({ x: rounds[index + 3], y: value })),
+                    borderColor: 'rgba(54, 162, 235, 0.5)', // Line color
+                    borderWidth: 2,
+                    fill: false, // No background fill
+                },
+                {
+                    label: 'Ortalama',
+                    type: 'line', // Single constant line for mean
+                    pointRadius: [0],
+                    data: [
+                        { x: Math.min(...rounds), y: mean },
+                        { x: Math.max(...rounds), y: mean }
+                    ],
+                    borderColor: 'rgba(75, 192, 192, 1)', // Green line for mean
+                    borderWidth: 2,
+                    borderDash: [5, 5], // Dashed line
+                    fill: false,
+                },
+                {
+                    label: '0',
+                    type: 'line', // Single constant line for mean
+                    pointRadius: [0],
+                    data: [
+                        { x: Math.min(...rounds), y: 0 },
+                        { x: Math.max(...rounds), y: 0 }
+                    ],
+                    borderColor: 'rgba(0, 0, 0, 0.25)',
+                    borderWidth: 1,
+                    fill: false,
+                    showInLegend: false, // Ensures this dataset doesn't appear in the legend
+                },
+//                {
+//                    label: '+2σ Bound',
+//                    type: 'line', // Single constant line for +2σ
+//                    data: [
+//                        { x: Math.min(...rounds), y: twoSigmaUp },
+//                        { x: Math.max(...rounds), y: twoSigmaUp }
+//                    ],
+//                    borderColor: 'rgba(255, 205, 86, 1)', // Yellow line for +2σ
+//                    borderWidth: 2,
+//                    borderDash: [5, 5], // Dashed line
+//                    fill: false,
+//                },
+//                {
+//                    label: '-2σ Bound',
+//                    type: 'line', // Single constant line for -2σ
+//                    data: [
+//                        { x: Math.min(...rounds), y: twoSigmaDown },
+//                        { x: Math.max(...rounds), y: twoSigmaDown }
+//                    ],
+//                    borderColor: 'rgba(255, 205, 86, 1)', // Yellow line for -2σ
+//                    borderWidth: 2,
+//                    borderDash: [5, 5], // Dashed line
+//                    fill: false,
+//                }
+            ]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: 'Yarış' } },
+                y: { title: { display: true, text: 'Fark %' }
+                }
+            },
+            maintainAspectRatio: true, // Allows setting independent width/height
+            responsive: false, // Ensures canvas adjusts to container size
+        }
+    });
+
+    {% endfor %}
         let numbersType = $.fn.dataTable.absoluteOrderNumber([
             {value: '', position: 'bottom'}
         ])
@@ -98,6 +272,11 @@
                         ],
                     }
                 );
+                // Get the data-id of the first <tr> in the table
+                var rowId = $('table tbody tr:first').data('id');
+
+                // Find the canvas element with the corresponding id and remove the d-none class to show it
+                $('#myChart_' + rowId).removeClass('d-none');
         });
 
     </script>
