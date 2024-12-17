@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -->
 
 ## [2.14.0] - 2024-12-16
+### Changed
+- Database backup script
+
+## [2.14.0] - 2024-12-16
 ### Added
 - Qualifying head to head graphs
 
