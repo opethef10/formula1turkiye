@@ -7,7 +7,7 @@ if [ -z "$VIRTUAL_ENV" ]; then
     exit 1
 fi
 
-scripts/copydb.py
+scripts/backupdb.sh
 git pull
 pip install -r requirements/production.txt
 python manage.py collectstatic --noinput
