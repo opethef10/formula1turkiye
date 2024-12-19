@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.14.2] - 2024-12-19
+### Changed
+- radio_check and toolate jpg quality is enhanced
+
+## [2.14.1] - 2024-12-17
+### Changed
+- Database backup script
+
 ## [2.14.0] - 2024-12-16
 ### Changed
 - Database backup script
