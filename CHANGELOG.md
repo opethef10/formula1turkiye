@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.14.2] - 2024-12-19
 ### Changed
 - radio_check and toolate jpg quality is enhanced
+- In homepage, 2024 is hardcoded for now
 ### Removed
 - Django Summernote
 
