@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "django_countries",
     # 'clearcache',
     'colorfield',
-    'django_summernote',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -182,7 +181,6 @@ MAX_RACES_IN_SEASON = 24
 # THIRD-PARTY SETTINGS
 # ==============================================================================
 
-SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 MDEDITOR_CONFIGS = {

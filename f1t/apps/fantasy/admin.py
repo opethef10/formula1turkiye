@@ -1,6 +1,5 @@
 from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
-from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render, redirect
 from django.urls import path
 from mdeditor.widgets import MDEditorWidget
