@@ -80,7 +80,7 @@
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
             <li class="nav-item">
-                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-bs-toggle="tab"
                    href="#{{ tab_id }}">{{ title }}</a>
             </li>
         {% endfor %}
