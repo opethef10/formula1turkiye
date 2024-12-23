@@ -34,7 +34,7 @@
             <p class="text-center">Yaptığınız tahmini görmek ya da yeni tahmin yapmak için:</p>
         </div>
         <div class="row justify-content-center">
-            <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}" class="btn btn-primary ml-2">Tahmin Yap</a>
+            <a href="{% url 'formula:tahmin:new_team_form' view.championship.series view.championship.year %}" class="btn btn-primary">Tahmin Yap</a>
         </div>
     {% else %}
         {% if user.is_superuser %}
