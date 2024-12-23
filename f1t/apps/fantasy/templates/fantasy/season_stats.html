@@ -22,7 +22,7 @@
     </div>
 
     <div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
-        <div class="btn-group mr-4" role="group" aria-label="Menu Group Tahmin">
+        <div class="btn-group me-4" role="group" aria-label="Menu Group Tahmin">
             <a href="{% url 'formula:season_supergrid' championship.series championship.year %}"
                class="btn btn-outline-primary">Süpergrid</a>
             <a href="{% url 'formula:season_quali_h2h' championship.series championship.year %}"
@@ -31,22 +31,22 @@
     </div>
 
     <div class="my-4{% if request.device.is_mobile %} small{% endif %}">
-    <form method="get" action="{{ request.path }}" class="form-inline">
-      <label for="fromRound" class="mr-2">İlk:</label>
-      <select id="fromRound" name="from_round" class="custom-select mr-3">
+    <form method="get" action="{{ request.path }}" class="d-flex flex-row align-items-center">
+      <label for="fromRound" class="me-2">İlk:</label>
+      <select id="fromRound" name="from_round" class="form-select w-auto me-3">
         {% for race in race_list %}
           <option value="{{ race.round }}" {% if race.round == view.start_race.round %}selected{% endif %}>{{ race.round }} - {{ race.name }}</option>
         {% endfor %}
       </select>
 
-      <label for="toRound" class="mr-2">Son:</label>
-      <select id="toRound" name="to_round" class="custom-select mr-3">
+      <label for="toRound" class="me-2">Son:</label>
+      <select id="toRound" name="to_round" class="form-select w-auto me-3">
         {% for race in race_list %}
           <option value="{{ race.round }}" {% if race.round == view.end_race.round %}selected{% endif %}>{{ race.round }} - {{ race.name }}</option>
         {% endfor %}
       </select>
 
-      <button type="submit" class="btn btn-primary mr-2">Süz</button>
+      <button type="submit" class="btn btn-primary me-2">Süz</button>
       <a href="{{ request.path }}" class="btn btn-secondary">Sıfırla</a>
     </form>
       <small class="text-muted">
@@ -57,11 +57,13 @@
 {% if request.device.is_mobile %}
 <div class="card-group mb-4 small">
 {% else %}
-<div class="card-deck mb-4">
+<div class="row row-cols-5 g-4 mb-4">
 {% endif %}
+
     <!-- Winners Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white text-center font-weight-bold">
+    <div class="col">
+    <div class="card h-100 shadow-sm">
+        <div class="card-header bg-dark text-white text-center fw-bold">
             Galibiyet
         </div>
         <div class="card-body p-2">
@@ -77,10 +79,11 @@
             </ul>
         </div>
     </div>
+    </div>
 
     <!-- Quali Winners Card -->
-    <!-- <div class="card shadow-sm"> -->
-    <!--     <div class="card-header bg-dark text-white text-center font-weight-bold"> -->
+    <!-- <div class="card h-100 shadow-sm"> -->
+    <!--     <div class="card-header bg-dark text-white text-center fw-bold"> -->
     <!--         Sıralama Birinciliği -->
     <!--     </div> -->
     <!--     <div class="card-body p-2"> -->
@@ -98,8 +101,9 @@
     <!-- </div> -->
 
     <!-- Pole Sitters Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white text-center font-weight-bold">
+    <div class="col">
+    <div class="card h-100 shadow-sm">
+        <div class="card-header bg-dark text-white text-center fw-bold">
             Pol Pozisyonu
         </div>
         <div class="card-body p-2">
@@ -115,10 +119,12 @@
             </ul>
         </div>
     </div>
+    </div>
 
     <!-- Fastest Laps Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white text-center font-weight-bold">
+    <div class="col">
+    <div class="card h-100 shadow-sm">
+        <div class="card-header bg-dark text-white text-center fw-bold">
             En Hızlı Tur
         </div>
         <div class="card-body p-2">
@@ -134,10 +140,12 @@
             </ul>
         </div>
     </div>
+    </div>
 
     <!-- Podium Holders Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white text-center font-weight-bold">
+    <div class="col">
+    <div class="card h-100 shadow-sm">
+        <div class="card-header bg-dark text-white text-center fw-bold">
             Podyum
         </div>
         <div class="card-body p-2">
@@ -153,9 +161,12 @@
             </ul>
         </div>
     </div>
+    </div>
+
 <!-- Sprint Winners Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white text-center font-weight-bold">
+    <div class="col">
+    <div class="card h-100 shadow-sm">
+        <div class="card-header bg-dark text-white text-center fw-bold">
             Sprint{% if not request.device.is_mobile %} Galibiyeti{% endif %}
         </div>
         <div class="card-body p-2">
@@ -170,6 +181,7 @@
                 {% endfor %}
             </ul>
         </div>
+    </div>
     </div>
 </div>
 

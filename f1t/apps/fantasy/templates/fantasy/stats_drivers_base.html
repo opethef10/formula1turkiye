@@ -9,8 +9,8 @@
                 <div class="d-flex mb-1">
 
                     <!-- fromYear select -->
-                    <div class="mr-3">
-                        <select id="fromYear" name="from_year" class="custom-select custom-select-sm">
+                    <div class="me-3">
+                        <select id="fromYear" name="from_year" class="form-select form-select-sm w-auto">
                             {% for championship in view.championship_list %}
                                 <option value="{{ championship.year }}"
                                         {% if championship.year == view.start_race.championship.year %}selected{% endif %}>
@@ -21,8 +21,8 @@
                     </div>
 
                     <!-- fromRound select -->
-                    <div class="mr-3">
-                        <select id="fromRound" name="from_round" class="custom-select custom-select-sm">
+                    <div class="me-3">
+                        <select id="fromRound" name="from_round" class="form-select form-select-sm w-auto">
                             <option value="" disabled selected>Yarış seçiniz</option>
                             {% for race in view.race_list %}
                                 <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -44,8 +44,8 @@
                 <!-- Second Row: son label, toYear, toRound, Sıfırla button -->
                 <div class="d-flex mb-1">
                     <!-- toYear select -->
-                    <div class="mr-3">
-                        <select id="toYear" name="to_year" class="custom-select custom-select-sm">
+                    <div class="me-3">
+                        <select id="toYear" name="to_year" class="form-select form-select-sm w-auto">
                             {% for championship in view.championship_list %}
                                 <option value="{{ championship.year }}"
                                         {% if championship.year == view.end_race.championship.year %}selected{% endif %}>
@@ -56,8 +56,8 @@
                     </div>
 
                     <!-- toRound select -->
-                    <div class="mr-3">
-                        <select id="toRound" name="to_round" class="custom-select custom-select-sm">
+                    <div class="me-3">
+                        <select id="toRound" name="to_round" class="form-select form-select-sm w-auto">
                             <option value="" disabled selected>Yarış seçiniz</option>
                             {% for race in view.race_list %}
                                 <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -85,15 +85,15 @@
         </div>
         {% else %}
         <div class="my-4">
-            <form method="get" action="{{ request.path }}" class="form-inline">
-                <label for="fromYear" class="mr-2">İlk:</label>
-                <select id="fromYear" name="from_year" class="custom-select custom-select-sm mr-3">
+            <form method="get" action="{{ request.path }}" class="d-flex flex-row align-items-center">
+                <label for="fromYear" class="me-2">İlk:</label>
+                <select id="fromYear" name="from_year" class="form-select form-select-sm w-auto me-3">
                     {% for championship in view.championship_list %}
                         <option value="{{ championship.year }}"
                                 {% if championship.year == view.start_race.championship.year %}selected{% endif %}>{{ championship.year }}</option>
                     {% endfor %}
                 </select>
-                <select id="fromRound" name="from_round" class="custom-select custom-select-sm mr-3">
+                <select id="fromRound" name="from_round" class="form-select form-select-sm w-auto me-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
                         <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -105,14 +105,14 @@
                     {% endfor %}
                 </select>
 
-                <label for="toYear" class="mr-2">Son:</label>
-                <select id="toYear" name="to_year" class="custom-select custom-select-sm mr-3">
+                <label for="toYear" class="me-2">Son:</label>
+                <select id="toYear" name="to_year" class="form-select form-select-sm w-auto me-3">
                     {% for championship in view.championship_list %}
                         <option value="{{ championship.year }}"
                                 {% if championship.year == view.end_race.championship.year %}selected{% endif %}>{{ championship.year }}</option>
                     {% endfor %}
                 </select>
-                <select id="toRound" name="to_round" class="custom-select custom-select-sm mr-3">
+                <select id="toRound" name="to_round" class="form-select form-select-sm w-auto me-3">
                     <option value="" disabled selected>Yarış seçiniz</option>
                     {% for race in view.race_list %}
                         <option value="{{ race.round }}" data-year="{{ race.championship.year }}"
@@ -125,7 +125,7 @@
                 </select>
 
 
-                <button type="submit" class="btn btn-sm btn-primary mr-2">Süz</button>
+                <button type="submit" class="btn btn-sm btn-primary me-2">Süz</button>
                 <a href="{{ request.path }}" class="btn btn-sm btn-secondary">Sıfırla</a>
             </form>
             <small class="text-muted">
