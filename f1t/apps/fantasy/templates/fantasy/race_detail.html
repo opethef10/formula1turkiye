@@ -19,15 +19,15 @@
     </div>
 
     {% if view.championship.is_fantasy %}
-    <a href="{% url 'formula:fantasy_race_results' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Fantasy Lig Sonuçları</a>
+    <a href="{% url 'formula:fantasy_race_results' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 me-2">Fantasy Lig Sonuçları</a>
     {% endif %}
     {% if view.championship.is_tahmin %}
-    <a href="{% url 'formula:tahmin:race_tahmins' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 mr-2">Tahmin Ligi Sonuçları</a>
+    <a href="{% url 'formula:tahmin:race_tahmins' view.championship.series view.championship.year race.round %}" class="btn btn-primary mb-4 me-2">Tahmin Ligi Sonuçları</a>
     {% endif %}
     {% if user.is_superuser %}
-        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Sonuç / Fiyat Gir</a>
-        <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Yarış Puanı Gir</a>
-        <a href="{% url opts|admin_urlname:'change' race.pk %}" class="btn btn-secondary mb-4 mr-2">Yönetici Sayfasında Düzenle</a>
+        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Sonuç / Fiyat Gir</a>
+        <a href="{% url 'ratings:create_ratings' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Yarış Puanı Gir</a>
+        <a href="{% url opts|admin_urlname:'change' race.pk %}" class="btn btn-secondary mb-4 me-2">Yönetici Sayfasında Düzenle</a>
     {% endif %}
 
     <table id="table_race_list" class="table table-responsive table-sm align-middle text-center">

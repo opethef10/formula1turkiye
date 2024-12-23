@@ -23,7 +23,7 @@
 	
 	<div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
 		{% if view.championship.is_fantasy %}
-		  <div class="btn-group mr-4" role="group" aria-label="Menu Group Fantasy">
+		  <div class="btn-group me-4" role="group" aria-label="Menu Group Fantasy">
 			<a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}" class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Fantasy Lig Kuralları</a>
 			<a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
 			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Sürücü İstatistikleri</a>

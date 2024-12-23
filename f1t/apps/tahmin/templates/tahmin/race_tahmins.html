@@ -24,7 +24,7 @@
         <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{{ race.next.get_tahmin_url }}">{{ race.next|default_if_none:"" }} &rarr;</a>
     </div>
 
-	<a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}" class="btn btn-primary mb-4 mr-2">Genel Klasman</a>
+	<a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}" class="btn btn-primary mb-4 me-2">Genel Klasman</a>
 
     {% if before_race %}
         <div class="alert alert-warning" role="alert">
@@ -38,12 +38,12 @@
         </div>
     {% else %}
         {% if user.is_superuser %}
-            <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 mr-2">Sonuç Gir</a>
+            <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Sonuç Gir</a>
             {% if race.questions.all.0 %}
-                <a href="{% url opts|admin_urlname:'change' race.questions.all.0.pk %}" class="btn btn-secondary mb-4 mr-2">1. Soruyu Değiştir</a>
+                <a href="{% url opts|admin_urlname:'change' race.questions.all.0.pk %}" class="btn btn-secondary mb-4 me-2">1. Soruyu Değiştir</a>
             {% endif %}
             {% if race.questions.all.1 %}
-                <a href="{% url opts|admin_urlname:'change' race.questions.all.1.pk %}" class="btn btn-secondary mb-4 mr-2">2. Soruyu Değiştir</a>
+                <a href="{% url opts|admin_urlname:'change' race.questions.all.1.pk %}" class="btn btn-secondary mb-4 me-2">2. Soruyu Değiştir</a>
             {% endif %}
         {% endif %}
     <table id="top10"

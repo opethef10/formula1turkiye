@@ -28,21 +28,21 @@
 
 
   <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
-    <div class="btn-group mr-4" role="group" aria-label="Menu Group Championship">
-        <button id="print_button" class="btn-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-print"></i> Takvimi Yazdır</button>
+    <div class="btn-group me-4" role="group" aria-label="Menu Group Championship">
+        <button id="print_button" class="btn-primary me-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-print"></i> Takvimi Yazdır</button>
 		<a href="{% url 'formula:season_stats' view.championship.series view.championship.year %}"
-			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-chart-simple"></i> Sezon İstatistikleri</a>
+			   class="btn btn-outline-primary me-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-chart-simple"></i> Sezon İstatistikleri</a>
         {% if view.championship.is_fantasy %}
             <a href="{% url 'formula:team_list' view.championship.series view.championship.year %}"
-               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy Lig</a>
+               class="btn btn-outline-primary me-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-hand-holding-dollar"></i> Fantasy Lig</a>
         {% endif %}
         {% if view.championship.is_tahmin %}
             <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
-               class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-list-ol"></i> Tahmin Ligi</a>
+               class="btn btn-outline-primary me-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-list-ol"></i> Tahmin Ligi</a>
         {% endif %}
 		{% if view.championship.is_puanla %}
             <a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"
-			   class="btn btn-outline-primary mr-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
+			   class="btn btn-outline-primary me-2 {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
         {% endif %}
 
     </div>
