@@ -23,7 +23,7 @@
 	
 	<div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
 		{% if championship.is_tahmin %}
-      <div class="btn-group me-4" role="group" aria-label="Menu Group Tahmin">
+      <div class="d-flex gap-2" role="group" aria-label="Menu Group Tahmin">
 		<a href="{% url "django.contrib.flatpages.views.flatpage" url="tahmin/" %}" class="btn btn-outline-primary">Tahmin Ligi Nedir</a>
         <a href="{% url 'formula:tahmin:new_team_form' championship.series championship.year %}"
            class="btn btn-outline-primary">Yeni Tahmin</a>

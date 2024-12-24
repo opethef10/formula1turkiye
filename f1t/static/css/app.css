@@ -1,3 +1,7 @@
+:root {
+    --bs-border-radius: 1rem; /* Adjust border radius */
+}
+
 a {
     text-decoration: none; !important
 }
