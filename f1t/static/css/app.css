@@ -1,5 +1,6 @@
 :root {
     --bs-border-radius: 1rem; /* Adjust border radius */
+    --bs-body-bg: #f8f9fa; /* Adjust border radius */
 }
 
 a {
