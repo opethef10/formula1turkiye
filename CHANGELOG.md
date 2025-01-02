@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.14.3] - 2025-01-02
+### Fixed
+- Age function when birthday is 29 February
+
 ## [2.14.2] - 2024-12-19
 ### Changed
 - radio_check and toolate jpg quality is enhanced

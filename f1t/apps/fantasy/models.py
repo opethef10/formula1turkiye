@@ -216,7 +216,11 @@ class Driver(models.Model):
         today = timezone.now().date()  # Get the current date from timezone-aware datetime
         birthdate = self.dob
         # Calculate the birthday in the current year
-        birthday = birthdate.replace(year=today.year)
+        try:
+            birthday = birthdate.replace(year=today.year)
+        except ValueError:
+            # Handle February 29 for non-leap years by using March 1
+            birthday = birthdate.replace(year=today.year, month=3, day=1)
 
         # Calculate the age with floating-point precision
         age = today.year - birthdate.year + ((today - birthday).days / 365.0)
