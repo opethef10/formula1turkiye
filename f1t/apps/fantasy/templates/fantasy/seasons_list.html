@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Fantasy Lig{% endblock %}
+{% block title %}{{ series }}{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -8,7 +8,8 @@
 {% endblock %}
 
 {% block content %}
-    <table class="table table-responsive text-center">
+<div class="table-responsive">
+    <table class="table table-borderless text-center">
         <tbody>
             {% for decade, championships in object_list.items %}
                 <tr>
@@ -23,4 +24,5 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}
