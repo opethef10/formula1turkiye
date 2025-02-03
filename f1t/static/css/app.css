@@ -1,6 +1,10 @@
 :root {
     --bs-border-radius: 1rem; /* Adjust border radius */
-    --bs-body-bg: #f8f9fa; /* Adjust border radius */
+    /*--bs-body-bg: #f8f9fa; !* Adjust border radius *!*/
+}
+
+.table {
+    --bs-table-bg: #f8f9fa;
 }
 
 a {
