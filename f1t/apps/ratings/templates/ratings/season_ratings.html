@@ -20,14 +20,15 @@
         <h3 class="text-center">{{ view.championship.short_str|upper }} Sezonu Yarış Puanları</h3>
         <a class="btn btn-outline-primary {% if not view.championship.next or not view.championship.next.is_puanla %}disabled{% endif %}" href="{% if not view.championship.next or not view.championship.next.is_puanla %}#{% else %}{% url 'ratings:season_ratings' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
-	
+
 	<div class="btn-toolbar my-4" role="toolbar" aria-label="Toolbar with button groups">
       <div class="d-flex gap-2" role="group" aria-label="Menu Group Tahmin">
         <a href="{% url "ratings:series_ratings" "f1" %}"
            class="btn btn-primary me-3">Tüm Sezonlar</a>
       </div>
 	</div>
-   <table id="table_season_rating_list" class="table table-responsive table-hover table-sm table-striped">
+    <div class="table-responsive">
+    <table id="table_season_rating_list" class="table table-borderless d-block table-hover table-sm table-striped">
         <thead class="thead-inverse">
         <tr>
             <th>#</th>
@@ -66,6 +67,7 @@
             </tr>
         </tfoot>
     </table>
+    </div>
 {% endblock %}
 
 {% block javascript %}
