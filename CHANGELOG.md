@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.15.1] - 2025-02-15
+### Security
+- Upgrade libraries to fix security vulnerabilities
+
 ## [2.15.0] - 2025-02-15
 ### Added
 - Add qodo to gitignore
