@@ -13,8 +13,9 @@
 {% endblock %}
 
 {% block content %}
+    <div class="table-responsive">
     <table id="table_constructor_list"
-           class="table table-responsive compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+           class="table table-borderless d-block compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
         <thead class="thead-inverse">
         <tr>
             <th>Ad</th>
@@ -31,6 +32,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 
 {% endblock %}
 
