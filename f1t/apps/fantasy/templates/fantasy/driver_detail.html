@@ -53,8 +53,9 @@
         </div>
     </div>
 </div>
+<div class="table-responsive">
 <table id="driver_results"
-           class="table table-responsive table-hover table-striped table-sm d-block d-lg-table text-center">
+           class="table table-hover table-striped table-sm d-block d-lg-table text-center">
         <thead class="thead-inverse">
         <tr>
             <th>Sıra</th>
@@ -76,11 +77,12 @@
             {% endfor %}
         </tr>
     </table>
+</div>
  <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
             <li class="nav-item">
-                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab"
+                <a class="nav-link {% if forloop.first %}active{% endif %}" data-bs-toggle="tab"
                    href="#{{ tab_id }}">{{ title }}</a>
             </li>
         {% endfor %}
@@ -92,8 +94,9 @@
                  id="{{ tab_id }}">
 
                 <br/>
+                <div class="table-responsive">
                 <table id="results_by_year_{{ tab_id }}"
-                       class="table table-bordered table-responsive table-sm d-block d-lg-table">
+                       class="table table-bordered table-sm d-block d-lg-table">
                     <thead class="thead-inverse">
                     <tr>
                         <th class="text-center">Şampiyona</th>
@@ -114,6 +117,7 @@
                         </tr>
                     {% endfor %}
                 </table>
+                </div>
             </div>
 
         {% endfor %}

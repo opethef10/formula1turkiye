@@ -1,3 +1,17 @@
+:root {
+    --bs-border-radius: 1rem; /* Adjust border radius */
+    --bs-border-radius-sm: 1rem; /* Adjust border radius */
+    /*--bs-body-bg: #f8f9fa; !* Adjust border radius *!*/
+}
+
+.table {
+    --bs-table-bg: #f8f9fa;
+}
+
+a {
+    text-decoration: none; !important
+}
+
 body {
     font-family: 'Cabin', "serif"; !important
 }
