@@ -1,11 +1,11 @@
-Django==5.1.4
+Django==5.1.6
 django-widget-tweaks==1.5.0
-django-minify-html==1.11.0
-IPython==8.30.0
+django-minify-html==1.12.0
+IPython==8.32.0
 django_extensions==3.2.3
 django-clearcache==1.2.1
 django-countries===7.6.1
-django-colorfield==0.11.0
+django-colorfield==0.12.0
 django-pwa==2.0.1
 django-mobile-detect==0.1
 requests==2.32.3
