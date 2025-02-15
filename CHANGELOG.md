@@ -15,6 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.15.0] - 2025-02-15
+### Added
+- Add qodo to gitignore
+### Changed
+- Fix race_edit for Bootstrap 5
+- Make more tables responsive
+- Make /<series>/<year>/... tables responsive again
+- Table specific background color
+- Re-adjust responsive tables
+- Change bs-body-bg
+- Make buttons rounded in corners
+- Upgrade tablink mechanism to Bootstrap 5
+- Migrate the alert close button to Bootstrap 5
+- Upgrade mr to me for Bootstrap 5
+- Migrate race filters and season stats to Bootstrap 5
+- Update breadcrumbs class
+- Replace form-group and ml
+- Remove old static bootstrap files
+- Upgrade navbar and footer to Bootstrap 5
+- Upgrade home page to Bootstrap 5
+- Upgrade to Bootsrap 5
+
 ## [2.14.3] - 2025-01-02
 ### Fixed
 - Age function when birthday is 29 February
