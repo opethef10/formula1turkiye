@@ -26,8 +26,9 @@
     <li>Son yarış: <a href="{{ last_race.get_absolute_url }}">{{ last_race }}</a></li>
   </ul>
 
+  <div class="table-responsive">
   <table id="constructor_results"
-           class="table table-responsive table-hover table-striped">
+           class="table d-block table-hover table-striped">
         <thead class="thead-inverse">
         <tr>
             <th>Sıra</th>
@@ -49,6 +50,7 @@
             {% endfor %}
         </tr>
     </table>
+    </div>
 
 {#  <table id="results_by_year"#}
 {#           class="table table-bordered table-sm">#}

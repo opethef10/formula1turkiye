@@ -10,7 +10,7 @@
 
 {% for field in form %}
     {% if field.name == "captcha" and form.captcha %}
-        <div class="form-group">
+        <div class="mb-3">
             {{ form.captcha.label_tag|linebreaks }}
             {{ form.captcha }}  <!-- Render the captcha field -->
             {% for error in form.captcha.errors %}
@@ -20,7 +20,7 @@
             {% endfor %}
         </div>
     {% else %}
-  <div class="form-group">
+  <div class="mb-3">
     {{ field.label_tag|linebreaks }}
     {% render_field field class=field|input_class %}
     {% for error in field.errors %}
