@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import DynamicPredictionForm
@@ -117,6 +117,24 @@ class PredictionFormView(LoginRequiredMixin, FormView):
             series=self.kwargs.get("series"),
             year=self.kwargs.get("year")
         )
+
+    def _is_past_deadline(self):
+        try:
+            race = self.championship.races.earliest("fp1_datetime")
+            deadline = race.fp1_datetime
+            return timezone.now() > deadline
+        except Race.DoesNotExist:
+            return True
+
+    def get(self, request, *args, **kwargs):
+        if self._is_past_deadline():
+            return TemplateView.as_view(template_name='expired.html')(request)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self._is_past_deadline():
+            return TemplateView.as_view(template_name='expired.html')(request)
+        return super().post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         # Pass the championship to the form
