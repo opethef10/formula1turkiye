@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static form_tags widget_tweaks %}
+
+{% block title %}{{ view.championship.get_series_display }} {{ view.championship.year }} Sezon Tahminleri{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item">Sezon Tahminleri</li>
+    <li class="breadcrumb-item">Form</li>
+{% endblock %}
+
+{% block stylesheet %}
+    <style>
+.matrix-question-group {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.matrix-header h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.matrix-fields .mb-3 {
+    margin-bottom: 1rem!important;
+}
+
+.matrix-fields label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ms-2" id="deselect">Değişiklikleri Geri Al</button>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('input[type="radio"], input[type="checkbox"]').removeClass('form-control');
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find all hidden header fields
+            document.querySelectorAll('input[type="hidden"][id^="id_q_"][id$="_header"]').forEach(headerField => {
+                const questionId = headerField.id.split('_')[2];
+
+                // Create container
+                const container = document.createElement('div');
+                container.className = 'matrix-question-group mb-4';
+                container.innerHTML = `<div class="matrix-fields"></div>`;
+
+                // Find all related position fields
+                const positionFields = document.querySelectorAll(`[data-question-id="${questionId}"]`);
+
+                // Move fields into container
+                positionFields.forEach(field => {
+                    const fieldContainer = field.closest('.mb-3');
+                    container.querySelector('.matrix-fields').appendChild(fieldContainer);
+                });
+
+                // Insert before hidden header field
+                headerField.parentNode.insertBefore(container, headerField);
+            });
+            document.querySelectorAll('[data-question-id]').forEach(select => {
+                select.classList.add('form-select');
+            });
+        });
+    </script>
+{% endblock %}
