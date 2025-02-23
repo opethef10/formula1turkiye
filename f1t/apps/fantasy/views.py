@@ -286,9 +286,12 @@ class SeasonStatsView(ListView):
             year=self.kwargs.get("year")
         )
 
-        # Get first and last races as default boundaries
-        first_race = self.championship.races.earliest("datetime")
-        last_race = self.championship.races.latest("datetime")
+        try:
+            # Get first and last races as default boundaries
+            first_race = self.championship.races.earliest("datetime")
+            last_race = self.championship.races.latest("datetime")
+        except Race.DoesNotExist:
+            raise Http404("Bu şampiyona için yarış bulunamadı.")
 
         # Get query parameters from the URL
         try:
