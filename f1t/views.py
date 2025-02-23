@@ -22,7 +22,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        current_year = 2024  # timezone.now().year
+        current_year = 2025  # timezone.now().year
         for championship in Championship.objects.filter(year=current_year):
             fantasy_instances = None
             team_count = None

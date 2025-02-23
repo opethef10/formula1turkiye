@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.26.1] - 2025-02-23
+### Changed
+- Homepage year to 2025
+
 ## [2.16.1] - 2025-02-23
 ### Fixed
 - SeasonStatsView error
