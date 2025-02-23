@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block title %}{{ prediction.user }} - {{ view.championship.get_series_display }} {{ view.championship.year }} Sezon Tahminleri{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item">Sezon Tahminleri</li>
+    <li class="breadcrumb-item">{{ prediction.user }}</li>
+{% endblock %}}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">
+        {{ prediction.user.username }}'s {{ prediction.championship.year }}
+        {{ prediction.championship.get_series_display }} Predictions
+        <small class="text-muted">Last updated: {{ prediction.updated_at|date:"DATETIME_FORMAT" }}</small>
+    </h1>
+
+    <div class="card">
+        <div class="card-body">
+            {% for answer in processed_answers %}
+                <div class="prediction-item mb-4">
+                    <h5 class="card-title">{{ answer.question.order }}. {{ answer.question.text }}</h5>
+                    <p class="text-muted">{{ answer.question.help_text }}</p>
+
+                    <div class="prediction-answer">
+                        {% if answer.resolved_value %}
+                            {% if answer.question.question_type == 'driver_singleselect' or answer.question.question_type == 'constructor_singleselect' or answer.question.question_type == 'race_singleselect' %}
+                                <p class="mb-1">{{ answer.resolved_value.name }}</p>
+                            {% elif answer.question.question_type == 'driver_multiselect' or answer.question.question_type == 'constructor_multiselect' or answer.question.question_type == 'race_select' %}
+                                <ul class="list-unstyled">
+                                    {% for item in answer.resolved_value %}
+                                        <li>{{ item.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% elif answer.question.question_type == 'boolean' %}
+                                <p>{{ answer.resolved_value|yesno:"Evet,Hayır" }}</p>
+                            {% elif answer.question.question_type == 'driver_matrix' %}
+                                <div class="driver-matrix">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Sıra</th>
+                                            <th>Pilot</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for driver in answer.resolved_value %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}.</td>
+                                                <td>
+                                                    {% if driver %}
+                                                        {{ driver.name }}
+                                                    {% else %}
+                                                        <span class="text-danger">(Deleted Driver)</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p>{{ answer.value }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="mb-1">{{ answer.value }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if not forloop.last %}<hr>{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
