@@ -7,29 +7,29 @@ from f1t.apps.fantasy.models import Championship
 
 class Question(models.Model):
     QUESTION_TYPES = [
-        ('integer', 'Sayısal Değer'),
-        ('multiple_choice', 'Çoklu Seçim'),
-        ('single_choice', 'Tek Seçim (Radio Button)'),
+        ('integer', 'Numerical Value'),
+        ('multiple_choice', 'Checkbox'),
+        ('single_choice', 'Radio Button'),
         ('text', 'Metin'),
-        ('driver_multiselect', 'Pilot Çoklu Seçim'),
-        ('driver_singleselect', 'Tek Pilot Seçimi (Radio Button)'),
-        ('race_singleselect', 'Yarış Seçimi (Radio Button)'),
-        ('race_select', 'Yarış Seçimi (Checkbox)'),
-        ('constructor_singleselect', 'Tek Takım Seçimi (Radio Button)'),
-        ('constructor_multiselect', 'Takım Çoklu Seçim (Checkbox)'),
-        ('boolean', 'Evet/Hayır'),
-        ('driver_matrix', 'Pilot Sıralama Matrisi'),
+        ('driver_multiselect', 'Driver Checkbox'),
+        ('driver_singleselect', 'Driver Radio Button'),
+        ('race_singleselect', 'Race Radio Button'),
+        ('race_select', 'Race Checkbox'),
+        ('constructor_singleselect', 'Constructor Radio Button'),
+        ('constructor_multiselect', 'Constructor Checkbox'),
+        ('boolean', 'True/False'),
+        ('driver_matrix', 'Driver Matrix'),
     ]
 
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
-    order = models.PositiveIntegerField(verbose_name="Sıralama")
-    text = models.TextField(verbose_name="Soru Metni")
-    help_text = models.TextField(blank=True, verbose_name="Yardım Metni")
+    order = models.PositiveIntegerField(verbose_name="Question Number")
+    text = models.TextField(verbose_name="Question Text")
+    help_text = models.TextField(blank=True, verbose_name="Help Text")
     question_type = models.CharField(
         max_length=32,
         choices=QUESTION_TYPES,
         default='text',
-        verbose_name="Soru Tipi"
+        verbose_name="Question Type"
     )
     positions = models.PositiveIntegerField(
         null=True,
@@ -39,27 +39,27 @@ class Question(models.Model):
     )
     choices = models.TextField(
         blank=True,
-        help_text="Virgülle ayrılmış seçenekler (sadece çoklu seçimler için)",
-        verbose_name="Seçenekler"
+        help_text="Comma-separated list of choices for multiple choice questions",
+        verbose_name="Choices"
     )
-    active = models.BooleanField(default=True, verbose_name="Aktif")
+    active = models.BooleanField(default=True, verbose_name="Active")
     validation_min = models.IntegerField(
         null=True,
         blank=True,
         validators=[MinValueValidator(0)],
-        verbose_name="Minimum Değer"
+        verbose_name="Minimum Value"
     )
     validation_max = models.IntegerField(
         null=True,
         blank=True,
         validators=[MaxValueValidator(1000)],
-        verbose_name="Maksimum Değer"
+        verbose_name="Maximum Value"
     )
 
     class Meta:
         ordering = ['order']
-        verbose_name = "Soru"
-        verbose_name_plural = "Sorular"
+        verbose_name = "Question"
+        verbose_name_plural = "Questions"
 
     def __str__(self):
         return f"{self.order}. {self.text[:50]}"
