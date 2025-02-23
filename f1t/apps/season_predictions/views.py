@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
 
 from .forms import DynamicPredictionForm
@@ -11,6 +11,30 @@ from .models import Prediction, Answer, Question
 from f1t.apps.fantasy.models import Championship, Driver, Race, Constructor
 
 User = get_user_model()
+
+
+class PredictionListView(ListView):
+    template_name = 'season_predictions/list.html'
+    context_object_name = 'predictions'
+    allow_empty = False
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        # Fetch the championship object
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+    def get_queryset(self):
+        return Prediction.objects.filter(
+            championship=self.championship
+        ).select_related('user').order_by('-updated_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['championship'] = self.championship
+        return context
 
 
 class PredictionDetailView(DetailView):
