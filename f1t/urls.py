@@ -32,6 +32,7 @@ patterns = [
     path("contact/", ContactView.as_view(), name='contact'),
     path("greenflag/", include("f1t.apps.greenflag.urls")),
     path("pages/", include("django.contrib.flatpages.urls")),
+    path("", include("f1t.apps.season_predictions.urls")),
     path('mdeditor/', include('mdeditor.urls')),
     path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
