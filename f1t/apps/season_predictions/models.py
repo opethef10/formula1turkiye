@@ -32,9 +32,7 @@ class Question(models.Model):
         verbose_name="Question Type"
     )
     positions = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        default=None,
+        default=0,
         verbose_name="Matrix Positions",
         help_text="Number of positions in the ranking matrix (only for driver matrix questions)"
     )
