@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.1] - 2025-02-23
+### Fixed
+- SeasonStatsView error
+
 ## [2.16.0] - 2025-02-23
 ### Added
 - Season predictions
