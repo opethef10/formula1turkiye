@@ -16,8 +16,16 @@ class DynamicPredictionForm(forms.Form):
         ).order_by('order')
 
         drivers = Driver.objects.filter(race_instances__race__championship=self.championship).distinct()
-        races = Race.objects.filter(championship=self.championship)
+        races = Race.objects.filter(championship=self.championship).order_by('datetime')
+        second_half_races = races.filter(round__gt=races.count() // 2)
         constructors = Constructor.objects.filter(championship=self.championship)
+        f1_5_constructors = constructors.exclude(
+            name__in=["Ferrari", "Mercedes", "McLaren", "Red Bull"]
+        )
+        f1_5_drivers = drivers.filter(
+            race_instances__race__championship=self.championship,
+            race_instances__championship_constructor__constructor__in=f1_5_constructors
+        ).distinct()
 
         for question in self.active_questions:
             field_kwargs = {
@@ -60,6 +68,20 @@ class DynamicPredictionForm(forms.Form):
                     choices=choices,
                     widget=forms.RadioSelect
                 )
+            elif question.question_type == 'f1_5_driver_multiselect':
+                choices = [(d.id, d.name) for d in f1_5_drivers]
+                self.fields[f'q_{question.id}'] = forms.MultipleChoiceField(
+                    **field_kwargs,
+                    choices=choices,
+                    widget=forms.CheckboxSelectMultiple
+                )
+            elif question.question_type == 'f1_5_driver_singleselect':
+                choices = [(driver.id, driver.name) for driver in f1_5_drivers]
+                self.fields[f'q_{question.id}'] = forms.ChoiceField(
+                    **field_kwargs,
+                    choices=choices,
+                    widget=forms.RadioSelect
+                )
             elif question.question_type == 'race_select':
                 choices = [(race.id, race.name) for race in races]
                 self.fields[f'q_{question.id}'] = forms.MultipleChoiceField(
@@ -69,6 +91,20 @@ class DynamicPredictionForm(forms.Form):
                 )
             elif question.question_type == 'race_singleselect':
                 choices = [(race.id, race.name) for race in races]
+                self.fields[f'q_{question.id}'] = forms.ChoiceField(
+                    **field_kwargs,
+                    choices=choices,
+                    widget=forms.RadioSelect
+                )
+            elif question.question_type == 'second_half_race_multiselect':
+                choices = [(race.id, race.name) for race in second_half_races]
+                self.fields[f'q_{question.id}'] = forms.MultipleChoiceField(
+                    **field_kwargs,
+                    choices=choices,
+                    widget=forms.CheckboxSelectMultiple
+                )
+            elif question.question_type == 'second_half_race_singleselect':
+                choices = [(race.id, race.name) for race in second_half_races]
                 self.fields[f'q_{question.id}'] = forms.ChoiceField(
                     **field_kwargs,
                     choices=choices,

@@ -75,7 +75,7 @@ class PredictionDetailView(DetailView):
             }
 
             # Resolve IDs to actual objects
-            if answer.question.question_type in ['driver_singleselect', 'driver_multiselect']:
+            if answer.question.question_type in ['driver_singleselect', 'driver_multiselect', 'f1_5_driver_singleselect', 'f1_5_driver_multiselect']:
                 if isinstance(answer.value, list):
                     answer_data['resolved_value'] = Driver.objects.filter(id__in=answer.value)
                 else:
@@ -87,7 +87,7 @@ class PredictionDetailView(DetailView):
                 else:
                     answer_data['resolved_value'] = Constructor.objects.filter(id=answer.value).first()
 
-            elif answer.question.question_type in ['race_singleselect', 'race_select']:
+            elif answer.question.question_type in ['race_singleselect', 'race_select', 'second_half_race_singleselect', 'second_half_race_multiselect']:
                 if isinstance(answer.value, list):
                     answer_data['resolved_value'] = Race.objects.filter(id__in=answer.value)
                 else:

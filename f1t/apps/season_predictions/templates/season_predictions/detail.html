@@ -28,9 +28,9 @@
 
                     <div class="prediction-answer">
                         {% if answer.resolved_value %}
-                            {% if answer.question.question_type == 'driver_singleselect' or answer.question.question_type == 'constructor_singleselect' or answer.question.question_type == 'race_singleselect' %}
+                            {% if answer.question.question_type == 'driver_singleselect' or answer.question.question_type == 'constructor_singleselect' or answer.question.question_type == 'race_singleselect' or answer.question.question_type == 'f1_5_driver_singleselect' or answer.question.question_type == 'second_half_race_singleselect' %}
                                 <p class="mb-1">{{ answer.resolved_value.name }}</p>
-                            {% elif answer.question.question_type == 'driver_multiselect' or answer.question.question_type == 'constructor_multiselect' or answer.question.question_type == 'race_select' %}
+                            {% elif answer.question.question_type == 'driver_multiselect' or answer.question.question_type == 'constructor_multiselect' or answer.question.question_type == 'race_select' or answer.question.question_type == 'f1_5_driver_multiselect' or answer.question.question_type == 'second_half_race_multiselect' %}
                                 <ul class="list-unstyled">
                                     {% for item in answer.resolved_value %}
                                         <li>{{ item.name }}</li>
