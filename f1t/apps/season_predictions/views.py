@@ -62,6 +62,14 @@ class PredictionDetailView(DetailView):
             championship=self.championship
         )
 
+    def _is_past_deadline(self):
+        try:
+            race = self.championship.races.earliest("fp1_datetime")
+            deadline = race.fp1_datetime
+            return timezone.now() > deadline
+        except Race.DoesNotExist:
+            return True
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         prediction = self.object
@@ -101,6 +109,7 @@ class PredictionDetailView(DetailView):
             processed_answers.append(answer_data)
 
         context['processed_answers'] = processed_answers
+        context['before_season'] = not self._is_past_deadline()
         return context
 
 
@@ -199,3 +208,9 @@ class PredictionFormView(LoginRequiredMixin, FormView):
         except Prediction.DoesNotExist:
             pass
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race = self.championship.races.earliest("fp1_datetime")
+        context['deadline'] = race.fp1_datetime
+        return context

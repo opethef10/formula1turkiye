@@ -38,6 +38,12 @@
 {% endblock %}
 
 {% block content %}
+    <h1 class="mb-4 text-center">{{ view.championship.get_series_display }} {{ view.championship.year }} Sezon Tahminleri Formu</h1>
+    <ul>
+        <li>Tahmininizi gönderdikten sonra aynı sayfadan yarış saatine kadar tekrar değiştirebilirsiniz.</li>
+        <li>Sezon başlangıcından önceki son tahmininiz geçerli sayılacaktır.</li>
+        <li>İşlemlerinizi <b>{{ deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    </ul>
     <form method="post" novalidate>
         {% csrf_token %}
         {% if form.non_field_errors %}
