@@ -40,7 +40,42 @@
 {% block content %}
     <form method="post" novalidate>
         {% csrf_token %}
-        {% include 'includes/form.html' %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            {% if field.name == "captcha" and form.captcha %}
+                <div class="mb-3">
+                    {{ form.captcha.label_tag|linebreaks }}
+                    {{ form.captcha }}  <!-- Render the captcha field -->
+                    {% for error in form.captcha.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="mb-3">
+                    {{ field.label_tag|linebreaks }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">
+                            {{ field.help_text|linebreaks|safe }}
+                        </small>
+                    {% endif %}
+                    {% render_field field class=field|input_class %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
         <button type="submit" class="btn btn-success">Gönder</button>
         <button type="reset" class="btn btn-primary ms-2" id="deselect">Değişiklikleri Geri Al</button>
     </form>
