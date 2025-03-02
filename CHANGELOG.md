@@ -15,7 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
-## [2.26.1] - 2025-02-23
+## [2.16.3] - 2025-03-02
+### Added
+- New filtered question types for season predictions
+- Season Predictions menu in season page
+- Season prediction form deadline
+### Changed
+- Season prediction templates
+
+## [2.16.2] - 2025-02-23
 ### Changed
 - Homepage year to 2025
 

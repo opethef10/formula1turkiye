@@ -39,6 +39,11 @@
             <a href="{% url 'formula:tahmin:team_list' view.championship.series view.championship.year %}"
                class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-solid fa-list-ol"></i> Tahmin Ligi</a>
         {% endif %}
+        {% if view.championship.is_season_predictions %}
+            <a href="{% url 'season_predictions:prediction-list' view.championship.series view.championship.year %}"
+               class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"><i
+                class="fa-solid fa-list-ol"></i> Sezon Tahminleri</a>
+        {% endif %}
 		{% if view.championship.is_puanla %}
             <a href="{% url 'ratings:season_ratings' view.championship.series view.championship.year %}"
 			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"><i class="fa-regular fa-star-half-stroke"></i> Yarışı Puanla</a>
