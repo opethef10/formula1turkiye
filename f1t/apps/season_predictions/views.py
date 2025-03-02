@@ -62,6 +62,14 @@ class PredictionDetailView(DetailView):
             championship=self.championship
         )
 
+    def _is_past_deadline(self):
+        try:
+            race = self.championship.races.earliest("fp1_datetime")
+            deadline = race.fp1_datetime
+            return timezone.now() > deadline
+        except Race.DoesNotExist:
+            return True
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         prediction = self.object
@@ -75,7 +83,7 @@ class PredictionDetailView(DetailView):
             }
 
             # Resolve IDs to actual objects
-            if answer.question.question_type in ['driver_singleselect', 'driver_multiselect']:
+            if answer.question.question_type in ['driver_singleselect', 'driver_multiselect', 'f1_5_driver_singleselect', 'f1_5_driver_multiselect']:
                 if isinstance(answer.value, list):
                     answer_data['resolved_value'] = Driver.objects.filter(id__in=answer.value)
                 else:
@@ -87,7 +95,7 @@ class PredictionDetailView(DetailView):
                 else:
                     answer_data['resolved_value'] = Constructor.objects.filter(id=answer.value).first()
 
-            elif answer.question.question_type in ['race_singleselect', 'race_select']:
+            elif answer.question.question_type in ['race_singleselect', 'race_select', 'second_half_race_singleselect', 'second_half_race_multiselect']:
                 if isinstance(answer.value, list):
                     answer_data['resolved_value'] = Race.objects.filter(id__in=answer.value)
                 else:
@@ -101,6 +109,7 @@ class PredictionDetailView(DetailView):
             processed_answers.append(answer_data)
 
         context['processed_answers'] = processed_answers
+        context['before_season'] = not self._is_past_deadline()
         return context
 
 
@@ -199,3 +208,9 @@ class PredictionFormView(LoginRequiredMixin, FormView):
         except Prediction.DoesNotExist:
             pass
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        race = self.championship.races.earliest("fp1_datetime")
+        context['deadline'] = race.fp1_datetime
+        return context
