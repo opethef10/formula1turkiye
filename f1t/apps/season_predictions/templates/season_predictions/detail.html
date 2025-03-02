@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load custom_filters %}
+{% load custom_filters static %}
 
 {% block title %}{{ prediction.user }} - {{ view.championship.get_series_display }} {{ view.championship.year }} Sezon Tahminleri{% endblock %}
 
@@ -7,30 +7,35 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
-    <li class="breadcrumb-item">Sezon Tahminleri</li>
-    <li class="breadcrumb-item">{{ prediction.user }}</li>
+    <li class="breadcrumb-item"><a href="{% url 'season_predictions:prediction-list' view.championship.series view.championship.year %}">Sezon Tahminleri</a></li>
+    <li class="breadcrumb-item">{{ prediction.user.get_full_name }}</li>
 {% endblock %}}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">
-        {{ prediction.user.username }}'s {{ prediction.championship.year }}
-        {{ prediction.championship.get_series_display }} Predictions
-        <small class="text-muted">Last updated: {{ prediction.updated_at|date:"DATETIME_FORMAT" }}</small>
+    <h1 class="text-center">
+        {{ prediction.user.get_full_name }} - {{ prediction.championship.year }}
+        {{ prediction.championship.get_series_display }} Sezon Tahminleri
     </h1>
-
+    <p class="text-muted text-center">Son değiştirilme: {{ prediction.updated_at|date:"DATETIME_FORMAT" }}</p>
+    {% if before_season %}
+        <div class="alert alert-warning" role="alert">
+            <img src="{% static 'tahmin/really3dcasio.jpg' %}" class="rounded mx-auto d-block" alt="Uyarı!">
+            <h2 class="text-center mt-3">
+                Üyelerimizin yaptığı tahminler sezon başlangıcı itibariyle görünür olacaktır.</h2>
+        </div>
+    {% else %}
     <div class="card">
         <div class="card-body">
             {% for answer in processed_answers %}
                 <div class="prediction-item mb-4">
                     <h5 class="card-title">{{ answer.question.order }}. {{ answer.question.text }}</h5>
-                    <p class="text-muted">{{ answer.question.help_text }}</p>
+                    <div class="text-muted">{{ answer.question.help_text|linebreaks }}</div>
 
                     <div class="prediction-answer">
                         {% if answer.resolved_value %}
-                            {% if answer.question.question_type == 'driver_singleselect' or answer.question.question_type == 'constructor_singleselect' or answer.question.question_type == 'race_singleselect' %}
+                            {% if answer.question.question_type == 'driver_singleselect' or answer.question.question_type == 'constructor_singleselect' or answer.question.question_type == 'race_singleselect' or answer.question.question_type == 'f1_5_driver_singleselect' or answer.question.question_type == 'second_half_race_singleselect' %}
                                 <p class="mb-1">{{ answer.resolved_value.name }}</p>
-                            {% elif answer.question.question_type == 'driver_multiselect' or answer.question.question_type == 'constructor_multiselect' or answer.question.question_type == 'race_select' %}
+                            {% elif answer.question.question_type == 'driver_multiselect' or answer.question.question_type == 'constructor_multiselect' or answer.question.question_type == 'race_select' or answer.question.question_type == 'f1_5_driver_multiselect' or answer.question.question_type == 'second_half_race_multiselect' %}
                                 <ul class="list-unstyled">
                                     {% for item in answer.resolved_value %}
                                         <li>{{ item.name }}</li>
@@ -75,5 +80,5 @@
             {% endfor %}
         </div>
     </div>
-</div>
+    {% endif %}
 {% endblock %}

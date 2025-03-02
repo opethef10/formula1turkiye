@@ -85,6 +85,9 @@ class Championship(models.Model):
     def is_puanla(self):
         return self.races.filter(rating_instance__isnull=False).exists()
 
+    def is_season_predictions(self):
+        return self.question_set.exists()
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = f"{self.year}-{self.series}"
