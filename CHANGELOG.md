@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.4] - 2025-03-02
+### Fixed
+- Forgotten migration
+
 ## [2.16.3] - 2025-03-02
 ### Added
 - New filtered question types for season predictions
