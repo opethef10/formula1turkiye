@@ -7,7 +7,7 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
     <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
-    <li class="breadcrumb-item">Sezon Tahminleri</li>
+    <li class="breadcrumb-item"><a href="{% url 'season_predictions:prediction-list' view.championship.series view.championship.year %}">Sezon Tahminleri</a></li>
     <li class="breadcrumb-item">Form</li>
 {% endblock %}
 
