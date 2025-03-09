@@ -45,6 +45,7 @@ class Question(models.Model):
         help_text="Comma-separated list of choices for multiple choice questions",
         verbose_name="Choices"
     )
+    required = models.BooleanField(default=True, verbose_name="Required")
     active = models.BooleanField(default=True, verbose_name="Active")
     validation_min = models.IntegerField(
         null=True,
