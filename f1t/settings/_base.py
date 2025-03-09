@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'f1t.apps.tahmin',
     'f1t.apps.ratings',
     'f1t.apps.season_predictions',
+    'f1t.apps.driver_ranks',
     'f1t.apps.greenflag',
     "django_minify_html",
     "django_extensions",

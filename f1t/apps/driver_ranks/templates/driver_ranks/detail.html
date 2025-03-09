@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load custom_filters static %}
+
+{% block title %}{{ prediction.user }} - {{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'driver_ranks:driver-rank-list' view.championship.series view.championship.year %}">Sürücü Sevgi Sıralamaları</a></li>
+    <li class="breadcrumb-item">{{ user.get_full_name }}</li>
+{% endblock %}}
+
+{% block stylesheet %}
+    <style>
+        .driver-item {
+            padding: 3px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .position-badge {
+            width: 30px;
+            height: 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            {% for answer in processed_answers %}
+                <div class="driver-item" data-id="{{ driver.id }}">
+                    <div class="position-badge">{% widthratio forloop.counter 1 1 %}</div>
+                    {{ answer.driver }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
