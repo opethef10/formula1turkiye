@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.6] - 2025-03-09
+### Changed
+- Requirements of the season prediction questions
+
 ## [2.16.5] - 2025-03-09
 ### Added
 - Driver ranks for F1T users

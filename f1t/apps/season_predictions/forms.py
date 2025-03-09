@@ -31,7 +31,7 @@ class DynamicPredictionForm(forms.Form):
             field_kwargs = {
                 'label': f"{question.order}. {question.text}",
                 'help_text': question.help_text,
-                'required': True
+                'required': question.required
             }
 
             if question.question_type == 'integer':

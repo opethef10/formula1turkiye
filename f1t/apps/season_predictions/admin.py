@@ -6,9 +6,9 @@ QUESTION_TEXT_TRIM_LENGTH = 50
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'championship', 'order', 'text_short', 'question_type', 'active')
-    list_editable = ('order', 'active')
-    list_filter = ('championship', 'active', 'question_type')
+    list_display = ('__str__', 'championship', 'order', 'text_short', 'question_type', 'active', 'required')
+    list_editable = ('order', 'active', 'required')
+    list_filter = ('active', 'question_type', 'championship')
     search_fields = ('text',)
 
     def text_short(self, obj):
