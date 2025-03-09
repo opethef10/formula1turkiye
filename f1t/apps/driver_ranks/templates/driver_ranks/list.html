@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block title %}{{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item">Sürücü Sevgi Sıralamaları</li>
+{% endblock %}}
+
+
+{% block content %}
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not championship.previous %}disabled{% endif %}" href="{% if not championship.previous %}#{% else %}{% url 'driver_ranks:driver-rank-list' championship.series championship.previous.year %}{% endif %}">&larr; {{ championship.previous.short_str|upper|default_if_none:"" }}</a>
+        <h3 class="text-center">{{ championship.short_str|upper }} Sürücü Sevgi Sıralamaları</h3>
+        <a class="btn btn-outline-primary {% if not championship.next %}disabled{% endif %}" href="{% if not championship.next %}#{% else %}{% url 'driver_ranks:driver-rank-list' championship.series championship.next.year %}{% endif %}">{{ championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
+    </div>
+    <div class="d-flex gap-2 mb-4" role="toolbar" aria-label="Toolbar with button groups">
+        <a href="{% url 'driver_ranks:driver-rank-form' view.championship.series view.championship.year %}"
+           class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"><i
+            class="fa-solid fa-list-ol"></i> Ankete Git</a>
+    </div>
+    <div class="table-responsive">
+    <table id="driver_ranks_table"
+        class="table table-borderless d-block stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="table-light">
+            <tr>
+                <th>Üye</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <a href="{% url 'driver_ranks:driver-rank-detail' championship.series championship.year user.username %}">
+                        {{ user.get_full_name }}
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">Henüz hiçbir üye tahmin yapmadı.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $("#driver_ranks_table").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: true,
+                    pageLength: 50,
+                    "order": [],
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            targets: "_all"
+                        }
+                    ]
+                }
+            );
+        });
+    </script>
+{% endblock %}

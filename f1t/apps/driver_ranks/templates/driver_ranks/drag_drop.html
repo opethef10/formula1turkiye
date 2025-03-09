@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları Formu{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'driver_ranks:driver-rank-list' view.championship.series view.championship.year %}">Sürücü Sevgi Sıralamaları</a></li>
+    <li class="breadcrumb-item">Form</li>
+{% endblock %}
+
+{% block stylesheet %}
+<style>
+    .driver-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .driver-item {
+        padding: 10px;
+        margin: 5px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        cursor: move;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .position-badge {
+        width: 30px;
+        height: 30px;
+        background: #007bff;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4 text-center">{{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralaması Formu</h1>
+    <ul>
+        <li>Sıralamayı oluşturmak için sürücüleri fareyle ya da parmaklarınızla sürücüleri sürükleyip bırakın.</li>
+        <li>İşlemlerinizi <b>{{ deadline|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
+    </ul>
+
+  <form method="post" id="ranking-form">
+    {% csrf_token %}
+    {{ form.ranked_drivers }}
+
+    <div id="driver-list">
+        {% for driver in drivers %}
+        <div class="driver-item" data-id="{{ driver.id }}">
+            <div class="position-badge">{% widthratio forloop.counter 1 1 %}</div>
+            {{ driver.name }}
+        </div>
+        {% endfor %}
+    </div>
+
+      <button type="submit" class="btn btn-success">Gönder</button>
+</form>
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('ranking-form');
+    const driverList = document.getElementById('driver-list');
+    const hiddenInput = document.querySelector('#id_ranked_drivers');
+
+    // Initialize Sortable
+    const sortable = new Sortable(driverList, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onUpdate: function() {
+            updatePositions();
+            updateHiddenInput();
+        }
+    });
+
+    function updatePositions() {
+        driverList.querySelectorAll('.driver-item').forEach((item, index) => {
+            item.querySelector('.position-badge').textContent = index + 1;
+        });
+    }
+
+    function updateHiddenInput() {
+        const driverIds = Array.from(driverList.children).map(
+            item => item.dataset.id
+        );
+        hiddenInput.value = driverIds.join(',');
+    }
+
+    // Initial setup
+    updateHiddenInput();
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        if (!hiddenInput.value) {
+            e.preventDefault();
+            alert('Please arrange the drivers before submitting!');
+        }
+    });
+});
+</script>
+{% endblock %}
