@@ -61,6 +61,8 @@ class Championship(models.Model):
     fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     sprint_fastest_lap_point = models.PositiveSmallIntegerField(default=0)
     pole_point = models.PositiveSmallIntegerField(default=0)
+    qualy_fantasy_h2h_point = models.PositiveSmallIntegerField(default=0)
+    race_fantasy_h2h_point = models.PositiveSmallIntegerField(default=0)
     overtake_coefficient = models.FloatField()
     qualifying_coefficient = models.FloatField()
     finish_coefficient = models.FloatField()
@@ -447,12 +449,45 @@ class RaceDriver(models.Model):
             1
         )
 
+    @cache
+    def teammates(self):
+        return list(RaceDriver.objects.filter(
+            race=self.race,
+            championship_constructor=self.championship_constructor,
+        ).exclude(pk=self.pk).select_related('driver', 'championship_constructor'))
+
+    @cache
+    def teammate_point(self):
+        if not self.race.championship.qualy_fantasy_h2h_point and not self.race.championship.race_fantasy_h2h_point:
+            return 0
+
+        if not hasattr(self, '_teammate_cache'):
+            self._teammate_cache = self.teammates()[0] if self.teammates() else None  # TODO: Before 1985, there were multiple teammates
+
+        teammate = self._teammate_cache
+        if not teammate:
+            return 0
+
+        qualy_h2h_point = 0
+        race_h2h_point = 0
+
+        if self.qualy:
+            if not teammate.qualy or self.qualy < teammate.qualy:
+                qualy_h2h_point = self.race.championship.qualy_fantasy_h2h_point
+
+        if self.result:
+            if not teammate.result or self.result < teammate.result:
+                race_h2h_point = self.race.championship.race_fantasy_h2h_point
+
+        return qualy_h2h_point + race_h2h_point
+
+
     def total_point(self, tactic=None):
         if not any((self.qualy, self.grid_sprint, self.sprint, self.grid, self.result)):
             if tactic:
                 return 0.0
             return None
-        return round((self.overtake_point(tactic)) + (self.qualy_point(tactic)) + (self.race_point(tactic)), 1)
+        return round((self.overtake_point(tactic)) + (self.qualy_point(tactic)) + (self.race_point(tactic) + self.teammate_point()), 1)
 
     def discounted_price(self):
         if self.discount:
