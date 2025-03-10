@@ -57,6 +57,7 @@
                             <th>Geçiş</th>
                             <th>Sıra.</th>
                             <th>Finiş</th>
+                            <th title="Takım Arkadaşını Yenme Puanı">H2H</th>
                             <th>Toplam</th>
                         </tr>
                         </thead>
@@ -74,6 +75,7 @@
                                 <td>{{ race_driver.overtake_point|default_if_none:"-" }}</td>
                                 <td>{{ race_driver.qualy_point|default_if_none:"-" }}</td>
                                 <td>{{ race_driver.race_point|default_if_none:"-" }}</td>
+                                <td>{{ race_driver.teammate_point|default_if_none:"-" }}</td>
                                 <td><b>{{ race_driver.total_point|default_if_none:"-" }}</b></td>
                             </tr>
                         {% endfor %}
