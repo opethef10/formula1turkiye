@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fantasy teammate points in fantasy race detail table
 ### Changed
 - Show the season predictions results to admins before the season starts
+### Fixed
+- Fantasy new team form error
 
 ## [2.16.7] - 2025-03-09
 ### Added
