@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load custom_filters static %}
 
-{% block title %}{{ prediction.user }} - {{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları{% endblock %}
+{% block title %}{{ user }} - {{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
