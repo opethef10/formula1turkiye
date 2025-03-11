@@ -1293,6 +1293,7 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["championship"] = self.championship
         context["STARTING_BUDGET"] = self.championship.starting_budget
+        context["max_drivers_in_team"] = self.championship.max_drivers_in_team
         return context
 
     def get_form_kwargs(self):

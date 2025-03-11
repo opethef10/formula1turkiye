@@ -13,8 +13,8 @@
 
 {% block content %}
     <h3>YENİ TAKIM KUR - <a href="{{ view.race.get_absolute_url }}">{{ view.race.name }}</a></h3>
-    <li>Kadronuzda en fazla 8 pilot olabilir, kadronuzu buna göre oluşturun.</li>
-    <li>Bütçenizi ({{ STARTING_BUDGET|with_currency }}) aşmayın.</li>
+    <li>Kadronuzda en fazla <b>{{ max_drivers_in_team }} sürücü</b> olabilir, kadronuzu buna göre oluşturun.</li>
+    <li>Bütçenizi <b>({{ STARTING_BUDGET|with_currency }})</b> aşmayın.</li>
     <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>
     <li>Kadronuzu gönderdikten sonra düzenlemek istiyorsanız süresonuna kadar buradan düzenleyebilirsiniz.</li>
     <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
@@ -32,14 +32,10 @@
 {% block javascript %}
     <script>
         $(document).ready(function () {
-            $('input[name="to_sell"]').each(function () {
+            $('input[name="race_drivers"]').each(function () {
                 $(this).attr("class", "")
             });
-            $('input[name="to_buy"]').each(function () {
-                $(this).attr("class", "")
-            });
-            $('#id_to_sell, #id_to_buy').removeClass('form-control');
-
+            $('#id_tactic').addClass('form-select');
             function sumit() {
                 let budget = {{ STARTING_BUDGET|stringformat:".1f" }};
                 let sum = 0;

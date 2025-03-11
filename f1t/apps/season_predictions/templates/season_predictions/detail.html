@@ -17,7 +17,7 @@
         {{ prediction.championship.get_series_display }} Sezon Tahminleri
     </h1>
     <p class="text-muted text-center">Son değiştirilme: {{ prediction.updated_at|date:"DATETIME_FORMAT" }}</p>
-    {% if before_season %}
+    {% if before_season and not user.is_superuser %}
         <div class="alert alert-warning" role="alert">
             <img src="{% static 'tahmin/really3dcasio.jpg' %}" class="rounded mx-auto d-block" alt="Uyarı!">
             <h2 class="text-center mt-3">
