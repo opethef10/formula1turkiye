@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block title %}{{ view.championship.get_series_display }} {{ view.championship.year }} Sürücü Sevgi Sıralamaları{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' view.championship.series %}">{{ view.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:race_list' view.championship.series view.championship.year %}">{{ view.championship.year }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'driver_ranks:driver-rank-list' view.championship.series view.championship.year %}">Sürücü Sevgi Sıralamaları</a></li>
+    <li class="breadcrumb-item">Sürücü Puanları</li>
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table id="driver_ranks_table"
+               class="table table-borderless d-block stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+            <thead class="table-light">
+            <tr>
+                <th>Driver</th>
+                <th>Total Points</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for driver in driver_points %}
+                <tr>
+                    <td>{{ driver.name }}</td>
+                    <td>{{ driver.total_points }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $("#driver_ranks_table").DataTable(
+                {
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                    },
+                    paging: true,
+                    pageLength: 50,
+                    "order": [],
+                    "info": false,
+                    columnDefs: [
+                        {
+                            className: "dt-center",
+                            targets: "_all"
+                        }
+                    ]
+                }
+            );
+        });
+    </script>
+{% endblock %}
