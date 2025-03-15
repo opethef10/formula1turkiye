@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Case, When, IntegerField
+from django.db.models import Sum, F, Case, When, IntegerField, Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -13,6 +13,41 @@ from .forms import DragDropRankForm
 from f1t.apps.fantasy.models import Championship, Driver, Race
 
 User = get_user_model()
+DRIVER_RANK_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1, -1, -2, -4, -6, -8, -10, -12, -15, -18, -25]
+
+
+class DriverPointsView(TemplateView):
+    template_name = 'driver_ranks/driver_points.html'
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.championship = get_object_or_404(
+            Championship,
+            series=self.kwargs.get("series"),
+            year=self.kwargs.get("year")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Create a Case statement to assign points based on position from PollResponse
+        point_cases = Case(
+            *[When(pollresponse__position=i + 1, then=DRIVER_RANK_POINTS[i]) for i in range(20)],
+            default=0,
+            output_field=IntegerField()
+        )
+
+        driver_points = Driver.objects.annotate(
+            total_points=Sum(
+                point_cases,
+                filter=Q(pollresponse__championship=self.championship)
+            )
+        ).filter(
+            total_points__isnull=False
+        ).order_by('-total_points')
+
+        context['driver_points'] = driver_points
+        return context
 
 
 class DragDropRankView(SuccessMessageMixin, LoginRequiredMixin, FormView):

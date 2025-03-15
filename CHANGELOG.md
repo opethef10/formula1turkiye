@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.9] - 2025-03-10
+### Added
+- Results for the driver rankings
+### Fixed
+- Driver ranks detail page title
+
 ## [2.16.8] - 2025-03-10
 ### Added
 - Fantasy teammate points in fantasy race detail table
