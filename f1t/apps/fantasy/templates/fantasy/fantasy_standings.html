@@ -46,6 +46,9 @@
 		  </div>
 		{% endif %}
 	</div>
+
+    {% include "fantasy/race_range_selector.html" %}
+
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
@@ -112,9 +115,10 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'fantasy/js/roundSelector.js' %}"></script>
     <script>
-
         $(document).ready(function () {
+            // Initialize DataTables
             {% for tab_id in tabs %}
                 var {{ tab_id }} = $("#table_{{ tab_id }}").DataTable(
                     {

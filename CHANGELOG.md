@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.10] - 2025-03-16
+### Added
+- Race range selector for fantasy league standings
+- Race range selector for fantasy league stats
+- Teammate H2H point to fantasy league stats
+- Race range selector for prediction league classification
+- ChampionshipMixin and RaceRangeSelectorMixin
+### Changed
+- Race range selector html to template to include
+- Race range selector javascript to its own file
+### Fixed
+- Test errors that are caused by lack of races in championship
+
 ## [2.16.9] - 2025-03-10
 ### Added
 - Results for the driver rankings
