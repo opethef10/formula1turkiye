@@ -312,6 +312,7 @@ class FantasyStatsView(ListView):
             "overtake_point": "Geçiş Puanı",
             "qualy_point": "Sıralama Puanı",
             "race_point": "Yarış Puanı",
+            "teammate_point": "Takım Arkadaşı Puanı",
             "price": "Fiyatlar",
             "discount": "Tanzim Pilotları",
             "instances": "Pilot Alış Sayıları",
