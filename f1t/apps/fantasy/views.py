@@ -1156,6 +1156,48 @@ class FantasyStandingsView(ListView):
             year=self.kwargs.get("year")
         )
 
+        try:
+            # Get first and last races as default boundaries
+            first_race = self.championship.races.earliest("datetime")
+            last_race = self.championship.races.latest("datetime")
+        except Race.DoesNotExist:
+            raise Http404("Bu şampiyona için yarış bulunamadı.")
+
+        # Get query parameters from the URL
+        try:
+            start_round = int(self.request.GET.get('from_round', first_race.round))
+            end_round = int(self.request.GET.get('to_round', last_race.round))
+        except ValueError:
+            # If the value cannot be converted to an integer, return to defaults
+            start_round = first_race.round
+            end_round = last_race.round
+            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
+
+        # Check if the parameters within the boundaries
+        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
+            start_round = first_race.round
+            end_round = last_race.round
+            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
+
+        # Check if 'from_round' is greater than 'to_round'
+        if start_round > end_round:
+            start_round = first_race.round
+            end_round = last_race.round
+            messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
+
+        # Get Race objects for the starting and ending races
+        self.start_race = get_object_or_404(
+            Race,
+            championship=self.championship,
+            round=start_round
+        )
+        self.end_race = get_object_or_404(
+            Race,
+            championship=self.championship,
+            round=end_round
+        )
+
+
     def get_queryset(self):
         if not self.championship.is_fantasy:
             raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
@@ -1166,7 +1208,9 @@ class FantasyStandingsView(ListView):
             "race",
             "user"
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte = self.start_race.datetime,
+            race__datetime__lte = self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):
