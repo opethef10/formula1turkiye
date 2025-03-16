@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.16.10] - 2025-03-16
 ### Added
-- Race range selector for fantasy league
+- Race range selector for fantasy league standings
+- Race range selector for fantasy league stats
 
 ## [2.16.9] - 2025-03-10
 ### Added
