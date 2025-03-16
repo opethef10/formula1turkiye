@@ -19,6 +19,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
+from .mixins import ChampionshipMixin, RaceRangeSelectorMixin
 from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
 logger = logging.getLogger("f1t")
@@ -209,58 +210,8 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class FantasyStatsView(ListView):
+class FantasyStatsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/driver_stats.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
-        try:
-            # Get first and last races as default boundaries
-            first_race = self.championship.races.earliest("datetime")
-            last_race = self.championship.races.latest("datetime")
-        except Race.DoesNotExist:
-            raise Http404("Bu şampiyona için yarış bulunamadı.")
-
-        # Get query parameters from the URL
-        try:
-            start_round = int(self.request.GET.get('from_round', first_race.round))
-            end_round = int(self.request.GET.get('to_round', last_race.round))
-        except ValueError:
-            # If the value cannot be converted to an integer, return to defaults
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
-
-        # Check if the parameters within the boundaries
-        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
-
-        # Check if 'from_round' is greater than 'to_round'
-        if start_round > end_round:
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
-
-        # Get Race objects for the starting and ending races
-        self.start_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=start_round
-        )
-        self.end_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=end_round
-        )
-
 
     def get_queryset(self):
         return RaceDriver.objects.prefetch_related(
@@ -320,57 +271,8 @@ class FantasyStatsView(ListView):
         return context
 
 
-class SeasonStatsView(ListView):
+class SeasonStatsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/season_stats.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
-        try:
-            # Get first and last races as default boundaries
-            first_race = self.championship.races.earliest("datetime")
-            last_race = self.championship.races.latest("datetime")
-        except Race.DoesNotExist:
-            raise Http404("Bu şampiyona için yarış bulunamadı.")
-
-        # Get query parameters from the URL
-        try:
-            start_round = int(self.request.GET.get('from_round', first_race.round))
-            end_round = int(self.request.GET.get('to_round', last_race.round))
-        except ValueError:
-            # If the value cannot be converted to an integer, return to defaults
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
-
-        # Check if the parameters within the boundaries
-        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
-
-        # Check if 'from_round' is greater than 'to_round'
-        if start_round > end_round:
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
-
-        # Get Race objects for the starting and ending races
-        self.start_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=start_round
-        )
-        self.end_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=end_round
-        )
 
     def get_queryset(self):
         return RaceDriver.objects.select_related(
@@ -1190,58 +1092,8 @@ class RaceListView(ListView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class FantasyStandingsView(ListView):
+class FantasyStandingsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/fantasy_standings.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
-        try:
-            # Get first and last races as default boundaries
-            first_race = self.championship.races.earliest("datetime")
-            last_race = self.championship.races.latest("datetime")
-        except Race.DoesNotExist:
-            raise Http404("Bu şampiyona için yarış bulunamadı.")
-
-        # Get query parameters from the URL
-        try:
-            start_round = int(self.request.GET.get('from_round', first_race.round))
-            end_round = int(self.request.GET.get('to_round', last_race.round))
-        except ValueError:
-            # If the value cannot be converted to an integer, return to defaults
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
-
-        # Check if the parameters within the boundaries
-        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
-
-        # Check if 'from_round' is greater than 'to_round'
-        if start_round > end_round:
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
-
-        # Get Race objects for the starting and ending races
-        self.start_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=start_round
-        )
-        self.end_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=end_round
-        )
-
 
     def get_queryset(self):
         if not self.championship.is_fantasy:
