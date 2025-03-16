@@ -15,6 +15,7 @@ from django.views.generic import ListView, RedirectView, TemplateView, UpdateVie
 
 from .forms import NewTahminForm
 from .models import Question, Tahmin
+from ..fantasy.mixins import RaceRangeSelectorMixin
 from ..fantasy.models import Championship, Race
 
 logger = logging.getLogger("f1t")
@@ -102,18 +103,9 @@ class RaceTahminView(ListView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class TeamListView(ListView):
+class TeamListView(RaceRangeSelectorMixin, ListView):
     model = Tahmin
     template_name = "tahmin/team_list.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
 
     def get_queryset(self):
         if not self.championship.is_tahmin:
@@ -130,7 +122,9 @@ class TeamListView(ListView):
             "race",
             *(f"prediction_{idx}" for idx in range(1, 11)), *(f"prediction_{idx}__driver" for idx in range(1, 11))
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte=self.start_race.datetime,
+            race__datetime__lte=self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):

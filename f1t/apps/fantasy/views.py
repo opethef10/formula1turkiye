@@ -19,6 +19,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
 from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
+from .mixins import ChampionshipMixin, RaceRangeSelectorMixin
 from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
 logger = logging.getLogger("f1t")
@@ -209,16 +210,8 @@ def head_to_head_qualy_comparison(driver1, driver2, championship=None, swap=True
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class FantasyStatsView(ListView):
+class FantasyStatsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/driver_stats.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_queryset(self):
         return RaceDriver.objects.prefetch_related(
@@ -229,7 +222,9 @@ class FantasyStatsView(ListView):
             "race__championship",
             "championship_constructor"
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte = self.start_race.datetime,
+            race__datetime__lte = self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):
@@ -268,6 +263,7 @@ class FantasyStatsView(ListView):
             "overtake_point": "Geçiş Puanı",
             "qualy_point": "Sıralama Puanı",
             "race_point": "Yarış Puanı",
+            "teammate_point": "Takım Arkadaşı Puanı",
             "price": "Fiyatlar",
             "discount": "Tanzim Pilotları",
             "instances": "Pilot Alış Sayıları",
@@ -275,57 +271,8 @@ class FantasyStatsView(ListView):
         return context
 
 
-class SeasonStatsView(ListView):
+class SeasonStatsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/season_stats.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
-
-        try:
-            # Get first and last races as default boundaries
-            first_race = self.championship.races.earliest("datetime")
-            last_race = self.championship.races.latest("datetime")
-        except Race.DoesNotExist:
-            raise Http404("Bu şampiyona için yarış bulunamadı.")
-
-        # Get query parameters from the URL
-        try:
-            start_round = int(self.request.GET.get('from_round', first_race.round))
-            end_round = int(self.request.GET.get('to_round', last_race.round))
-        except ValueError:
-            # If the value cannot be converted to an integer, return to defaults
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametrelerin tamsayı olmasına dikkat ediniz.")
-
-        # Check if the parameters within the boundaries
-        if not (first_race.round <= start_round <= last_race.round) or not (first_race.round <= end_round <= last_race.round):
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı parametre girdiniz. Parametreler sezondaki geçerli yarış aralığında olmalıdır.")
-
-        # Check if 'from_round' is greater than 'to_round'
-        if start_round > end_round:
-            start_round = first_race.round
-            end_round = last_race.round
-            messages.error(request, "Hatalı seçim gerçekleştirdiniz. Sezon süzgecinde ilk yarış, son yarıştan önce olmalıdır.")
-
-        # Get Race objects for the starting and ending races
-        self.start_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=start_round
-        )
-        self.end_race = get_object_or_404(
-            Race,
-            championship=self.championship,
-            round=end_round
-        )
 
     def get_queryset(self):
         return RaceDriver.objects.select_related(
@@ -422,16 +369,8 @@ class SeasonStatsView(ListView):
         return context
 
 
-class SeasonHeadToHeadView(ListView):
+class SeasonHeadToHeadView(ChampionshipMixin, ListView):
     template_name = "fantasy/season_quali_h2h.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_queryset(self):
         """
@@ -470,16 +409,8 @@ class SeasonHeadToHeadView(ListView):
         return context
 
 
-class SeasonSupergridView(ListView):
+class SeasonSupergridView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/season_supergrid.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_queryset(self):
         return RaceDriver.objects.select_related(
@@ -488,7 +419,9 @@ class SeasonSupergridView(ListView):
             "race__championship",
             "championship_constructor"
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte=self.start_race.datetime,
+            race__datetime__lte=self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):
@@ -544,6 +477,7 @@ class SeasonSupergridView(ListView):
         context["race_driver_dict"] = race_driver_dict
         context["supergrid_dict"] = supergrid_dict
         context["championship"] = self.championship
+        context["race_list"] = race_list
         context["tabs"] = {
             "supergrid": "Süpergrid",
         }
@@ -1044,16 +978,8 @@ class LastRaceFantasyRedirectView(RedirectView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class RaceDetailView(DetailView):
+class RaceDetailView(ChampionshipMixin, DetailView):
     model = Race
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_object(self):
         return get_object_or_404(
@@ -1087,17 +1013,9 @@ class RaceDetailView(DetailView):
         }
         return context
 
-class RaceFantasyView(DetailView):
+class RaceFantasyView(ChampionshipMixin, DetailView):
     model = Race
     template_name = "fantasy/race_fantasy_detail.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_object(self):
         return get_object_or_404(
@@ -1130,31 +1048,15 @@ class RaceFantasyView(DetailView):
 
 
 # @method_decorator([vary_on_cookie, cache_page(24 * HOURS)], name='dispatch')
-class RaceListView(ListView):
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
+class RaceListView(ChampionshipMixin, ListView):
 
     def get_queryset(self):
         return self.championship.races.select_related("circuit", "rating_instance").order_by("round")
 
 
 # @method_decorator([vary_on_cookie, cache_page(12 * HOURS)], name='dispatch')
-class FantasyStandingsView(ListView):
+class FantasyStandingsView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/fantasy_standings.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_queryset(self):
         if not self.championship.is_fantasy:
@@ -1166,7 +1068,9 @@ class FantasyStandingsView(ListView):
             "race",
             "user"
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte = self.start_race.datetime,
+            race__datetime__lte = self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):
@@ -1220,17 +1124,12 @@ class FantasyProfileRedirectView(LoginRequiredMixin, RedirectView):
         )
 
 
-class FantasyUserProfileView(ListView):
+class FantasyUserProfileView(ChampionshipMixin, ListView):
     template_name = "fantasy/fantasy_user_profile.html"
     allow_empty = False
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
         self.user = get_object_or_404(
             User,
             username=self.kwargs.get('username')
@@ -1390,18 +1289,10 @@ class EditTeamView(TeamNewEditBaseView):
             return super().get(request, *args, **kwargs)
 
 
-class RaceDriverUpdateView(UserPassesTestMixin, UpdateView):
+class RaceDriverUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
     model = RaceDriver
     form_class = RaceDriverEditForm
     template_name = "fantasy/race_edit.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

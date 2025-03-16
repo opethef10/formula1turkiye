@@ -22,6 +22,8 @@
         <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{% if not view.championship.next %}#{% else %}{% url 'formula:driver_stats' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
 
+    {% include "fantasy/race_range_selector.html" %}
+
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         {% for tab_id, title in tabs.items %}
@@ -146,9 +148,10 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'fantasy/js/roundSelector.js' %}"></script>
     <script>
-
         $(document).ready(function () {
+            // INITIALIZE DATATABLES
             {% for tab_id in tabs %}
                 $("#table_{{ tab_id }}").DataTable(
                     {

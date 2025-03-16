@@ -91,6 +91,20 @@ class DriverListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
+        cls.start_race = Race.objects.create(
+            name="Start Race",
+            championship=cls.championship,
+            round=1,
+            country="TR",
+            datetime=timezone.now()
+        )
+        cls.end_race = Race.objects.create(
+            name="End Race",
+            championship=cls.championship,
+            round=2,
+            country="TR",
+            datetime=timezone.now()
+        )
         cls.url_name = 'driver_stats'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
         cls.urlstring_without_slash = f"/{cls.championship.series}/{cls.championship.year}/fantasy/stats"
@@ -116,6 +130,20 @@ class SupergridTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
+        cls.start_race = Race.objects.create(
+            name="Start Race",
+            championship=cls.championship,
+            round=1,
+            country="TR",
+            datetime=timezone.now()
+        )
+        cls.end_race = Race.objects.create(
+            name="End Race",
+            championship=cls.championship,
+            round=2,
+            country="TR",
+            datetime=timezone.now()
+        )
         cls.url_name = 'season_supergrid'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
         cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
@@ -129,6 +157,20 @@ class TeamListTests(ViewTestMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.championship = Championship.objects.create(**CHAMPIONSHIP_TEST_DATA)
+        cls.start_race = Race.objects.create(
+            name="Start Race",
+            championship=cls.championship,
+            round=1,
+            country="TR",
+            datetime=timezone.now()
+        )
+        cls.end_race = Race.objects.create(
+            name="End Race",
+            championship=cls.championship,
+            round=2,
+            country="TR",
+            datetime=timezone.now()
+        )
         cls.url_name = 'team_list'
         cls.url_kwargs = {'series': cls.championship.series, 'year': cls.championship.year}
         cls.url_kwargs_404 = {'series': "arbitrary", 'year': 9999}
