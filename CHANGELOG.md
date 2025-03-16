@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.11] - 2025-03-16
+### Fixed
+- Forgotten refactor for race_range_selector
+
 ## [2.16.10] - 2025-03-16
 ### Added
 - Race range selector for fantasy league standings
