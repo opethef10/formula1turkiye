@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Race range selector for fantasy league standings
 - Race range selector for fantasy league stats
 - Teammate H2H point to fantasy league stats
+- Race range selector for prediction league classification
 
 ## [2.16.9] - 2025-03-10
 ### Added
