@@ -28,6 +28,7 @@
             &rarr;</a>
     </div>
 
+    {% include "fantasy/race_range_selector.html" %}
                 <h3 class="my-3">SÜPERGRİD NEDİR?</h3>
                 <ul>
                 <li>Her pilotun sezon boyunca pol derecelerine olan farklarını alıp çeşitli istatistik yöntemlerini
@@ -82,6 +83,7 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'fantasy/js/roundSelector.js' %}"></script>
     <script>
         let numbersType = $.fn.dataTable.absoluteOrderNumber([
             {value: '', position: 'bottom'}

@@ -22,30 +22,7 @@
         <a class="btn btn-outline-primary {% if not view.championship.next %}disabled{% endif %}" href="{% if not view.championship.next %}#{% else %}{% url 'formula:driver_stats' view.championship.series view.championship.next.year %}{% endif %}">{{ view.championship.next.short_str|upper|default_if_none:"" }} &rarr;</a>
     </div>
 
-    <!-- RACE SELECTOR FROM/TO -->
-    <div class="my-4{% if request.device.is_mobile %} small{% endif %}">
-        <form method="get" action="{{ request.path }}" class="d-flex flex-row align-items-center">
-            <label for="fromRound" class="me-2">İlk:</label>
-            <select id="fromRound" name="from_round" class="form-select w-auto me-3">
-                {% for race in race_list %}
-                    <option value="{{ race.round }}" {% if race.round == view.start_race.round %}selected{% endif %}>{{ race.round }} - {{ race.name }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="toRound" class="me-2">Son:</label>
-            <select id="toRound" name="to_round" class="form-select w-auto me-3">
-                {% for race in race_list %}
-                    <option value="{{ race.round }}" {% if race.round == view.end_race.round %}selected{% endif %}>{{ race.round }} - {{ race.name }}</option>
-                {% endfor %}
-            </select>
-
-            <button type="submit" class="btn btn-primary me-2">Süz</button>
-            <a href="{{ request.path }}" class="btn btn-secondary">Sıfırla</a>
-        </form>
-        <small class="text-muted">
-            Belli yarış aralıklarındaki istatistikleri burdan seçebilirsiniz ya da bütün sezonu görmek için süzgeci sıfırlayabilirsiniz.
-        </small>
-    </div>
+    {% include "fantasy/race_range_selector.html" %}
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
@@ -171,50 +148,9 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'fantasy/js/roundSelector.js' %}"></script>
     <script>
-
         $(document).ready(function () {
-            // RACE SELECTOR FROM/TO
-
-            // Get the select elements
-            const fromRoundSelect = document.getElementById('fromRound');
-            const toRoundSelect = document.getElementById('toRound');
-
-            // Function to filter 'to_round' options based on the selected 'from_round'
-            function filterToRoundOptions() {
-                const fromRoundValue = parseInt(fromRoundSelect.value, 10);
-
-                let selectedToRoundValue = parseInt(toRoundSelect.value, 10);
-                let firstValidOptionValue = null;
-
-                // Loop through each option in the 'to_round' dropdown
-                Array.from(toRoundSelect.options).forEach(option => {
-                    const toRoundValue = parseInt(option.value, 10);
-
-                    if (toRoundValue < fromRoundValue) {
-                        option.style.display = 'none'; // Hide options with value less than from_round
-                    } else {
-                        option.style.display = 'block'; // Show options with value greater or equal to from_round
-
-                        // Set the first valid option (that is greater than or equal to from_round)
-                        if (!firstValidOptionValue) {
-                            firstValidOptionValue = toRoundValue;
-                        }
-                    }
-
-                    // If the selected value is hidden, clear the selection
-                    if (selectedToRoundValue === toRoundValue && option.style.display === 'none') {
-                        toRoundSelect.value = firstValidOptionValue; // Reset to the first valid option
-                    }
-                });
-            }
-
-            // Initial filtering when the page loads
-            filterToRoundOptions();
-
-            // Add an event listener to update 'to_round' options when 'from_round' changes
-            fromRoundSelect.addEventListener('change', filterToRoundOptions);
-
             // INITIALIZE DATATABLES
             {% for tab_id in tabs %}
                 $("#table_{{ tab_id }}").DataTable(

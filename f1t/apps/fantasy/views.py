@@ -417,16 +417,8 @@ class SeasonHeadToHeadView(ListView):
         return context
 
 
-class SeasonSupergridView(ListView):
+class SeasonSupergridView(RaceRangeSelectorMixin, ListView):
     template_name = "fantasy/season_supergrid.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.championship = get_object_or_404(
-            Championship,
-            series=self.kwargs.get("series"),
-            year=self.kwargs.get("year")
-        )
 
     def get_queryset(self):
         return RaceDriver.objects.select_related(
@@ -435,7 +427,9 @@ class SeasonSupergridView(ListView):
             "race__championship",
             "championship_constructor"
         ).filter(
-            race__championship=self.championship
+            race__championship=self.championship,
+            race__datetime__gte=self.start_race.datetime,
+            race__datetime__lte=self.end_race.datetime,
         )
 
     def get_context_data(self, **kwargs):
@@ -491,6 +485,7 @@ class SeasonSupergridView(ListView):
         context["race_driver_dict"] = race_driver_dict
         context["supergrid_dict"] = supergrid_dict
         context["championship"] = self.championship
+        context["race_list"] = race_list
         context["tabs"] = {
             "supergrid": "Süpergrid",
         }
