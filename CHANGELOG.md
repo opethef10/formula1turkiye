@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Race range selector html to template to include
 - Race range selector javascript to its own file
+### Fixed
+- Test errors that are caused by lack of races in championship
 
 ## [2.16.9] - 2025-03-10
 ### Added
