@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.16.12] - 2025-03-17
 ### Added
 - Total points with tactics in fantasy race detail
+### Changed
+- Center the nav-tabs
 
 ## [2.16.11] - 2025-03-16
 ### Fixed
