@@ -15,6 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.12] - 2025-03-17
+### Added
+- Total points with tactics in fantasy race detail
+- Season predictions to homepage
+### Changed
+- Center the nav-tabs
+- Put nav-tabs into its includes template
+- Simplify the Fantasy League stats page
+
 ## [2.16.11] - 2025-03-16
 ### Fixed
 - Forgotten refactor for race_range_selector
