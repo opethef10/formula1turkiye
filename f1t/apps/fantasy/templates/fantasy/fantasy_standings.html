@@ -26,7 +26,7 @@
 		  <div class="d-flex gap-2" role="group" aria-label="Menu Group Fantasy">
 			<a href="{% url "django.contrib.flatpages.views.flatpage" url="fantasy/" %}" class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Fantasy Lig Kuralları</a>
 			<a href="{% url 'formula:driver_stats' view.championship.series view.championship.year %}"
-			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Sürücü İstatistikleri</a>
+			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Lig İstatistikleri</a>
 			<a href="{% url 'formula:redirect_last_fantasy_result' view.championship.series view.championship.year %}"
 			   class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}">Son Yarış Sonuçları</a>
 			<a class="btn btn-outline-primary {% if request.device.is_mobile %}btn-sm{% endif %}"
@@ -50,14 +50,7 @@
     {% include "fantasy/race_range_selector.html" %}
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs">
-        {% for tab_id, title in tabs.items %}
-            <li class="nav-item">
-                <a class="nav-link {% if forloop.first %}active{% endif %}" data-bs-toggle="tab"
-                   href="#{{ tab_id }}">{{ title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% include "fantasy/nav-tabs.html" %}
     <!-- Tab panes -->
     <div class="tab-content">
         {% for tab_id in tabs %}

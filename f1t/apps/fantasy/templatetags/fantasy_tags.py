@@ -36,3 +36,8 @@ def with_currency(obj, currency="₺"):
     if not isinstance(obj, Number):
         return ""
     return f"{obj}{currency}"
+
+
+@register.filter
+def total_point_with_tactic(race_driver, tactic):
+    return race_driver.total_point(tactic)
