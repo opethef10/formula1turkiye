@@ -24,6 +24,10 @@
 
     {% include "fantasy/race_range_selector.html" %}
 
+    <div class="alert alert-info{% if request.device.is_mobile %} small{% endif %}" role="alert">
+        Fantasy Lig için hazırladığımız istatistik sayfasıdır. <a href="{% url 'formula:season_stats' view.championship.series view.championship.year %}">Sezon İstatistikleri</a> sayfasından seans sonuçlarına, şampiyona puanlarına ve diğer istatistiklere ulaşabilirsiniz.
+    </div>
+
     <!-- Nav tabs -->
     <ul class="nav nav-tabs justify-content-center">
         {% for tab_id, title in tabs.items %}

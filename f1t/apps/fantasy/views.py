@@ -255,11 +255,6 @@ class FantasyStatsView(RaceRangeSelectorMixin, ListView):
         context["race_list"] = race_list
         context["tabs"] = {
             "total_point": "Toplam Puan",
-            "qualy": "Sıralama",
-            "grid_sprint": "Sprint Grid",
-            "sprint": "Sprint",
-            "grid": "Grid",
-            "result": "Yarış",
             "overtake_point": "Geçiş Puanı",
             "qualy_point": "Sıralama Puanı",
             "race_point": "Yarış Puanı",
