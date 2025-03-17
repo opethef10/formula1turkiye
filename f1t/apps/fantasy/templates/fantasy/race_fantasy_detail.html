@@ -48,6 +48,15 @@
                     <thead class="thead-inverse">
                     {% if tab_id == "drivers" %}
                         <tr>
+                            <th colspan="1" class="border-end"></th>
+                            <th colspan="2"></th>
+                            <th colspan="3" class="border-end">Pozisyonlar</th>
+                            <th colspan="1"></th>
+                            <th colspan="3" class="border-end">Türüne Göre Puanlar</th>
+                            <th colspan="1"></th>
+                            <th colspan="3" class="border-end">Taktikli Toplamlar</th>
+                        </tr>
+                        <tr>
                             <th>Sürücü</th>
                             <th>Qual</th>
                             <th>SprG</th>
@@ -58,7 +67,10 @@
                             <th>Sıra.</th>
                             <th>Finiş</th>
                             <th title="Takım Arkadaşını Yenme Puanı">H2H</th>
-                            <th>Toplam</th>
+                            <th>Taktiksiz</th>
+                            <th>Geçiş</th>
+                            <th>Sıra.</th>
+                            <th>Finiş</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -72,11 +84,14 @@
                                 <td>{{ race_driver.sprint|default_if_none:"" }}<b><sup>{% if race_driver.sprint_fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
                                 <td>{{ race_driver.grid|default_if_none:"" }}</td>
                                 <td>{{ race_driver.result|default_if_none:"" }}<b><sup>{% if race_driver.fastest_lap %}{{ view.championship.fastest_lap_point }}{% endif %}</sup></b></td>
-                                <td>{{ race_driver.overtake_point|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.qualy_point|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.race_point|default_if_none:"-" }}</td>
-                                <td>{{ race_driver.teammate_point|default_if_none:"-" }}</td>
+                                <td class="text-muted">{{ race_driver.overtake_point|default_if_none:"-" }}</td>
+                                <td class="text-muted">{{ race_driver.qualy_point|default_if_none:"-" }}</td>
+                                <td class="text-muted">{{ race_driver.race_point|default_if_none:"-" }}</td>
+                                <td class="text-muted">{{ race_driver.teammate_point|default_if_none:"-" }}</td>
                                 <td><b>{{ race_driver.total_point|default_if_none:"-" }}</b></td>
+                                <td class="text-muted">{{ race_driver|total_point_with_tactic:"G" }}</td>
+                                <td class="text-muted">{{ race_driver|total_point_with_tactic:"S" }}</td>
+                                <td class="text-muted">{{ race_driver|total_point_with_tactic:"F" }}</td>
                             </tr>
                         {% endfor %}
                         {% else %}
@@ -154,11 +169,13 @@
             {% for tab_id in tabs %}
                 var {{ tab_id }} = $("#table_{{ tab_id }}").DataTable(
                     {
+                        autoWidth: false,
                         language: {
                             "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
                         },
                         paging: false,
                         order: {% if tab_id == "drivers" %}[]{% else %} [[5, 'desc']] {% endif %},
+                        {% if tab_id == "drivers" %}searching: false,{% endif %}
                         "info": false,
                         columnDefs: [
                             {
