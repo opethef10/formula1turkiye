@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-    <h3>YENİ TAKIM KUR - <a href="{{ view.race.get_absolute_url }}">{{ view.race.name }}</a></h3>
+    <h3>YENİ TAKIM KUR - <a href="{{ view.race.get_fantasy_url }}">{{ view.race.name }}</a></h3>
     <li>Kadronuzda en fazla <b>{{ max_drivers_in_team }} sürücü</b> olabilir, kadronuzu buna göre oluşturun.</li>
     <li>Bütçenizi <b>({{ STARTING_BUDGET|with_currency }})</b> aşmayın.</li>
     <li>Taktiğinizi kurallarda anlatıldığı üzere seçin.</li>
