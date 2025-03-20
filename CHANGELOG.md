@@ -15,9 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.16.14] - 2025-03-20
+### Added
+- Round number for race detail headers
+
 ## [2.16.13] - 2025-03-18
 ### Changed
 - get_absolute_url to get_fantasy_url in fantasy league forms
+
 ## [2.16.12] - 2025-03-17
 ### Added
 - Total points with tactics in fantasy race detail
