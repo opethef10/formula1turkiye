@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.17.2] - 2025-03-22
+### Fixed
+- Show sprint grid position in sprint quali tab in race detail
+
 ## [2.17.1] - 2025-03-22
 ### Security
 - Upgrade Django and minify-html
