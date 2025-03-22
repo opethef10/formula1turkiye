@@ -1,5 +1,6 @@
-Django==5.1.6
+Django==5.1.7
 django-widget-tweaks==1.5.0
+minify-html==0.15.0
 django-minify-html==1.12.0
 IPython==8.32.0
 django_extensions==3.2.3
