@@ -151,7 +151,7 @@
                             <tbody>
                             {% for race_driver in race_driver_list %}
                                 <tr>
-                                    <td>{{ race_driver.sprint|default_if_none:"" }}</td>
+                                    <td>{{ race_driver.grid_sprint|default_if_none:"" }}</td>
                                     <td style="background-color: {{ race_driver.championship_constructor.bgcolor }}; color: {{ race_driver.championship_constructor.fontcolor }}">
                                         <a style="color: {{ race_driver.championship_constructor.fontcolor }}" href="{% url 'formula:driver_detail' race_driver.driver.slug %}"><b>{{ race_driver.driver }}</b></a>
                                     </td>
