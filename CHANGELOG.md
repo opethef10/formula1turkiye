@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.17.1] - 2025-03-22
+### Security
+- Upgrade Django and minify-html
+
+## [2.17.0] - 2025-03-22
+### Added
+- Vote count fields for race ratings
+
 ## [2.16.14] - 2025-03-20
 ### Added
 - Round number for race detail headers
