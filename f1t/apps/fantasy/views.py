@@ -465,8 +465,8 @@ class SeasonSupergridView(RaceRangeSelectorMixin, ListView):
                 trimmed_mean = None
             supergrid_dict[driver] = [
                 f"{mean_first_80_percent:.3%}" if mean_first_80_percent is not None else None,
-                f"{mean_value:.3%}" if mean_value is not None else None,
                 f"{median_value:.3%}" if median_value is not None else None,
+                f"{mean_value:.3%}" if mean_value is not None else None,
                 f"{trimmed_mean:.3%}" if trimmed_mean is not None else None,
             ]
         context["race_driver_dict"] = race_driver_dict
