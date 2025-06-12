@@ -1283,6 +1283,36 @@ class EditTeamView(TeamNewEditBaseView):
         else:
             return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        prev_race = self.race.get_previous_by_datetime(championship=self.race.championship)
+        prev_prices = {}
+        if prev_race:
+            for rd in prev_race.driver_instances.select_related("driver"):
+                prev_prices[rd.driver_id] = rd.price
+
+        # Prepare driver table data
+        driver_table = []
+        for driver_instance in self.race.driver_instances.select_related("driver", "championship_constructor"):
+            prev_price = prev_prices.get(driver_instance.driver_id)
+            if prev_price is not None:
+                price_diff = driver_instance.price - prev_price
+            else:
+                price_diff = None
+            driver_table.append({
+                "driver": driver_instance.driver,
+                "price": driver_instance.price,
+                "bgcolor": driver_instance.championship_constructor.bgcolor,
+                "fontcolor": driver_instance.championship_constructor.fontcolor,
+                "price_diff": price_diff,
+                "has_prev": prev_price is not None,
+                "discounted_price": driver_instance.discounted_price() if driver_instance.discount else None,
+                "discount": driver_instance.discount,
+            })
+
+        context["driver_table"] = driver_table
+        return context
+
 
 class RaceDriverUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
     model = RaceDriver
