@@ -1200,7 +1200,7 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         try:
-            return RaceTeam.objects.get(
+            return RaceTeam.objects.prefetch_related("race_drivers__driver").get(
                 user=self.request.user,
                 race=self.race
             )

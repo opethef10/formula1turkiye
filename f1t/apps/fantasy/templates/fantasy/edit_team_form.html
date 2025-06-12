@@ -37,6 +37,15 @@
         </li>
         <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     </ul>
+    <ul>
+        <li>Alım satımlarımız önceki yarışın kadro, hak ve bütçesine göre yapıldığı için formda önceki haftaki kadronuzu görürsünüz.</li>
+        <li>Bir haftada birden fazla alım satım yaptığınızda bu durum kafanızı karıştırmasın. Sistemde kayıtlı kadronuz aşağıdaki gibidir.</li>
+        <li>Herhangi bir ek işlem yapmadığınızda aşağıdaki kadro geçerli olacaktır.</li>
+        <li><b>Taktik: </b>{{ object.get_tactic_display }}</li>
+        <li><b>Kalan Hak: </b>{{ object.token }}</li>
+        <li><b>Bütçe: </b>{{ object.budget }}</li>
+        <li><b>Kadro: </b>{% for rd in object.race_drivers.all %}{{ rd.driver.surname }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+    </ul>
     <img src="{{ championship.price_img.url }}" width="410px" height="480px"
          alt="Fantasy fiyatlar">
     <form method="post" novalidate>
