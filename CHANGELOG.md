@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.18.0] - 2025-06-16
+### Added
+- Unified Jolpica check command for F1 results
+- Current raceteam to alım satım form
+- Price table to alım satım form
+### Changed
+- docker-compose.yml to use build from the Dockerfile
+### Deprecated
+- Seperated Jolpica check commands
+### Removed
+- price_img field from Championship model
+
 ## [2.17.3] - 2025-04-21
 ### Fixed
 - Supergrid column order
