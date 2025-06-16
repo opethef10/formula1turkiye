@@ -1,7 +1,9 @@
 name: formula1turkiye
 
 services:
-  app:
+  django_app:
+    build:
+      context: .
     image: formula1turkiye
     container_name: formula1turkiye_container
     ports:
