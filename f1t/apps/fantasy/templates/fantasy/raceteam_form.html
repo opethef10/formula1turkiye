@@ -19,9 +19,6 @@
     <li>Kadronuzu gönderdikten sonra düzenlemek istiyorsanız süresonuna kadar buradan düzenleyebilirsiniz.</li>
     <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     <br/>
-    <img src="{{ championship.price_img.url }}" width="25%" height="25%"
-         alt="Fantasy fiyatlar">
-    <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
         <button type="submit" class="btn btn-success">Gönder</button>

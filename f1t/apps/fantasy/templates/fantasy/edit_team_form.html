@@ -1,7 +1,26 @@
 {% extends 'base.html' %}
-{% load form_tags widget_tweaks static %}
+{% load form_tags widget_tweaks static fantasy_tags %}
 
 {% block title %}Alım Satım{% endblock %}
+
+{% block stylesheet %}
+<style>
+  #table_prices th, #table_prices td {
+    min-width: 120px;
+  }
+  table tr, table th, table td {
+  line-height: 1.1;    /* reduces vertical spacing inside cells */
+}
+  #table_prices {
+  border-collapse: collapse;
+}
+  /* Optionally, set different widths for each column */
+  #table_prices th:nth-child(1), #table_prices td:nth-child(1) { min-width: 160px; }
+  #table_prices th:nth-child(2), #table_prices td:nth-child(2) { min-width: 90px; }
+  #table_prices th:nth-child(3), #table_prices td:nth-child(3) { min-width: 80px; }
+  #table_prices th:nth-child(4), #table_prices td:nth-child(4) { min-width: 90px; }
+</style>
+{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
@@ -37,8 +56,70 @@
         </li>
         <li>İşlemlerinizi <b>{{ view.race.fp1_datetime|default_if_none:"???" }}</b> tarihine kadar yapabilirsiniz.</li>
     </ul>
-    <img src="{{ championship.price_img.url }}" width="410px" height="480px"
-         alt="Fantasy fiyatlar">
+    <ul>
+        <li>Alım satımlarımız önceki yarışın kadro, hak ve bütçesine göre yapıldığı için formda önceki haftaki kadronuzu görürsünüz.</li>
+        <li>Bir haftada birden fazla alım satım yaptığınızda bu durum kafanızı karıştırmasın. Sistemde kayıtlı kadronuz aşağıdaki gibidir.</li>
+        <li>Herhangi bir ek işlem yapmadığınızda aşağıdaki kadro geçerli olacaktır.</li>
+        <li><b>Taktik: </b>{{ object.get_tactic_display }}</li>
+        <li><b>Kalan Hak: </b>{{ object.token }}</li>
+        <li><b>Bütçe: </b>{{ object.budget }}</li>
+        <li><b>Kadro: </b>{% for rd in object.race_drivers.all %}{{ rd.driver.surname }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+    </ul>
+    <div class=table-responsive>
+        <table id="table_prices"
+               class="table table-sm table-borderless d-block hover cell-border order-column justify-content-center text-center text-nowrap">
+        <thead class="thead-inverse">
+        <tr style="border: #0c0c0c">
+            <th>Sürücü</th>
+            <th>Fiyat</th>
+            <th>Fark</th>
+            <th>Tanzim</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for race_driver in driver_table %}
+        <tr class="fw-bold">
+            <td style="background-color: {{ race_driver.bgcolor }}; color: {{ race_driver.fontcolor }}">
+                <a style="color: {{ race_driver.fontcolor }}" href="{% url 'formula:driver_detail' race_driver.driver.slug %}"><b>{{ race_driver.driver }}</b></a>
+            </td>
+            <td style="background-color: {{ race_driver.bgcolor }}; color: {{ race_driver.fontcolor }}">
+                {{ race_driver.price|with_currency }}
+            </td>
+            <td
+              {% if race_driver.has_prev %}
+                {% if race_driver.price_diff > 0 %}
+                  style="background-color: #28a745; color: #fff;"
+                {% elif race_driver.price_diff < 0 %}
+                  style="background-color: #dc3545; color: #fff;"
+                {% else %}
+                  style="background-color: #fff; color: #000;"
+                {% endif %}
+              {% else %}
+                style="background-color: #fff; color: #000;"
+              {% endif %}
+            >
+              {% if race_driver.has_prev %}
+                {{ race_driver.price_diff|with_currency }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td style="background-color: {{ race_driver.bgcolor }}; color: {{ race_driver.fontcolor }}">
+                {% if race_driver.discount %}
+                    {{ race_driver.discounted_price|with_currency }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+   <tr>
+            <td colspan="4" class="text-center" style="background-color: #980000; color: #fff"><b>BÜTÇE: {{ STARTING_BUDGET|with_currency }}</b></td>
+        </tr>
+    </tfoot>
+</table>
+    </div>
+
     <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
