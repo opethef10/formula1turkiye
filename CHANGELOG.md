@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.18.1] - 2025-06-30
+### Fixed
+- Jolpica_check command datatype choices
+
 ## [2.18.0] - 2025-06-16
 ### Added
 - Unified Jolpica check command for F1 results
