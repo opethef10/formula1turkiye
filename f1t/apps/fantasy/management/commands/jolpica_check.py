@@ -39,12 +39,14 @@ class Command(BaseCommand):
             session_data = self.fetch_data(year, round_number, datatype)
 
             match datatype:
-                case "race":
+                case "results":
                     self.handle_race(session_data)
                 case "qualifying":
                     self.handle_qualifying(session_data)
                 case "sprint":
                     self.handle_sprint(session_data)
+                case _:
+                    raise ValueError(f"Unknown datatype: {datatype}")
 
         except requests.RequestException as e:
             self.stderr.write(f"Error fetching data from API: {e}")
