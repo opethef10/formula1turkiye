@@ -5,13 +5,13 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic import ListView, RedirectView, TemplateView, UpdateView
+from django.views.generic import ListView, RedirectView, UpdateView
 
 from .forms import NewTahminForm
 from .models import Question, Tahmin
@@ -173,9 +173,18 @@ class NewTahminView(LoginRequiredMixin, UpdateView):
             raise Http404("Tahminler bu şampiyona için kapalıdır.")
 
         if self.next_race is None:
-            return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
+            return render(request, "expired.html", status=403)
         else:
             return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.championship.is_tahmin:
+            raise Http404("Tahminler bu şampiyona için kapalıdır.")
+
+        if self.next_race is None:
+            return render(request, "expired.html", status=403)
+        else:
+            return super().post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

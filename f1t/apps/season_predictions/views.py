@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
 
 from .forms import DynamicPredictionForm
@@ -137,12 +137,12 @@ class PredictionFormView(LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         if self._is_past_deadline():
-            return TemplateView.as_view(template_name='expired.html')(request)
+            return render(request, "expired.html", status=403)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if self._is_past_deadline():
-            return TemplateView.as_view(template_name='expired.html')(request)
+            return render(request, "expired.html", status=403)
         return super().post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
