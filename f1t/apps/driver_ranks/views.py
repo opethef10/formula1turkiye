@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Sum, F, Case, When, IntegerField, Q
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.db.models import Sum, Case, When, IntegerField, Q
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
@@ -77,12 +76,12 @@ class DragDropRankView(SuccessMessageMixin, LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         if self._is_past_deadline():
-            return TemplateView.as_view(template_name='expired.html')(request)
+            return render(request, "expired.html", status=403)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if self._is_past_deadline():
-            return TemplateView.as_view(template_name='expired.html')(request)
+            return render(request, "expired.html", status=403)
         return super().post(request, *args, **kwargs)
 
     def get_queryset(self):

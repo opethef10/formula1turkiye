@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.18.2] - 2025-07-05
+### Fixed
+- Return 403 after the form deadlines for get and post requests
+
 ## [2.18.1] - 2025-06-30
 ### Fixed
 - Jolpica_check command datatype choices

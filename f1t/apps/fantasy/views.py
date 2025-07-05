@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.db.models import Count, Max, Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -1179,9 +1179,19 @@ class TeamNewEditBaseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
             raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
 
         if self.next_race is None:
-            return TemplateView.as_view(template_name='expired.html')(request, *args, **kwargs)
+            return render(request, "expired.html", status=403)
         else:
             return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.championship.is_fantasy:
+            raise Http404("Fantasy Lig bu şampiyona için kapalıdır.")
+
+        if self.next_race is None:
+            return render(request, "expired.html", status=403)
+
+        return super().post(request, *args, **kwargs)
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
