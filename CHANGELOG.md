@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.19.0] - 2025-07-06
+### Added
+- Intuitive spreadsheet-like navigation using arrow keys in race edit form
+- Automatic prevention of native arrow behavior in number inputs in race edit form during navigation to avoid unwanted value changes.
+
 ## [2.18.2] - 2025-07-05
 ### Fixed
 - Return 403 after the form deadlines for get and post requests
