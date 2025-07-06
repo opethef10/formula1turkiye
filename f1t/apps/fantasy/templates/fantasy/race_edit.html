@@ -53,7 +53,7 @@
     <iframe src="{{ race.wikilink }}#Race_classification" scrolling="no"
             width="900px" height="900px"></iframe>
 
-    <form class="form form-horizontal" method="post" novalidate>
+    <form id="race_edit_form" class="form form-horizontal" method="post" novalidate>
         {% csrf_token %}
         {{ formset.management_form }}
         <div class="mb-3 row g-0">
@@ -153,6 +153,75 @@
             if(document.activeElement.type === "number"){
                 document.activeElement.blur();
             }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const totalFormsInput = document.querySelector('[name="form-TOTAL_FORMS"]');
+            if (!totalFormsInput) return;
+
+            const totalForms = parseInt(totalFormsInput.value);
+            const rows = [];
+
+            for (let i = 0; i < totalForms; i++) {
+                const selector = `[name^="form-${i}-"]`;
+                const inputs = Array.from(document.querySelectorAll(selector))
+                    .filter(el =>
+                        el.offsetParent !== null && // visible
+                        !el.disabled &&
+                        el.type !== 'hidden'
+                    );
+                rows.push(inputs);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                if (!arrowKeys.includes(e.key)) return;
+
+                e.preventDefault(); // Always prevent default arrow behavior
+
+                const active = document.activeElement;
+                let rowIndex = -1;
+                let colIndex = -1;
+
+                for (let r = 0; r < rows.length; r++) {
+                    const c = rows[r].indexOf(active);
+                    if (c !== -1) {
+                        rowIndex = r;
+                        colIndex = c;
+                        break;
+                    }
+                }
+
+                if (rowIndex === -1 || colIndex === -1) return;
+
+                let target = null;
+
+                switch (e.key) {
+                    case 'ArrowRight':
+                        if (colIndex < rows[rowIndex].length - 1) {
+                            target = rows[rowIndex][colIndex + 1];
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (colIndex > 0) {
+                            target = rows[rowIndex][colIndex - 1];
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (rowIndex < rows.length - 1 && rows[rowIndex + 1][colIndex]) {
+                            target = rows[rowIndex + 1][colIndex];
+                        }
+                        break;
+                    case 'ArrowUp':
+                        if (rowIndex > 0 && rows[rowIndex - 1][colIndex]) {
+                            target = rows[rowIndex - 1][colIndex];
+                        }
+                        break;
+                }
+
+                if (target) {
+                    target.focus();
+                }
+            });
         });
     </script>
 {% endblock %}
