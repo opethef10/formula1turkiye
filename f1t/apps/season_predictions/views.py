@@ -75,7 +75,7 @@ class PredictionDetailView(DetailView):
         prediction = self.object
         processed_answers = []
 
-        for answer in prediction.answers.all():
+        for answer in prediction.answers.order_by("question"):
             answer_data = {
                 'question': answer.question,
                 'value': answer.value,
@@ -178,7 +178,7 @@ class PredictionFormView(LoginRequiredMixin, FormView):
             else:
                 value = form.cleaned_data.get(field_name)
 
-            if value:
+            if value is not None:
                 Answer.objects.create(
                     prediction=prediction,
                     question=question,
