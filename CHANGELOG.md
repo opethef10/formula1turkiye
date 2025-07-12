@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.19.3] - 2025-07-12
+### Security
+- Upgrade library versions
+
 ## [2.19.2] - 2025-07-12
 ### Added
 - Future BestDjangoTemplate environment variables
