@@ -1379,6 +1379,42 @@ class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
                 race__round=self.kwargs.get('round')
             )
         )
+
+        # Add fantasy stats data for the tabs
+        race_list = Race.objects.prefetch_related("team_instances").select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+
+        race_count = race_list.count()
+
+        # Get all race drivers for the championship to build stats
+        race_drivers = RaceDriver.objects.prefetch_related(
+            "raceteamdrivers"
+        ).select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
+        ).filter(
+            race__championship=self.championship,
+        )
+
+        race_driver_dict = {}
+        for rd in race_drivers:
+            if rd.driver not in race_driver_dict:
+                race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
+            race_driver_dict[rd.driver][rd.race.round - 1] = rd
+
+        context["race_driver_dict"] = race_driver_dict
+        context["championship"] = self.championship
+        context["race_list"] = race_list
+        context["tabs"] = {
+            "total_point": "Toplam Puan",
+            "price": "Fiyatlar",
+            "discount": "Tanzim Pilotları",
+        }
         return context
 
     def post(self, request, *args, **kwargs):
