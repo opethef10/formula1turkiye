@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.19.2] - 2025-07-12
+### Added
+- Future BestDjangoTemplate environment variables
+- local domain for ALLOWED_HOSTS
+### Changed
+- Docker container is always restarted unless stopped
+- Add environmental variables to docker-compose.yml
+
 ## [2.19.1] - 2025-07-06
 ### Fixed
 - Absent questions in the season predictions that has falsey answers
