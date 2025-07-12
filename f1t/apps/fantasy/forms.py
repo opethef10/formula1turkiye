@@ -151,7 +151,7 @@ class EditTeamForm(forms.ModelForm):
 class RaceDriverEditForm(forms.ModelForm):
     class Meta:
         model = RaceDriver
-        fields = ["driver", "discount", "price", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap", "sprint_fastest_lap", "q1", "q2", "q3"]
+        fields = ["driver", "qualy", "grid_sprint", "sprint", "grid", "result", "fastest_lap", "sprint_fastest_lap", "q1", "q2", "q3"]
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
