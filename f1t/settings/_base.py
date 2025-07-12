@@ -12,11 +12,23 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+from decouple import config, Csv
 from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
 
 PROJECT_DIR = Path(__file__).parent.parent
 BASE_DIR = PROJECT_DIR.parent
+
+PROJECT_SLUG = config("PROJECT_SLUG")
+PROJECT_NAME = config("PROJECT_NAME")
+PROJECT_DESCRIPTION = config("PROJECT_DESCRIPTION")
+PROJECT_DOMAIN = config("PROJECT_DOMAIN")
+# PROJECT_ADMIN_NAME = config("PROJECT_ADMIN_NAME")
+# PROJECT_ADMIN_EMAIL = config("PROJECT_ADMIN_EMAIL")
+
+PROJECT_URL = f"https://{PROJECT_DOMAIN}"
+EMAIL_SUBJECT_PREFIX = f"[{PROJECT_NAME}] "
+
 ROOT_URLCONF = 'f1t.urls'
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = False
@@ -156,8 +168,6 @@ ADMINS = [
     ('Semih Boz', 'semih.boz0@gmail.com'),
     ("Formula 1 Türkiye", "formula1turkiyef1t@gmail.com"),
 ]
-
-EMAIL_SUBJECT_PREFIX = "[Formula 1 Türkiye] "
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',

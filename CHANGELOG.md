@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -->
 
 ## [2.19.2] - 2025-07-12
+### Added
+- Future BestDjangoTemplate environment variables
 ### Changed
 - Docker container is always restarted unless stopped
 - Add environmental variables to docker-compose.yml
