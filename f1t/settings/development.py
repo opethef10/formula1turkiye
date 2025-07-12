@@ -13,6 +13,7 @@ SECRET_KEY = "INSECURE_DJANGO_SECRET_KEY_TO_BE_USED_AT_LOCAL_ENV"
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", f"{PROJECT_SLUG}.local"]
+CSRF_TRUSTED_ORIGINS = [f"https://{PROJECT_SLUG}.local"]
 
 # For Docker
 # `debug` is only True in templates if the vistor IP is in INTERNAL_IPS.
