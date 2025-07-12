@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
-from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
+from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet, PriceEditForm, PriceFormSet
 from .mixins import ChampionshipMixin, RaceRangeSelectorMixin
 from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
@@ -1342,6 +1342,48 @@ class RaceDriverUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         formset = RaceDriverFormSet(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+        else:
+            return self.form_invalid(formset)
+
+    def form_valid(self, formset):
+        self.object = self.get_object()
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.save()
+        cache.clear()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Race.objects.select_related("championship"),
+            championship=self.championship,
+            round=self.kwargs.get('round')
+        )
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
+    model = RaceDriver
+    form_class = PriceEditForm
+    template_name = "fantasy/price_edit.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = PriceFormSet(
+            queryset=RaceDriver.objects.filter(
+                race__championship=self.championship,
+                race__round=self.kwargs.get('round')
+            )
+        )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        formset = PriceFormSet(request.POST)
         if formset.is_valid():
             return self.form_valid(formset)
         else:

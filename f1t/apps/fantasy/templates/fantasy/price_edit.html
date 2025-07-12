@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static form_tags widget_tweaks %}
+
+{% block title %}Fiyat Düzenle: {{ race }}{% endblock %}
+{% block stylesheet %}
+<style>
+    .is-invalid {
+        border: 2px solid red;
+        border-radius: 5px;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' race.championship.series %}">{{ race.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_list' race.championship.series race.championship.year %}">{{ race.championship.year }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_detail' race.championship.series race.championship.year race.round%}">{{ race.name }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:fantasy_race_results' race.championship.series race.championship.year race.round%}">Fantasy Lig</a>
+    </li>
+    <li class="breadcrumb-item">
+        Fiyat Düzenle
+    </li>
+{% endblock %}
+
+
+{% block content %}
+{% if form.errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.errors %}
+      <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{% if race.previous %}{% url 'formula:price_edit' race.previous.championship.series race.previous.championship.year race.previous.round %}{% endif %}">&larr; {{ race.previous|default_if_none:"" }}</a>
+        <h3 class="text-center">Fiyat Düzenle: {{ race }}</h3>
+        <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{% if race.next %}{% url 'formula:price_edit' race.next.championship.series race.next.championship.year race.next.round %}{% endif %}">{{ race.next|default_if_none:"" }} &rarr;</a>
+    </div>
+
+    <form id="price_edit_form" class="form form-horizontal" method="post" novalidate>
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="mb-3 row g-0">
+            <div class="text-center" style="width: 160px"><b>Sürücü</b></div>
+            <div class="text-center" style="width:50px"><b>Tanzim</b></div>
+            <div class="text-center" style="width:50px"><b>Fiyat</b></div>
+        </div>
+        {% for form in formset %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="mb-3 row g-0">
+                {% for field in form %}
+                    <div class="col-auto">
+                    {% if forloop.first %}
+                        {% render_field field style="width: 160px" disabled="True" %}
+                    {% elif forloop.counter >= 11 %}
+                        {% render_field field style="width: 70px" %}
+                    {% else %}
+                        {% render_field field style="width:50px" %}
+                    {% endif %}
+                    </div>
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {#            {{form.as_table}}<br><br>#}
+        {% endfor %}
+        <button id="submit_button" type="submit" class="btn btn-success">Gönder</button>
+        <button type="reset" class="btn btn-primary ms-2" id="deselect">Değişiklikleri Geri Al</button>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        const submitButton = document.getElementById("submit_button");
+        const resetButton = document.getElementById("deselect");
+
+        jQuery(function ($) {
+            $('form').bind('submit', function () {
+                $(this).find(':input').prop('disabled', false);
+            });
+        });
+
+        // Disable mouse wheel scrolling over number inputs
+        document.addEventListener("wheel", function(event){
+            if(document.activeElement.type === "number"){
+                document.activeElement.blur();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const totalFormsInput = document.querySelector('[name="form-TOTAL_FORMS"]');
+            if (!totalFormsInput) return;
+
+            const totalForms = parseInt(totalFormsInput.value);
+            const rows = [];
+
+            for (let i = 0; i < totalForms; i++) {
+                const selector = `[name^="form-${i}-"]`;
+                const inputs = Array.from(document.querySelectorAll(selector))
+                    .filter(el =>
+                        el.offsetParent !== null && // visible
+                        !el.disabled &&
+                        el.type !== 'hidden'
+                    );
+                rows.push(inputs);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                if (!arrowKeys.includes(e.key)) return;
+
+                e.preventDefault(); // Always prevent default arrow behavior
+
+                const active = document.activeElement;
+                let rowIndex = -1;
+                let colIndex = -1;
+
+                for (let r = 0; r < rows.length; r++) {
+                    const c = rows[r].indexOf(active);
+                    if (c !== -1) {
+                        rowIndex = r;
+                        colIndex = c;
+                        break;
+                    }
+                }
+
+                if (rowIndex === -1 || colIndex === -1) return;
+
+                let target = null;
+
+                switch (e.key) {
+                    case 'ArrowRight':
+                        if (colIndex < rows[rowIndex].length - 1) {
+                            target = rows[rowIndex][colIndex + 1];
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (colIndex > 0) {
+                            target = rows[rowIndex][colIndex - 1];
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (rowIndex < rows.length - 1 && rows[rowIndex + 1][colIndex]) {
+                            target = rows[rowIndex + 1][colIndex];
+                        }
+                        break;
+                    case 'ArrowUp':
+                        if (rowIndex > 0 && rows[rowIndex - 1][colIndex]) {
+                            target = rows[rowIndex - 1][colIndex];
+                        }
+                        break;
+                }
+
+                if (target) {
+                    target.focus();
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -157,8 +157,23 @@ class RaceDriverEditForm(forms.ModelForm):
             super().__init__(*args, **kwargs)
 
 
+class PriceEditForm(forms.ModelForm):
+    class Meta:
+        model = RaceDriver
+        fields = ["driver", "discount", "price"]
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+
 RaceDriverFormSet = modelformset_factory(
     RaceDriver,
     form=RaceDriverEditForm,
+    extra=0
+)
+
+PriceFormSet = modelformset_factory(
+    RaceDriver,
+    form=PriceEditForm,
     extra=0
 )

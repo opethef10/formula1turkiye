@@ -42,6 +42,7 @@ urlpatterns = [
     path('<str:series>/<int:year>/<int:round>/fantasy/', views.RaceFantasyView.as_view(), name='fantasy_race_results'),
     path('<str:series>/<int:year>/last/fantasy/', views.LastRaceFantasyRedirectView.as_view(), name='redirect_last_fantasy_result'),
     path('<str:series>/<int:year>/<int:round>/edit/', views.RaceDriverUpdateView.as_view(), name='race_edit'),
+    path('<str:series>/<int:year>/<int:round>/fantasy/edit/', views.PriceUpdateView.as_view(), name='price_edit'),
 
     # Fantasy paths
     path('<str:series>/<int:year>/teams/', views.FantasyStandingsView.as_view(), name='team_list_deprecated'),
