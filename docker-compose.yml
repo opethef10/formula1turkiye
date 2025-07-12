@@ -1,12 +1,13 @@
-name: formula1turkiye
+name: ${PROJECT_SLUG}
 
 services:
   django_app:
     build:
       context: .
-    image: formula1turkiye
-    container_name: formula1turkiye_container
+    image: ${PROJECT_SLUG}
+    container_name: ${PROJECT_SLUG}_container
     ports:
-      - "8888:8888"
+      - "${PROJECT_PORT_NUMBER}:8888"
     volumes:
       - .:/app
+    restart: unless-stopped
