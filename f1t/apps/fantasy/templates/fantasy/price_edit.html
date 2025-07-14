@@ -70,7 +70,12 @@
 <div class="tab-content">
     <!-- Price Edit Form Tab -->
     <div class="tab-pane show active" id="price_form">
-        <br/>
+       <div class="row mt-4">
+    <!-- Form Column (4 units) -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Fiyat Düzenleme Formu</h4>
         <form id="price_edit_form" class="form form-horizontal" method="post" novalidate>
             {% csrf_token %}
             {{ formset.management_form }}
@@ -87,7 +92,7 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-                <div class="mb-3 row g-0">
+                <div class="mb-3 row g-0" data-driver-id="{{ form.instance.driver.id }}">
                     {% for field in form %}
                         <div class="col-auto">
                             {% if forloop.first %}
@@ -107,10 +112,81 @@
                 </div>
                 {#            {{form.as_table}}<br><br>#}
             {% endfor %}
-            <button id="submit_button" type="submit" class="btn btn-success">Gönder</button>
-            <button type="reset" class="btn btn-primary ms-2" id="deselect">Değişiklikleri Geri Al</button>
+            <div class="d-flex justify-content-between mt-3">
+                        <button id="submit_button" type="submit" class="btn btn-success">Gönder</button>
+                        <button type="reset" class="btn btn-primary" id="deselect">Değişiklikleri Geri Al</button>
+                    </div>
         </form>
+ </div>
+        </div>
     </div>
+
+    <!-- Table Column (8 units) -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Fiyat Özet Tablosu</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sürücü</th>
+                                <th>Fiyat</th>
+                                <th>Değişim</th>
+                                <th>Tanzim</th>
+                                <th>Son</th>
+                                <th>Performans</th>
+                                <th>Ort.</th>
+                                <th>Beklenti</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reactive-table">
+                            {% for form in formset %}
+                            {% with race_driver=form.instance driver=form.instance.driver prev_price=form.previous_price prev_point=form.previous_point %}
+                            <tr data-driver-id="{{ driver.id }}"
+                                data-previous-price="{{ prev_price|default_if_none:0 }}"
+                                data-initial-price="{{ form.instance.price }}"
+                                data-discounted-price="{{ form.instance.discounted_price }}"
+                                data-initial-discount="{{ form.instance.discount|yesno:'true,false' }}">
+                                <td>{{ driver.name }}</td>
+                                <td class="price-cell">{{ form.instance.price|with_currency }}</td>
+                                <td class="change-cell">
+                                    {% if prev_price %}
+                                        {{ form.instance.price|sub:prev_price|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td class="discounted-cell">
+                                    {% if form.instance.discount %}
+                                        {{ form.instance.discounted_price|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ prev_point|default_if_none:""}}
+                                </td>
+                                <td>
+                                    {% if prev_point is None %}
+                                    {% else %}
+                                        {{ prev_point|formulate|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ form.avg_point|floatformat:1|default_if_none:"-" }}
+                                </td>
+                                <td>
+                                    {{ form.avg_point|formulate|with_currency }}
+                                </td>
+                            </tr>
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
 
     <!-- Fantasy Stats Tabs -->
     {% for tab_id in tabs %}
@@ -122,7 +198,7 @@
                     <thead class="thead-inverse">
                     <tr>
                         <th>Sürücü</th>
-                        {% if tab_id not in "price,discount" %}
+                        {% if tab_id not in "price,discount,after_price,ratio" %}
                             <th>Toplam</th>
                             <th>Ortalama</th>
                             <th>Beklenti</th>
@@ -140,14 +216,14 @@
                                 <td style="background-color: {{ driver.bgcolor }}; color: {{ driver.fontcolor }}">
                                     <a style="color: {{ driver.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
                                 </td>
-                                {% if tab_id not in "price,discount" %}
+                                {% if tab_id not in "price,discount,after_price,ratio" %}
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                 {% endif %}
                                 {% for race_driver in race_driver_list %}
                                     <td>
-                                        {% if tab_id == "price" %}
+                                        {% if tab_id in "price,after_price" %}
                                             {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
                                         {% elif tab_id == "discount" %}
                                             {{ race_driver|call_or_get_attr:tab_id|yesno:"1,," }}
@@ -162,7 +238,7 @@
                 <tfoot>
     <tr>
         <th></th>
-        {% if tab_id not in "price,discount" %}
+        {% if tab_id not in "price,discount,after_price,ratio" %}
             <th></th>
         {% endif %}
         {% for race in race_list %}
@@ -276,7 +352,7 @@
                         paging: false,
                         "info": false,
                         searching: false,
-                        {% if tab_id in "price,discount" %}
+                        {% if tab_id in "price,discount,after_price,ratio" %}
                             order: [],
                             columnDefs: [
                                 {
@@ -416,7 +492,7 @@
                         {% endif %}
                     }
                 );
-                {% if tab_id in "instances,price,discount" %}
+                {% if tab_id in "instances,price,discount,after_price,ratio" %}
                     $("#table_{{ tab_id }} tbody td").not(":nth-child(1), :empty").colorize();
                 {% elif tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
                 {% else %}
@@ -426,6 +502,116 @@
 
             {% endfor %}
         });
+function updateTableRow(row, price, discount) {
+    // Parse values with proper decimal handling
+    const previousPrice = parseFloat(row.dataset.previousPrice.replace(',', '.')) || 0;
+    const currentPrice = parseFloat(price) || 0;
+    const discountCoefficients = [0.6, 0.13, -0.0044, 0.000054];
+
+    const discountAmount = discountCoefficients
+        .reduce((acc, coef, power) => acc + coef * Math.pow(currentPrice, power), 0);
+
+    const discountedPrice = Math.round((currentPrice - discountAmount) * 10) / 10;
+
+    // Update price cell
+    row.querySelector('.price-cell').textContent = currentPrice.toFixed(1) + '₺';
+
+    // Update change cell with proper decimal calculation
+    const changeCell = row.querySelector('.change-cell');
+    if (previousPrice) {
+        const change = currentPrice - previousPrice;
+        const formattedChange = change.toFixed(1) + '₺';
+
+        changeCell.textContent = (change > 0 ? '+' : '') + formattedChange;
+        changeCell.className = 'change-cell ' +
+            (change > 0 ? 'text-success' : (change < 0 ? 'text-danger' : ''));
+    } else {
+        changeCell.textContent = '-';
+        changeCell.className = 'change-cell';
+    }
+
+    // Update discounted cell with proper decimal calculation
+    const discountedCell = row.querySelector('.discounted-cell');
+    if (discount) {
+        discountedCell.textContent = discountedPrice.toFixed(1) + '₺';
+    } else {
+        discountedCell.textContent = '';
+    }
+}
+
+// Initialize event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#reactive-table tr').forEach(row => {
+    const initialPrice = parseFloat(row.dataset.initialPrice.replace(',', '.')) || 0;
+    const initialDiscount = row.dataset.initialDiscount === 'true';
+    updateTableRow(row, initialPrice, initialDiscount);
+});
+    // Connect form inputs to table rows
+    document.querySelectorAll('.mb-3.row.g-0').forEach(formRow => {
+        const driverId = formRow.dataset.driverId;
+        const tableRow = document.querySelector(`#reactive-table tr[data-driver-id="${driverId}"]`);
+
+        if (!tableRow) return;
+
+        // Find inputs
+        const priceInput = formRow.querySelector('input[type="number"]');
+        const discountInput = formRow.querySelector('input[type="checkbox"]');
+
+        // Create update handler
+        const updateHandler = () => {
+            const price = priceInput.value;
+            const discount = discountInput ? discountInput.checked : false;
+            updateTableRow(tableRow, price, discount);
+        };
+
+        // Attach event listeners
+        if (priceInput) {
+            priceInput.addEventListener('input', updateHandler);
+
+            // Add step buttons for easier decimal adjustment
+            const wrapper = document.createElement('div');
+            wrapper.className = 'col-auto ms-3';
+
+            const minusBtn = document.createElement('button');
+            minusBtn.type = 'button';
+            minusBtn.className = 'btn btn-sm btn-outline-secondary me-2';
+            minusBtn.innerHTML = '-0.1';
+            minusBtn.onclick = () => {
+                priceInput.stepDown();
+                priceInput.dispatchEvent(new Event('input'));
+            };
+
+            const plusBtn = document.createElement('button');
+            plusBtn.type = 'button';
+            plusBtn.className = 'btn btn-sm btn-outline-secondary';
+            plusBtn.innerHTML = '+0.1';
+            plusBtn.onclick = () => {
+                priceInput.stepUp();
+                priceInput.dispatchEvent(new Event('input'));
+            };
+
+            wrapper.appendChild(minusBtn);
+            wrapper.appendChild(plusBtn);
+            formRow.appendChild(wrapper);
+        }
+
+        if (discountInput) {
+            discountInput.addEventListener('change', updateHandler);
+        }
+    });
+
+    // Handle reset button
+    document.getElementById('deselect').addEventListener('click', () => {
+        setTimeout(() => {
+            document.querySelectorAll('#reactive-table tr').forEach(row => {
+                const initialPrice = parseFloat(row.dataset.initialPrice.replace(',', '.')) || 0;
+                const initialDiscount = row.dataset.initialDiscount === 'true';
+                updateTableRow(row, initialPrice, initialDiscount);
+            });
+        }, 10);
+    });
+});;
+
     </script>
 {% endblock %}
 

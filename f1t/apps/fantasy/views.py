@@ -1400,6 +1400,7 @@ class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
         )
 
         race_driver_dict = {}
+        race_driver_stats = {}
         for rd in race_drivers:
             if rd.driver not in race_driver_dict:
                 race_driver_dict[rd.driver] = [None] * race_count
@@ -1407,13 +1408,50 @@ class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
                 rd.driver.fontcolor = rd.championship_constructor.fontcolor
             race_driver_dict[rd.driver][rd.race.round - 1] = rd
 
+        for dr, rds in race_driver_dict.items():
+            total = 0.0
+            count = 0
+            for rd in rds:
+                if rd is None:
+                    continue
+                total_point = rd.total_point()
+                if total_point is None:
+                    continue
+                total += total_point
+                count += 1
+                avg_value = total / count
+                rd.ratio = round(total_point / rd.price if rd.price else 0, 3)
+                rd.after_price = round(0.42 * avg_value ** 1.37 + 2.5, 1)
+
+            race_driver_stats[dr.id] = {'total': total, 'avg': total / count}
+
+        # Add previous prices for change calculations
+        prev_race = self.object.previous
+        prev_prices = {}
+        prev_points = {}
+        if prev_race:
+            prev_drivers = race_drivers.filter(race=prev_race)
+            prev_prices = {rd.driver_id: rd.price for rd in prev_drivers}
+            prev_points = {rd.driver_id: rd.total_point() for rd in prev_drivers}
+
+        # Add previous price to each form
+        for form in context['formset']:
+            driver_id = form.instance.driver_id
+            form.previous_price = prev_prices.get(driver_id)
+            form.previous_point = prev_points.get(driver_id)
+            form.total_point = race_driver_stats.get(driver_id)['total']
+            form.avg_point = race_driver_stats.get(driver_id)['avg']
+
         context["race_driver_dict"] = race_driver_dict
+        context["race_driver_stats"] = race_driver_stats
         context["championship"] = self.championship
         context["race_list"] = race_list
         context["tabs"] = {
             "total_point": "Toplam Puan",
             "price": "Fiyatlar",
             "discount": "Tanzim Pilotları",
+            "after_price": "Beklenti",
+            "ratio": "Oran",
         }
         return context
 
