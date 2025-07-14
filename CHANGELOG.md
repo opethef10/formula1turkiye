@@ -15,6 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.20.0] - 2025-07-16
+### Added
+- Price Edit page
+- .local url to CSRF_TRUSTED_ORIGINS
+### Changed
+- Separated the Result/Price buttons into 2 separate buttons
+### Removed
+- Price and discount from the Race Edit page
+
 ## [2.19.3] - 2025-07-12
 ### Security
 - Upgrade library versions
