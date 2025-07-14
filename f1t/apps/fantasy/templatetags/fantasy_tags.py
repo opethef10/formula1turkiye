@@ -41,3 +41,11 @@ def with_currency(obj, currency="₺"):
 @register.filter
 def total_point_with_tactic(race_driver, tactic):
     return race_driver.total_point(tactic)
+
+@register.filter
+def sub(value, arg):
+    return value - arg
+
+@register.filter
+def formulate(value):
+    return round(0.42 * value ** 1.37 + 2.5, 1)
