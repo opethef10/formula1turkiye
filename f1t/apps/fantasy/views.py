@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
 
-from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet
+from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet, PriceEditForm, PriceFormSet
 from .mixins import ChampionshipMixin, RaceRangeSelectorMixin
 from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
@@ -1342,6 +1342,122 @@ class RaceDriverUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         formset = RaceDriverFormSet(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+        else:
+            return self.form_invalid(formset)
+
+    def form_valid(self, formset):
+        self.object = self.get_object()
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.save()
+        cache.clear()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            Race.objects.select_related("championship"),
+            championship=self.championship,
+            round=self.kwargs.get('round')
+        )
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
+    model = RaceDriver
+    form_class = PriceEditForm
+    template_name = "fantasy/price_edit.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = PriceFormSet(
+            queryset=RaceDriver.objects.filter(
+                race__championship=self.championship,
+                race__round=self.kwargs.get('round')
+            )
+        )
+
+        # Add fantasy stats data for the tabs
+        race_list = Race.objects.prefetch_related("team_instances").select_related("championship").filter(
+            championship=self.championship
+        ).order_by("round")
+
+        race_count = race_list.count()
+
+        # Get all race drivers for the championship to build stats
+        race_drivers = RaceDriver.objects.prefetch_related(
+            "raceteamdrivers"
+        ).select_related(
+            "driver",
+            "race",
+            "race__championship",
+            "championship_constructor"
+        ).filter(
+            race__championship=self.championship,
+        )
+
+        race_driver_dict = {}
+        race_driver_stats = {}
+        for rd in race_drivers:
+            if rd.driver not in race_driver_dict:
+                race_driver_dict[rd.driver] = [None] * race_count
+                rd.driver.bgcolor = rd.championship_constructor.bgcolor
+                rd.driver.fontcolor = rd.championship_constructor.fontcolor
+            race_driver_dict[rd.driver][rd.race.round - 1] = rd
+
+        for dr, rds in race_driver_dict.items():
+            total = 0.0
+            count = 0
+            for rd in rds:
+                if rd is None:
+                    continue
+                total_point = rd.total_point()
+                if total_point is None:
+                    continue
+                total += total_point
+                count += 1
+                avg_value = total / count
+                rd.ratio = round(total_point / rd.price if rd.price else 0, 3)
+                rd.after_price = round(0.42 * avg_value ** 1.37 + 2.5, 1)
+
+            race_driver_stats[dr.id] = {'total': total, 'avg': total / count}
+
+        # Add previous prices for change calculations
+        prev_race = self.object.previous
+        prev_prices = {}
+        prev_points = {}
+        if prev_race:
+            prev_drivers = race_drivers.filter(race=prev_race)
+            prev_prices = {rd.driver_id: rd.price for rd in prev_drivers}
+            prev_points = {rd.driver_id: rd.total_point() for rd in prev_drivers}
+
+        # Add previous price to each form
+        for form in context['formset']:
+            driver_id = form.instance.driver_id
+            form.previous_price = prev_prices.get(driver_id)
+            form.previous_point = prev_points.get(driver_id)
+            form.total_point = race_driver_stats.get(driver_id)['total']
+            form.avg_point = race_driver_stats.get(driver_id)['avg']
+
+        context["race_driver_dict"] = race_driver_dict
+        context["race_driver_stats"] = race_driver_stats
+        context["championship"] = self.championship
+        context["race_list"] = race_list
+        context["tabs"] = {
+            "total_point": "Toplam Puan",
+            "price": "Fiyatlar",
+            "discount": "Tanzim Pilotları",
+            "after_price": "Beklenti",
+            "ratio": "Oran",
+        }
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        formset = PriceFormSet(request.POST)
         if formset.is_valid():
             return self.form_valid(formset)
         else:

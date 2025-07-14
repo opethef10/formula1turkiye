@@ -23,7 +23,8 @@
 
 	<a href="{% url 'formula:team_list' view.championship.series view.championship.year %}" class="btn btn-primary mb-4 me-2">Fantasy Lig Genel Klasman</a>
     {% if user.is_superuser %}
-        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Sonuç / Fiyat Gir</a>
+        <a href="{% url 'formula:race_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Sonuç Gir</a>
+        <a href="{% url 'formula:price_edit' view.championship.series view.championship.year race.round %}" class="btn btn-secondary mb-4 me-2">Fiyat Gir</a>
         <a href="{% url opts|admin_urlname:'change' race.pk %}" class="btn btn-secondary mb-4 me-2">Yönetici Sayfasında Düzenle</a>
     {% endif %}
     <!-- Nav tabs -->

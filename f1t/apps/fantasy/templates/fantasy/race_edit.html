@@ -58,8 +58,6 @@
         {{ formset.management_form }}
         <div class="mb-3 row g-0">
             <div class="text-center" style="width: 160px"><b>Sürücü</b></div>
-            <div class="text-center" style="width:50px"><b>Tanzim</b></div>
-            <div class="text-center" style="width:50px"><b>Fiyat</b></div>
             <div class="text-center" style="width:50px"><b>Sıra.</b></div>
             <div class="text-center" style="width:50px"><b>Sp.Grid</b></div>
             <div class="text-center" style="width:50px"><b>Sprint</b></div>
@@ -83,8 +81,8 @@
                 {% for field in form %}
                     <div class="col-auto">
                     {% if forloop.first %}
-                        {% render_field field style="width: 160px" disabled="True" %}
-                    {% elif forloop.counter >= 11 %}
+                        {% render_field field style="width: 180px" disabled="True" %}
+                    {% elif forloop.counter >= 9 %}
                         {% render_field field style="width: 70px" %}
                     {% else %}
                         {% render_field field style="width:50px" %}

@@ -1,0 +1,617 @@
+{% extends 'base.html' %}
+{% load static form_tags widget_tweaks fantasy_tags %}
+
+{% block title %}Fiyat Düzenle: {{ race }}{% endblock %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+<style>
+    .is-invalid {
+        border: 2px solid red;
+        border-radius: 5px;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Ana Sayfa</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'formula:season_list' race.championship.series %}">{{ race.championship.get_series_display }}</a></li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_list' race.championship.series race.championship.year %}">{{ race.championship.year }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:race_detail' race.championship.series race.championship.year race.round%}">{{ race.name }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'formula:fantasy_race_results' race.championship.series race.championship.year race.round%}">Fantasy Lig</a>
+    </li>
+    <li class="breadcrumb-item">
+        Fiyat Düzenle
+    </li>
+{% endblock %}
+
+
+{% block content %}
+{% if form.errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.errors %}
+      <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-primary {% if not race.previous %}disabled{% endif %}" href="{% if race.previous %}{% url 'formula:price_edit' race.previous.championship.series race.previous.championship.year race.previous.round %}{% endif %}">&larr; {{ race.previous|default_if_none:"" }}</a>
+        <h3 class="text-center">Fiyat Düzenle: {{ race }}</h3>
+        <a class="btn btn-outline-primary {% if not race.next %}disabled{% endif %}" href="{% if race.next %}{% url 'formula:price_edit' race.next.championship.series race.next.championship.year race.next.round %}{% endif %}">{{ race.next|default_if_none:"" }} &rarr;</a>
+    </div>
+
+    <!-- Nav tabs -->
+<ul class="nav nav-tabs justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#price_form">Fiyat Düzenle</a>
+    </li>
+    {% for tab_id, title in tabs.items %}
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#{{ tab_id }}">{{ title }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <!-- Price Edit Form Tab -->
+    <div class="tab-pane show active" id="price_form">
+       <div class="row mt-4">
+    <!-- Form Column (4 units) -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Fiyat Düzenleme Formu</h4>
+        <form id="price_edit_form" class="form form-horizontal" method="post" novalidate>
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="mb-3 row g-0">
+                <div class="text-center" style="width: 160px"><b>Sürücü</b></div>
+                <div class="text-center" style="width:50px"><b>Tanzim</b></div>
+                <div class="text-center" style="width:50px"><b>Fiyat</b></div>
+            </div>
+            {% for form in formset %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="mb-3 row g-0" data-driver-id="{{ form.instance.driver.id }}">
+                    {% for field in form %}
+                        <div class="col-auto">
+                            {% if forloop.first %}
+                                {% render_field field style="width: 160px" disabled="True" %}
+                            {% elif forloop.counter >= 11 %}
+                                {% render_field field style="width: 70px" %}
+                            {% else %}
+                                {% render_field field style="width:50px" %}
+                            {% endif %}
+                        </div>
+                        {% for error in field.errors %}
+                            <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {#            {{form.as_table}}<br><br>#}
+            {% endfor %}
+            <div class="d-flex justify-content-between mt-3">
+                        <button id="submit_button" type="submit" class="btn btn-success">Gönder</button>
+                        <button type="reset" class="btn btn-primary" id="deselect">Değişiklikleri Geri Al</button>
+                    </div>
+        </form>
+ </div>
+        </div>
+    </div>
+
+    <!-- Table Column (8 units) -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Fiyat Özet Tablosu</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sürücü</th>
+                                <th>Fiyat</th>
+                                <th>Değişim</th>
+                                <th>Tanzim</th>
+                                <th>Son</th>
+                                <th>Performans</th>
+                                <th>Ort.</th>
+                                <th>Beklenti</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reactive-table">
+                            {% for form in formset %}
+                            {% with race_driver=form.instance driver=form.instance.driver prev_price=form.previous_price prev_point=form.previous_point %}
+                            <tr data-driver-id="{{ driver.id }}"
+                                data-previous-price="{{ prev_price|default_if_none:0 }}"
+                                data-initial-price="{{ form.instance.price }}"
+                                data-discounted-price="{{ form.instance.discounted_price }}"
+                                data-initial-discount="{{ form.instance.discount|yesno:'true,false' }}">
+                                <td>{{ driver.name }}</td>
+                                <td class="price-cell">{{ form.instance.price|with_currency }}</td>
+                                <td class="change-cell">
+                                    {% if prev_price %}
+                                        {{ form.instance.price|sub:prev_price|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td class="discounted-cell">
+                                    {% if form.instance.discount %}
+                                        {{ form.instance.discounted_price|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ prev_point|default_if_none:""}}
+                                </td>
+                                <td>
+                                    {% if prev_point is None %}
+                                    {% else %}
+                                        {{ prev_point|formulate|with_currency }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ form.avg_point|floatformat:1|default_if_none:"-" }}
+                                </td>
+                                <td>
+                                    {{ form.avg_point|formulate|with_currency }}
+                                </td>
+                            </tr>
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+
+    <!-- Fantasy Stats Tabs -->
+    {% for tab_id in tabs %}
+        <div class="tab-pane fade" id="{{ tab_id }}">
+            <br/>
+            <div class="table-responsive">
+                <table id="table_{{ tab_id }}"
+                       class="table table-borderless d-block compact small stripe hover cell-border order-column justify-content-center text-center text-nowrap">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>Sürücü</th>
+                        {% if tab_id not in "price,discount,after_price,ratio" %}
+                            <th>Toplam</th>
+                            <th>Ortalama</th>
+                            <th>Beklenti</th>
+                        {% endif %}
+                        {% for race in race_list %}
+                            <th>
+                                <a href="{{ race.get_absolute_url }}"><i class="{{ race.country.flag_css }}"></i></a>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                  <tbody>
+                        {% for driver, race_driver_list in race_driver_dict.items %}
+                            <tr>
+                                <td style="background-color: {{ driver.bgcolor }}; color: {{ driver.fontcolor }}">
+                                    <a style="color: {{ driver.fontcolor }}" href="{% url 'formula:driver_detail' driver.slug %}"><b>{{ driver.name }}</b></a>
+                                </td>
+                                {% if tab_id not in "price,discount,after_price,ratio" %}
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                {% endif %}
+                                {% for race_driver in race_driver_list %}
+                                    <td>
+                                        {% if tab_id in "price,after_price" %}
+                                            {{ race_driver|call_or_get_attr:tab_id|with_currency|default_if_none:"-" }}
+                                        {% elif tab_id == "discount" %}
+                                            {{ race_driver|call_or_get_attr:tab_id|yesno:"1,," }}
+                                        {% else %}
+                                            {{ race_driver|call_or_get_attr:tab_id|default_if_none:"-" }}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                <tfoot>
+    <tr>
+        <th></th>
+        {% if tab_id not in "price,discount,after_price,ratio" %}
+            <th></th>
+        {% endif %}
+        {% for race in race_list %}
+            <th></th>
+        {% endfor %}
+    </tr>
+</tfoot>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        const submitButton = document.getElementById("submit_button");
+        const resetButton = document.getElementById("deselect");
+
+        jQuery(function ($) {
+            $('form').bind('submit', function () {
+                $(this).find(':input').prop('disabled', false);
+            });
+        });
+
+        // Disable mouse wheel scrolling over number inputs
+        document.addEventListener("wheel", function(event){
+            if(document.activeElement.type === "number"){
+                document.activeElement.blur();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const totalFormsInput = document.querySelector('[name="form-TOTAL_FORMS"]');
+            if (!totalFormsInput) return;
+
+            const totalForms = parseInt(totalFormsInput.value);
+            const rows = [];
+
+            for (let i = 0; i < totalForms; i++) {
+                const selector = `[name^="form-${i}-"]`;
+                const inputs = Array.from(document.querySelectorAll(selector))
+                    .filter(el =>
+                        el.offsetParent !== null && // visible
+                        !el.disabled &&
+                        el.type !== 'hidden'
+                    );
+                rows.push(inputs);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                if (!arrowKeys.includes(e.key)) return;
+
+                e.preventDefault(); // Always prevent default arrow behavior
+
+                const active = document.activeElement;
+                let rowIndex = -1;
+                let colIndex = -1;
+
+                for (let r = 0; r < rows.length; r++) {
+                    const c = rows[r].indexOf(active);
+                    if (c !== -1) {
+                        rowIndex = r;
+                        colIndex = c;
+                        break;
+                    }
+                }
+
+                if (rowIndex === -1 || colIndex === -1) return;
+
+                let target = null;
+
+                switch (e.key) {
+                    case 'ArrowRight':
+                        if (colIndex < rows[rowIndex].length - 1) {
+                            target = rows[rowIndex][colIndex + 1];
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (colIndex > 0) {
+                            target = rows[rowIndex][colIndex - 1];
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (rowIndex < rows.length - 1 && rows[rowIndex + 1][colIndex]) {
+                            target = rows[rowIndex + 1][colIndex];
+                        }
+                        break;
+                    case 'ArrowUp':
+                        if (rowIndex > 0 && rows[rowIndex - 1][colIndex]) {
+                            target = rows[rowIndex - 1][colIndex];
+                        }
+                        break;
+                }
+
+                if (target) {
+                    target.focus();
+                }
+            });
+        });
+
+        // INITIALIZE DATATABLES FOR FANTASY STATS TABS
+        $(document).ready(function () {
+            {% for tab_id in tabs %}
+                $("#table_{{ tab_id }}").DataTable(
+                    {
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.13.2/i18n/tr.json"
+                        },
+                        paging: false,
+                        "info": false,
+                        searching: false,
+                        {% if tab_id in "price,discount,after_price,ratio" %}
+                            order: [],
+                            columnDefs: [
+                                {
+                                    className: "dt-center",
+                                    targets: "_all"
+                                }
+                            ],
+                        {% else %}
+                            columnDefs: [
+                                {
+                                    className: "dt-center",
+                                    targets: "_all"
+                                },
+                                {
+                                    render: function (data, type, row) {
+                                        let result = 0;
+                                        let num;
+                                        let nan_count = 0;
+                                        for (let i = 4; i < row.length; i++) {
+                                            num = parseInt(row[i]);
+                                            if (isNaN(num)) {
+                                                num = 0;
+                                                nan_count += 1;
+                                            }
+                                            result += num;
+                                        }
+                                        return "<b>" + result.toFixed(1) + "</b>";
+                                    },
+                                    targets: 1
+                                },
+                                {
+                                    render: function (data, type, row) {
+                                        let result = 0;
+                                        let num;
+                                        let nan_count = 0;
+                                        for (let i = 4; i < row.length; i++) {
+                                            num = parseInt(row[i]);
+                                            if (isNaN(num)) {
+                                                num = 0;
+                                                nan_count += 1;
+                                            }
+                                            result += num;
+                                        }
+                                        result /= row.length - 4 - nan_count;
+                                        result = isNaN(result) ? 22 : result;
+                                        return "<b>" + result.toFixed(1) + "</b>";
+                                    },
+                                    targets: 2
+                                },
+                                {
+                                    render: function (data, type, row) {
+                                        let result = 0;
+                                        let num;
+                                        let nan_count = 0;
+                                        for (let i = 4; i < row.length; i++) {
+                                            num = parseInt(row[i]);
+                                            if (isNaN(num)) {
+                                                num = 0;
+                                                nan_count += 1;
+                                            }
+                                            result += num;
+                                        }
+                                        result /= row.length - 4 - nan_count;
+                                        result = isNaN(result) ? 22 : result;
+
+                                        // Calculate the formula: 0.42*Math.pow(x,1.37)+2.5
+                                        let formulaResult = 0.42 * Math.pow(result, 1.37) + 2.5;
+
+                                        return "<b>" + formulaResult.toFixed(1) + "₺</b>";
+                                    },
+                                    targets: 3
+                                } ],
+                            {% if tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                                "order": [[1, 'asc']],
+                            {% else %}
+                                "order": [[1, 'desc']],
+                            {% endif %}
+                        {% endif %}
+                        {% if tab_id in "overtake_point,price,instances,discount" %}
+                        footerCallback: function (row, data, start, end, display) {
+                            let api = this.api();
+
+                            // Helper function to get numeric value from a cell
+                            let numericVal = function (i) {
+                                if (typeof i === 'string') {
+                                    // Remove currency symbols and convert to number
+                                    return parseFloat(i.replace(/[^\d.-]/g, '')) || 0;
+                                }
+                                return typeof i === 'number' ? i : 0;
+                            };
+
+                            {% if tab_id in "price,discount" %}
+                                // For price and discount tables, sum all columns except the first (driver name)
+                                let columnsToSum = [];
+                                for (let i = 1; i < api.columns().count(); i++) {
+                                    columnsToSum.push(i);
+                                }
+                            {% else %}
+                                // For total_point table, sum all columns except first (driver) and second (total)
+                                let columnsToSum = [];
+                                for (let i = 2; i < api.columns().count(); i++) {
+                                    columnsToSum.push(i);
+                                }
+                            {% endif %}
+
+                            // Calculate sums for specified columns
+                            let sums = columnsToSum.map(function (column) {
+                                let columnData = api.column(column).data();
+                                let sum = 0;
+                                let count = 0;
+                                columnData.each(function (value) {
+                                    if (value && value.toString().trim() !== "" && value.toString().trim() !== "-") {
+                                        let val = numericVal(value);
+                                        if (!isNaN(val)) {
+                                            sum += val;
+                                            count++;
+                                        }
+                                    }
+                                });
+                                return count > 0 ? sum : 0;
+                            });
+
+                            // Update footer for specified columns
+                            columnsToSum.forEach(function (column, index) {
+                                let footer = api.column(column).footer();
+                                if (footer) {
+                                    {% if tab_id == "price" %}
+                                        footer.innerHTML = sums[index].toFixed(1) + "₺";
+                                    {% elif tab_id == "discount" %}
+                                        footer.innerHTML = sums[index].toFixed(0);
+                                    {% else %}
+                                        footer.innerHTML = sums[index].toFixed(0);
+                                    {% endif %}
+                                }
+                            });
+                        }
+                        {% endif %}
+                    }
+                );
+                {% if tab_id in "instances,price,discount,after_price,ratio" %}
+                    $("#table_{{ tab_id }} tbody td").not(":nth-child(1), :empty").colorize();
+                {% elif tab_id in 'qualy,grid,results,grid_sprint,sprint' %}
+                {% else %}
+                    $("#table_{{ tab_id }} tbody td").not(":nth-child(1),:nth-child(2), :empty").colorize();
+                {% endif %}
+
+
+            {% endfor %}
+        });
+function updateTableRow(row, price, discount) {
+    // Parse values with proper decimal handling
+    const previousPrice = parseFloat(row.dataset.previousPrice.replace(',', '.')) || 0;
+    const currentPrice = parseFloat(price) || 0;
+    const discountCoefficients = [0.6, 0.13, -0.0044, 0.000054];
+
+    const discountAmount = discountCoefficients
+        .reduce((acc, coef, power) => acc + coef * Math.pow(currentPrice, power), 0);
+
+    const discountedPrice = Math.round((currentPrice - discountAmount) * 10) / 10;
+
+    // Update price cell
+    row.querySelector('.price-cell').textContent = currentPrice.toFixed(1) + '₺';
+
+    // Update change cell with proper decimal calculation
+    const changeCell = row.querySelector('.change-cell');
+    if (previousPrice) {
+        const change = currentPrice - previousPrice;
+        const formattedChange = change.toFixed(1) + '₺';
+
+        changeCell.textContent = (change > 0 ? '+' : '') + formattedChange;
+        changeCell.className = 'change-cell ' +
+            (change > 0 ? 'text-success' : (change < 0 ? 'text-danger' : ''));
+    } else {
+        changeCell.textContent = '-';
+        changeCell.className = 'change-cell';
+    }
+
+    // Update discounted cell with proper decimal calculation
+    const discountedCell = row.querySelector('.discounted-cell');
+    if (discount) {
+        discountedCell.textContent = discountedPrice.toFixed(1) + '₺';
+    } else {
+        discountedCell.textContent = '';
+    }
+}
+
+// Initialize event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#reactive-table tr').forEach(row => {
+    const initialPrice = parseFloat(row.dataset.initialPrice.replace(',', '.')) || 0;
+    const initialDiscount = row.dataset.initialDiscount === 'true';
+    updateTableRow(row, initialPrice, initialDiscount);
+});
+    // Connect form inputs to table rows
+    document.querySelectorAll('.mb-3.row.g-0').forEach(formRow => {
+        const driverId = formRow.dataset.driverId;
+        const tableRow = document.querySelector(`#reactive-table tr[data-driver-id="${driverId}"]`);
+
+        if (!tableRow) return;
+
+        // Find inputs
+        const priceInput = formRow.querySelector('input[type="number"]');
+        const discountInput = formRow.querySelector('input[type="checkbox"]');
+
+        // Create update handler
+        const updateHandler = () => {
+            const price = priceInput.value;
+            const discount = discountInput ? discountInput.checked : false;
+            updateTableRow(tableRow, price, discount);
+        };
+
+        // Attach event listeners
+        if (priceInput) {
+            priceInput.addEventListener('input', updateHandler);
+
+            // Add step buttons for easier decimal adjustment
+            const wrapper = document.createElement('div');
+            wrapper.className = 'col-auto ms-3';
+
+            const minusBtn = document.createElement('button');
+            minusBtn.type = 'button';
+            minusBtn.className = 'btn btn-sm btn-outline-secondary me-2';
+            minusBtn.innerHTML = '-0.1';
+            minusBtn.onclick = () => {
+                priceInput.stepDown();
+                priceInput.dispatchEvent(new Event('input'));
+            };
+
+            const plusBtn = document.createElement('button');
+            plusBtn.type = 'button';
+            plusBtn.className = 'btn btn-sm btn-outline-secondary';
+            plusBtn.innerHTML = '+0.1';
+            plusBtn.onclick = () => {
+                priceInput.stepUp();
+                priceInput.dispatchEvent(new Event('input'));
+            };
+
+            wrapper.appendChild(minusBtn);
+            wrapper.appendChild(plusBtn);
+            formRow.appendChild(wrapper);
+        }
+
+        if (discountInput) {
+            discountInput.addEventListener('change', updateHandler);
+        }
+    });
+
+    // Handle reset button
+    document.getElementById('deselect').addEventListener('click', () => {
+        setTimeout(() => {
+            document.querySelectorAll('#reactive-table tr').forEach(row => {
+                const initialPrice = parseFloat(row.dataset.initialPrice.replace(',', '.')) || 0;
+                const initialDiscount = row.dataset.initialDiscount === 'true';
+                updateTableRow(row, initialPrice, initialDiscount);
+            });
+        }, 10);
+    });
+});;
+
+    </script>
+{% endblock %}
+
