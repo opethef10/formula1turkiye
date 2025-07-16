@@ -1,15 +1,47 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-<h1>Copy Fantasy Elements</h1>
-<form method="post" class="form-horizontal">{% csrf_token %}
-    <fieldset>
-        {{ form.as_p }}
-    </fieldset>
-    <div>
-        <button type="submit" class="button button-primary">Run Command</button>
-    </div>
-    <div>
-        <a href=".." class="button">Cancel</a>
-    </div>
-</form>
+<div class="module aligned">
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.series.errors }}
+            <label for="{{ form.series.id_for_label }}">Series:</label>
+            {{ form.series }}
+            <div class="help">{{ form.series.help_text }}</div>
+        </div>
+
+        <div class="form-row">
+            {{ form.budget.errors }}
+            {{ form.budget }}
+            <label for="{{ form.budget.id_for_label }}" class="vCheckboxLabel">
+                Increase budget by 5₺
+            </label>
+        </div>
+
+        <div class="form-row">
+            {{ form.token.errors }}
+            {{ form.token }}
+            <label for="{{ form.token.id_for_label }}" class="vCheckboxLabel">
+                Adjust token to 16
+            </label>
+        </div>
+
+        <div class="submit-row">
+            <input type="submit" value="Run Command" class="default">
+            <a href=".." class="button">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-row {
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    .vCheckboxLabel {
+        display: inline;
+        margin-left: 5px;
+    }
+</style>
 {% endblock %}
