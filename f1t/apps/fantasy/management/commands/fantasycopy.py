@@ -20,7 +20,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         result = {
             'status': 'success',
-            'actions': defaultdict(int),
+            'created': defaultdict(int),
+            'exists': defaultdict(int),
             'errors': []
         }
 
@@ -54,11 +55,13 @@ class Command(BaseCommand):
                         }
                     )
 
-                    action = 'created' if created else 'exists'
-                    result['actions'][f'race_drivers_{action}'] += 1
+                    if created:
+                        result['created']['race_drivers'] += 1
+                    else:
+                        result['exists']['race_drivers'] += 1
 
                     if not silent:
-                        self.stdout.write(f"RaceDriver {nrd} {action}")
+                        self.stdout.write(f"RaceDriver {nrd} {'created' if created else 'already exists'}")
 
                 # Process RaceTeams
                 for prt in prev_race.team_instances.all():
@@ -75,16 +78,16 @@ class Command(BaseCommand):
                         }
                     )
 
-                    action = 'created' if created else 'exists'
-                    result['actions'][f'race_teams_{action}'] += 1
+                    if created:
+                        result['created']['race_teams'] += 1
+                    else:
+                        result['exists']['race_teams'] += 1
 
                     if not silent:
-                        self.stdout.write(f"RaceTeam {nrt} {action}")
+                        self.stdout.write(f"RaceTeam {nrt} {'created' if created else 'already exists'}")
 
                     # Process Team Drivers only for new teams
                     if created:
-                        # Get drivers ordered by price
-                        # Useful for ordering these race drivers in the fantasy detail page
                         for prd in prt.race_drivers.all().order_by("-price"):
                             try:
                                 nrd = RaceDriver.objects.get(
@@ -100,11 +103,13 @@ class Command(BaseCommand):
                                 racedriver=nrd
                             )
 
-                            action = 'created' if created else 'exists'
-                            result['actions'][f'team_drivers_{action}'] += 1
+                            if created:
+                                result['created']['team_drivers'] += 1
+                            else:
+                                result['exists']['team_drivers'] += 1
 
                             if not silent:
-                                self.stdout.write(f"RaceTeamDriver {nrtd} {action}")
+                                self.stdout.write(f"RaceTeamDriver {nrtd} {'created' if created else 'already exists'}")
 
         except Exception as e:
             result['status'] = 'error'
