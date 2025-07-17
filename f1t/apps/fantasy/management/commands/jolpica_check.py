@@ -154,17 +154,17 @@ class Command(BaseCommand):
             return
 
         driver_discrepancies = []
-        for field, new_value in result_fields.items():
-            old_value = getattr(race_driver, field)
-            if str(old_value) != str(new_value):
+        for field, jolpica_value in result_fields.items():
+            f1t_value = getattr(race_driver, field)
+            if str(f1t_value) != str(jolpica_value):
                 discrepancy = {
                     'driver': driver_slug,
                     'field': field,
-                    'old_value': str(old_value),
-                    'new_value': str(new_value)
+                    'f1t_value': str(f1t_value),
+                    'jolpica_value': str(jolpica_value)
                 }
                 driver_discrepancies.append(discrepancy)
-                setattr(race_driver, field, new_value)
+                setattr(race_driver, field, jolpica_value)
 
         if not driver_discrepancies:
             return
@@ -179,5 +179,5 @@ class Command(BaseCommand):
         else:
             report['discrepancies'].extend(driver_discrepancies)
             if not silent:
-                disc_strs = [f"{d['field']}: {d['old_value']} != {d['new_value']}" for d in driver_discrepancies]
+                disc_strs = [f"{d['field']}: {d['f1t_value']} != {d['jolpica_value']}" for d in driver_discrepancies]
                 self.stdout.write(f"Discrepancies for {driver_slug}: {', '.join(disc_strs)}")
