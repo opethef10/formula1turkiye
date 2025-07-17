@@ -17,6 +17,34 @@
     input[type="number"] {
         -moz-appearance: textfield;
     }
+    .api-section {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .api-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .api-result {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .api-result pre {
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    .btn-fetch {
+        margin-top: 10px;
+    }
 </style>
 {% endblock %}
 
@@ -53,6 +81,58 @@
     <iframe src="{{ race.wikilink }}#Race_classification" scrolling="no"
             width="900px" height="900px"></iframe>
 
+
+    <!-- API Fetch Section -->
+<div class="api-section">
+    <h4>Jolpica API ile Verileri Kontrol Et ve Güncelle</h4>
+    <div class="alert alert-info mb-3">
+        Jolpica API ile sonuçları kontrol edip herhangi bir uyumsuzluk olduğunda bunları görebilir ve yarış/sıralama/sprint sonuçlarını otomatik olarak API verisi ile güncelleyebilirsiniz.
+    </div>
+    <form class="api-form" id="api-fetch-form">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="data-type">Veri Türü</label>
+                    <select class="form-control" id="data-type" name="datatype">
+                        <option value="results">Yarış, Grid ve EHT</option>
+                        <option value="qualifying">Sıralama</option>
+                        <option value="sprint">Sprint</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="update" name="update">
+                        <label class="form-check-label" for="update">
+                            Veritabanını Güncelle
+                        </label>
+                        <small class="form-text text-muted d-block mt-2">
+                            <strong>Dikkat:</strong> Özellikle eski yarışlarda pit yolunda başlayanların grid
+                            pozisyonunun 0 gösterilmesi veya uyumsuz sonuçlar gibi sıkıntılar çıkabilmektedir. Bu gibi
+                            farklılıkları olduğu gibi bırakıyoruz. Bu
+                            nedenle veritabanını güncelle seçeneğini seçmeden önce bir kez veriyi güncellemeden çekmek
+                            önerilir. Uygunsa ondan sonra veritabanını güncelliyoruz. 2025 itibariyle Jolpica verisi
+                            eski Ergast verisine göre daha güvenlidir ancak
+                            yine de güncellemeden önce verinin çekilmesi daha iyi olur.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-fetch">Veriyi Çek</button>
+            </div>
+        </div>
+    </form>
+
+    <small class="form-text text-muted d-block mt-2">Veri çekilip veritabanı güncellendiğinde aşağıdaki gridde bir değişiklik
+        gözükmüyorsa normaldir, sayfanın yenilenmesi yeterlidir.</small>
+    <div class="api-result" id="api-result">
+        <pre>Veri raporu burada görüntülenecek...</pre>
+    </div>
+</div>
+
+    <h4>Yarış Sonuçlarını Elle Düzenle</h4>
     <form id="race_edit_form" class="form form-horizontal" method="post" novalidate>
         {% csrf_token %}
         {{ formset.management_form }}
@@ -219,6 +299,34 @@
                 if (target) {
                     target.focus();
                 }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiForm = document.getElementById('api-fetch-form');
+            const apiResult = document.getElementById('api-result');
+
+            apiForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(apiForm);
+                const datatype = formData.get('datatype');
+                const update = formData.get('update') ? 'on' : '';
+
+                const url = `/api/jolpica_check/?datatype=${datatype}&year={{ race.championship.year }}&round={{ race.round }}&update=${update}`;
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        apiResult.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    })
+                    .catch(error => {
+                        apiResult.innerHTML = `<pre class="text-danger">Error: ${error.message}</pre>`;
+                    });
             });
         });
     </script>

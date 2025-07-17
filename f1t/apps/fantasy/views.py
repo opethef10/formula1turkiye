@@ -11,11 +11,12 @@ from django.core.cache import cache
 from django.core.management import call_command
 from django.db.models import Count, Max, Q
 from django.db.models.query import QuerySet
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView, FormView
@@ -1555,3 +1556,50 @@ class CopyFantasyElementsView(SuccessMessageMixin, FormView):
                 messages.warning(self.request, "No new elements created. Existing: " + ", ".join(existing_parts))
             else:
                 messages.warning(self.request, "No fantasy elements needed to be copied")
+
+
+class JolpicaCheckAPIView(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return JsonResponse({
+            'status': 'error',
+            'errors': ['Permission denied.']
+        }, status=403)
+
+    def get(self, request, *args, **kwargs):
+        # Get parameters from request
+        datatype = request.GET.get('datatype')
+        year = request.GET.get('year')
+        round_num = request.GET.get('round')
+        update = request.GET.get('update', 'false').lower() == "on"
+        print("update is represented as", request.GET.get('update', 'yanlis'))
+
+        # Validate required parameters
+        if not all([datatype, year, round_num]):
+            return JsonResponse({
+                'status': 'error',
+                'errors': ['Missing required parameters: datatype, year, round']
+            }, status=400)
+
+        try:
+            # Call the management command
+            report = call_command(
+                'jolpica_check',  # Replace with your actual command name
+                datatype,
+                int(year),
+                int(round_num),
+                update=update,
+                silent=True,
+            )
+
+            # Get the JSON output from the command
+            result = json.loads(report)
+            return JsonResponse(result)
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'errors': [str(e)]
+            }, status=500)
