@@ -4,7 +4,7 @@ from django.urls import path
 from mdeditor.widgets import MDEditorWidget
 
 from .models import *
-from .views import CopyFantasyElementsView
+from .views import CopyFantasyElementsView, CheckCalendarView
 
 
 class SelectRelatedModelAdmin(admin.ModelAdmin):
@@ -35,11 +35,13 @@ admin.site.register(ChampionshipConstructor, ChampionshipConstructorAdmin)
 
 class ChampionshipAdmin(admin.ModelAdmin):
     change_list_template = "admin/championship_changelist.html"
+    change_form_template = "admin/championship_change_form.html"
 
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
             path("fantasycopy/", self.admin_site.admin_view(CopyFantasyElementsView.as_view()), name="copy_fantasy_elements"),
+            path("<int:object_id>/check_calendar/", self.admin_site.admin_view(CheckCalendarView.as_view()), name="championship_check_calendar"),
         ]
         return custom_urls + urls
 

@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.core.management import call_command
+from io import StringIO
 from django.db.models import Count, Max, Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpResponseRedirect, JsonResponse
@@ -1603,3 +1604,17 @@ class JolpicaCheckAPIView(UserPassesTestMixin, View):
                 'status': 'error',
                 'errors': [str(e)]
             }, status=500)
+
+
+class CheckCalendarView(View):
+    def get(self, request, object_id):
+        championship = get_object_or_404(Championship, pk=object_id)
+        out = StringIO()
+        call_command('crosscheck_races', year=championship.year, series=championship.series, stdout=out, stderr=out)
+        output = out.getvalue()
+        context = {
+            'title': 'Calendar Crosscheck',
+            'championship': championship,
+            'output': output,
+        }
+        return render(request, 'admin/check_calendar.html', context)
