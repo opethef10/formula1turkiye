@@ -15,7 +15,7 @@ def convert_to_server_timezone(dt):
     if dt:
         # No need to call make_aware, since dt is already timezone-aware (it has UTC)
         return dt.astimezone(server_timezone)
-    
+
 # Function to handle the session names mapping for different series
 def get_session_times(sessions, series):
     if series == 'f2':
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         # Construct the URL based on the series and year
         url = f'https://raw.githubusercontent.com/sportstimes/f1/main/_db/{series}/{year}.json'
-        
+
         try:
             response = requests.get(url)
             response.raise_for_status()
@@ -61,7 +61,8 @@ class Command(BaseCommand):
 
         # Fetch the championship from the database based on the series and year
         try:
-            championship = Championship.objects.get(year=year, series=series)
+            championship = Championship.objects.prefetch_related("races").get(year=year, series=series)
+            races_by_round = {race.round: race for race in championship.races.all()}
         except Championship.DoesNotExist:
             self.stderr.write(f"Championship for {series.upper()} {year} does not exist.")
             return
@@ -75,15 +76,10 @@ class Command(BaseCommand):
             sessions = race_data.get('sessions', {})
             fp1_time, fp2_time, fp3_time, quali_time, sprint_shootout_time, sprint_time, gp_time = get_session_times(sessions, series)
             race_name = race_data['name']
-            location = race_data['location']
-            latitude = race_data['latitude']
-            longitude = race_data['longitude']
-            # sessions = race_data['sessions']
-            
+
             # Attempt to find the race in the database
-            try:
-                race = Race.objects.get(championship=championship, round=race_round)
-            except Race.DoesNotExist:
+            race = races_by_round.get(race_round)
+            if race is None:
                 self.stderr.write(f"Race not found in DB: {race_name} (Round {race_round})")
                 continue
 
