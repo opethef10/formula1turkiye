@@ -1,6 +1,7 @@
 from django.urls import include, path
 
 from . import views
+from .views import JolpicaCheckAPIView
 
 app_name = "formula"
 urlpatterns = [
@@ -56,6 +57,9 @@ urlpatterns = [
     path('<str:series>/<int:year>/fantasy/me/', views.FantasyProfileRedirectView.as_view(), name='redirect_my_team'),
     path('<str:series>/<int:year>/teams/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail_deprecated'),
     path('<str:series>/<int:year>/fantasy/<str:username>/', views.FantasyUserProfileView.as_view(), name='team_detail'),
+
+    # API paths
+    path('api/jolpica_check/', JolpicaCheckAPIView.as_view(), name='jolpica-check-api'),
 
     # Tahmin ligi paths
     path('<str:series>/<int:year>/', include("f1t.apps.tahmin.urls")),

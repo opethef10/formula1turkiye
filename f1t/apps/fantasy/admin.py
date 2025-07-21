@@ -1,12 +1,11 @@
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.contrib.flatpages.models import FlatPage
-from django.shortcuts import render, redirect
 from django.urls import path
 from mdeditor.widgets import MDEditorWidget
 
-from .forms import CopyFantasyElementsForm
-from .management.commands.fantasycopy import Command
 from .models import *
+from .views import CopyFantasyElementsView, CheckCalendarView
+
 
 class SelectRelatedModelAdmin(admin.ModelAdmin):
     related_fields = {}
@@ -36,36 +35,15 @@ admin.site.register(ChampionshipConstructor, ChampionshipConstructorAdmin)
 
 class ChampionshipAdmin(admin.ModelAdmin):
     change_list_template = "admin/championship_changelist.html"
+    change_form_template = "admin/championship_change_form.html"
 
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path("fantasycopy/", self.admin_site.admin_view(self.copy_fantasy_elements_view), name="copy_fantasy_elements"),
+            path("fantasycopy/", self.admin_site.admin_view(CopyFantasyElementsView.as_view()), name="copy_fantasy_elements"),
+            path("<int:object_id>/check_calendar/", self.admin_site.admin_view(CheckCalendarView.as_view()), name="championship_check_calendar"),
         ]
         return custom_urls + urls
-
-    def copy_fantasy_elements_view(self, request):
-        if request.method == "POST":
-            form = CopyFantasyElementsForm(request.POST)
-            if form.is_valid():
-                series = form.cleaned_data["series"]
-                budget = form.cleaned_data["budget"]
-                token = form.cleaned_data["token"]
-
-                try:
-                    # Invoke the command logic
-                    command = Command()
-                    command.handle(series=series, budget=budget, token=token)
-                    messages.success(request, "Fantasy elements copied successfully.")
-                    return redirect("..")
-                except Exception as e:
-                    messages.error(request, f"Error: {e}")
-        else:
-            form = CopyFantasyElementsForm()
-
-        return render(request, "admin/copy_fantasy_elements_form.html", {"form": form})
-
-
 
 class CircuitAdmin(SelectRelatedModelAdmin):
     pass
