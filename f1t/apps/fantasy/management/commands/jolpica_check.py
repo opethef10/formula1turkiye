@@ -1,3 +1,4 @@
+import json
 import requests
 from django.core.management.base import BaseCommand
 
@@ -16,14 +17,23 @@ class Command(BaseCommand):
         parser.add_argument("year", type=int, help="Year of the championship")
         parser.add_argument("round", type=int, help="Round number of the race")
         parser.add_argument("--update", action="store_true", help="Update the database with fetched data")
+        parser.add_argument("--silent", action="store_true", help="Suppress non-error output")
 
     def handle(self, *args, **options):
-        datatype = options["datatype"]
-        year = options["year"]
-        round_number = options["round"]
-        self.update = options["update"]
+        report = {
+            'status': 'success',
+            'discrepancies': [],
+            'updated': [],
+            'errors': []
+        }
+        silent = options["silent"]
 
         try:
+            datatype = options["datatype"]
+            year = options["year"]
+            round_number = options["round"]
+            update = options["update"]
+
             race = Race.objects.select_related('championship').get(
                 championship__year=year,
                 championship__series=SERIES,
@@ -35,30 +45,28 @@ class Command(BaseCommand):
                 for rd in RaceDriver.objects.select_related("driver").filter(race=race)
             }
 
-            self.stdout.write(f"Fetching {datatype} data for {SERIES} {year} Round {round_number}...")
+            if not silent:
+                self.stdout.write(f"Fetching {datatype} data for {SERIES} {year} Round {round_number}...")
             session_data = self.fetch_data(year, round_number, datatype)
 
             match datatype:
                 case "results":
-                    self.handle_race(session_data)
+                    self.handle_race(session_data, report, update, silent)
                 case "qualifying":
-                    self.handle_qualifying(session_data)
+                    self.handle_qualifying(session_data, report, update, silent)
                 case "sprint":
-                    self.handle_sprint(session_data)
+                    self.handle_sprint(session_data, report, update, silent)
                 case _:
                     raise ValueError(f"Unknown datatype: {datatype}")
 
-        except requests.RequestException as e:
-            self.stderr.write(f"Error fetching data from API: {e}")
-        except Championship.DoesNotExist:
-            self.stderr.write("Championship does not exist.")
-        except Race.DoesNotExist:
-            self.stderr.write("Race does not exist.")
-        except ValueError as ve:
-            self.stderr.write(f"API: {ve}")
         except Exception as e:
-            self.stderr.write(f"An unexpected error occurred: {e}")
-            raise
+            report['status'] = 'error'
+            error_msg = str(e)
+            report['errors'].append(error_msg)
+            if not silent:
+                self.stderr.write(error_msg)
+
+        return json.dumps(report)
 
     def fetch_data(self, year: int, round_number: int, datatype: str) -> dict:
         api_url = f"{API_BASE_URL}/{SERIES}/{year}/{round_number}/{datatype}/"
@@ -70,7 +78,7 @@ class Command(BaseCommand):
         except (KeyError, IndexError):
             raise ValueError(f"No data found for {SERIES} {year} Round {round_number} {datatype}.")
 
-    def handle_race(self, session_data: dict):
+    def handle_race(self, session_data: dict, report: dict, update: bool, silent: bool):
         results = session_data["Results"]
 
         for result in results:
@@ -89,10 +97,13 @@ class Command(BaseCommand):
 
             self._update_or_compare(
                 driver_slug,
-                fields
+                fields,
+                report,
+                update,
+                silent,
             )
 
-    def handle_sprint(self, session_data: dict):
+    def handle_sprint(self, session_data: dict, report: dict, update: bool, silent: bool):
         results = session_data["SprintResults"]
 
         for result in results:
@@ -108,9 +119,12 @@ class Command(BaseCommand):
             self._update_or_compare(
                 driver_slug,
                 fields,
+                report,
+                update,
+                silent,
             )
 
-    def handle_qualifying(self, session_data: dict):
+    def handle_qualifying(self, session_data: dict, report: dict, update: bool, silent: bool):
         results = session_data["QualifyingResults"]
 
         for result in results:
@@ -125,26 +139,45 @@ class Command(BaseCommand):
             self._update_or_compare(
                 driver_slug,
                 fields,
+                report,
+                update,
+                silent
             )
 
-    def _update_or_compare(self, driver_slug: str, result_fields: dict):
+    def _update_or_compare(self, driver_slug: str, result_fields: dict, report: dict, update: bool, silent: bool):
         race_driver = self.race_drivers.get(driver_slug)
         if not race_driver:
-            self.stdout.write(f"RaceDriver not found for driverId: {driver_slug}")
+            error_msg = f"RaceDriver not found for driverId: {driver_slug}"
+            report['errors'].append(error_msg)
+            if not silent:
+                self.stderr.write(error_msg)
             return
 
-        discrepancies = []
-        for field, new_value in result_fields.items():
-            old_value = getattr(race_driver, field)
-            if str(old_value) != str(new_value):
-                discrepancies.append(f"{field}: {old_value} != {new_value}")
-                setattr(race_driver, field, new_value)
+        driver_discrepancies = []
+        for field, jolpica_value in result_fields.items():
+            f1t_value = getattr(race_driver, field)
+            if str(f1t_value) != str(jolpica_value):
+                discrepancy = {
+                    'driver': driver_slug,
+                    'field': field,
+                    'f1t_value': str(f1t_value),
+                    'jolpica_value': str(jolpica_value)
+                }
+                driver_discrepancies.append(discrepancy)
+                setattr(race_driver, field, jolpica_value)
 
-        if not discrepancies:
+        if not driver_discrepancies:
             return
 
-        if self.update:
+
+        if update:
             race_driver.save()
-            self.stdout.write(f"Updated {', '.join(result_fields)} for {driver_slug}")
+            report['updated'].extend(driver_discrepancies)
+            if not silent:
+                updated_fields = ', '.join(d['field'] for d in driver_discrepancies)
+                self.stdout.write(f"Updated {updated_fields} for {driver_slug}")
         else:
-            self.stdout.write(f"Discrepancies for {driver_slug}: {', '.join(discrepancies)}")
+            report['discrepancies'].extend(driver_discrepancies)
+            if not silent:
+                disc_strs = [f"{d['field']}: {d['f1t_value']} != {d['jolpica_value']}" for d in driver_discrepancies]
+                self.stdout.write(f"Discrepancies for {driver_slug}: {', '.join(disc_strs)}")

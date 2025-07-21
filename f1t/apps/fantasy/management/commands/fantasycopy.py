@@ -1,5 +1,9 @@
+from collections import defaultdict
+import json
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.db import transaction
 
 from ...models import Championship, Race, RaceDriver, RaceTeam, RaceTeamDriver
 
@@ -11,46 +15,107 @@ class Command(BaseCommand):
         parser.add_argument("series", choices=['f1', 'f2'])
         parser.add_argument("--budget", action='store_true', help="Increase budget by 5₺")
         parser.add_argument("--token", action='store_true', help="Adjust token to 16")
+        parser.add_argument('--silent', action='store_true', help='Suppress console output')
 
     def handle(self, *args, **options):
-        series = options["series"]
-        increase_budget = options["budget"]
-        set_token = options["token"]
-        championship = Championship.objects.get(series=series, year=timezone.now().year)
-        prev_race = championship.latest_race()
-        next_race = prev_race.next
-        if not next_race:
-            self.stderr.write("No next race found")
-            raise Race.DoesNotExist("No next race found")
-        prev_race_drivers = prev_race.driver_instances.all()
-        prev_raceteams = prev_race.team_instances.all()
+        result = {
+            'status': 'success',
+            'created': defaultdict(int),
+            'exists': defaultdict(int),
+            'errors': []
+        }
 
-        for prd in prev_race_drivers:
-            nrd, created = RaceDriver.objects.get_or_create(
-                race=next_race,
-                driver=prd.driver,
-                championship_constructor=prd.championship_constructor,
-                price=prd.price
-            )
-            if created:
-                self.stdout.write(f"Created RaceDriver {nrd}")
+        try:
+            with transaction.atomic():
+                series = options["series"]
+                increase_budget = options["budget"]
+                set_token = options["token"]
+                silent = options["silent"]
 
-        for prt in prev_raceteams:
-            nrt, created = RaceTeam.objects.get_or_create(
-                race=next_race,
-                user=prt.user,
-                token=16 if set_token else prt.token,
-                budget=prt.budget + 5 if increase_budget else prt.budget,
-                tactic=prt.tactic
-            )
-            if created:
-                self.stdout.write(f"Created RaceTeam {nrt}")
+                championship = Championship.objects.get(series=series, year=timezone.now().year)
+                prev_race = championship.latest_race()
+                next_race = prev_race.next
 
-            for prd in prt.race_drivers.all().order_by("-price"):
-                nrd = RaceDriver.objects.get(race=next_race, driver=prd.driver)
-                nrtd, created = RaceTeamDriver.objects.get_or_create(
-                    raceteam=nrt,
-                    racedriver=nrd
-                )
-                if created:
-                    self.stdout.write(f"Created RaceTeamDriver {nrtd}")
+                if not next_race:
+                    error_msg = "No next race found"
+                    result['errors'].append(error_msg)
+                    result['status'] = 'error'
+                    if not silent:
+                        self.stderr.write(error_msg)
+                    return json.dumps(result)
+
+                # Process RaceDrivers
+                for prd in prev_race.driver_instances.all():
+                    nrd, created = RaceDriver.objects.get_or_create(
+                        race=next_race,
+                        driver=prd.driver,
+                        defaults={
+                            'championship_constructor': prd.championship_constructor,
+                            'price': prd.price
+                        }
+                    )
+
+                    if created:
+                        result['created']['race_drivers'] += 1
+                    else:
+                        result['exists']['race_drivers'] += 1
+
+                    if not silent:
+                        self.stdout.write(f"RaceDriver {nrd} {'created' if created else 'already exists'}")
+
+                # Process RaceTeams
+                for prt in prev_race.team_instances.all():
+                    new_budget = prt.budget + 5 if increase_budget else prt.budget
+                    new_token = 16 if set_token else prt.token
+
+                    nrt, created = RaceTeam.objects.get_or_create(
+                        race=next_race,
+                        user=prt.user,
+                        defaults={
+                            'token': new_token,
+                            'budget': new_budget,
+                            'tactic': prt.tactic
+                        }
+                    )
+
+                    if created:
+                        result['created']['race_teams'] += 1
+                    else:
+                        result['exists']['race_teams'] += 1
+
+                    if not silent:
+                        self.stdout.write(f"RaceTeam {nrt} {'created' if created else 'already exists'}")
+
+                    # Process Team Drivers only for new teams
+                    if created:
+                        for prd in prt.race_drivers.all().order_by("-price"):
+                            try:
+                                nrd = RaceDriver.objects.get(
+                                    race=next_race,
+                                    driver=prd.driver
+                                )
+                            except RaceDriver.DoesNotExist:
+                                result['errors'].append(f"Driver {prd.driver} not found for race {next_race}")
+                                continue
+
+                            nrtd, created = RaceTeamDriver.objects.get_or_create(
+                                raceteam=nrt,
+                                racedriver=nrd
+                            )
+
+                            if created:
+                                result['created']['team_drivers'] += 1
+                            else:
+                                result['exists']['team_drivers'] += 1
+
+                            if not silent:
+                                self.stdout.write(f"RaceTeamDriver {nrtd} {'created' if created else 'already exists'}")
+
+        except Exception as e:
+            result['status'] = 'error'
+            result['errors'].append(str(e))
+            if not silent:
+                self.stderr.write(f"Error: {str(e)}")
+            return json.dumps(result)
+
+        return json.dumps(result)

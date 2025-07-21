@@ -1,3 +1,4 @@
+import json
 import logging
 from statistics import mean, median, stdev
 
@@ -7,18 +8,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
+from django.core.management import call_command
+from io import StringIO
 from django.db.models import Count, Max, Q
 from django.db.models.query import QuerySet
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView
+from django.views.generic import ListView, DetailView, RedirectView, TemplateView, UpdateView, FormView
 
-from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet, PriceEditForm, PriceFormSet
+from .forms import NewTeamForm, EditTeamForm, RaceDriverEditForm, RaceDriverFormSet, PriceEditForm, PriceFormSet, \
+    CopyFantasyElementsForm
 from .mixins import ChampionshipMixin, RaceRangeSelectorMixin
 from .models import Championship, Circuit, Race, RaceDriver, RaceTeam, Driver, Constructor
 
@@ -1480,3 +1485,136 @@ class PriceUpdateView(UserPassesTestMixin, ChampionshipMixin, UpdateView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class CopyFantasyElementsView(SuccessMessageMixin, FormView):
+    template_name = "admin/copy_fantasy_elements_form.html"
+    form_class = CopyFantasyElementsForm
+    success_url = reverse_lazy("admin:fantasy_championship_changelist")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Copy Fantasy Elements"
+        return context
+
+    def form_valid(self, form):
+        try:
+            result = call_command(
+                'fantasycopy',
+                form.cleaned_data["series"],
+                budget=form.cleaned_data["budget"],
+                token=form.cleaned_data["token"],
+                silent=True,
+            )
+            result = json.loads(result)
+
+            if result['status'] == 'success':
+                self._handle_success_result(result)
+            elif result['status'] == 'error':
+                messages.error(self.request, "Errors occurred: " + ", ".join(result['errors']))
+            else:
+                messages.error(self.request, "Unexpected result status: " + result['status'])
+
+        except Exception as e:
+            messages.error(self.request, f"Operation failed: {str(e)}")
+
+        return super().form_valid(form)
+
+    def _handle_success_result(self, result):
+        """Helper method to handle successful command execution"""
+        created_drivers = result['created'].get('race_drivers', 0)
+        existing_drivers = result['exists'].get('race_drivers', 0)
+        created_teams = result['created'].get('race_teams', 0)
+        existing_teams = result['exists'].get('race_teams', 0)
+        created_team_drivers = result['created'].get('team_drivers', 0)
+
+        if created_drivers or created_teams or created_team_drivers:
+            message_parts = []
+            if created_drivers:
+                message_parts.append(f"{created_drivers} new driver(s)")
+            if created_teams:
+                message_parts.append(f"{created_teams} new team(s)")
+            if created_team_drivers:
+                message_parts.append(f"{created_team_drivers} new driver-team assignment(s)")
+
+            if existing_drivers or existing_teams:
+                existing_parts = []
+                if existing_drivers:
+                    existing_parts.append(f"{existing_drivers} driver(s)")
+                if existing_teams:
+                    existing_parts.append(f"{existing_teams} team(s)")
+                message_parts.append(f"(already existed: {', '.join(existing_parts)})")
+
+            messages.success(self.request, "Success! Created: " + ", ".join(message_parts))
+        else:
+            existing_parts = []
+            if existing_drivers:
+                existing_parts.append(f"{existing_drivers} driver(s)")
+            if existing_teams:
+                existing_parts.append(f"{existing_teams} team(s)")
+
+            if existing_parts:
+                messages.warning(self.request, "No new elements created. Existing: " + ", ".join(existing_parts))
+            else:
+                messages.warning(self.request, "No fantasy elements needed to be copied")
+
+
+class JolpicaCheckAPIView(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return JsonResponse({
+            'status': 'error',
+            'errors': ['Permission denied.']
+        }, status=403)
+
+    def get(self, request, *args, **kwargs):
+        # Get parameters from request
+        datatype = request.GET.get('datatype')
+        year = request.GET.get('year')
+        round_num = request.GET.get('round')
+        update = request.GET.get('update', 'false').lower() == "on"
+        print("update is represented as", request.GET.get('update', 'yanlis'))
+
+        # Validate required parameters
+        if not all([datatype, year, round_num]):
+            return JsonResponse({
+                'status': 'error',
+                'errors': ['Missing required parameters: datatype, year, round']
+            }, status=400)
+
+        try:
+            # Call the management command
+            report = call_command(
+                'jolpica_check',  # Replace with your actual command name
+                datatype,
+                int(year),
+                int(round_num),
+                update=update,
+                silent=True,
+            )
+
+            # Get the JSON output from the command
+            result = json.loads(report)
+            return JsonResponse(result)
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'errors': [str(e)]
+            }, status=500)
+
+
+class CheckCalendarView(View):
+    def get(self, request, object_id):
+        championship = get_object_or_404(Championship, pk=object_id)
+        out = StringIO()
+        call_command('crosscheck_races', year=championship.year, series=championship.series, stdout=out, stderr=out)
+        output = out.getvalue()
+        context = {
+            'title': 'Calendar Crosscheck',
+            'championship': championship,
+            'output': output,
+        }
+        return render(request, 'admin/check_calendar.html', context)
