@@ -15,6 +15,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 -->
 
+## [2.21.0] - 2025-07-21
+### Added
+- JSON command response structure for the management commands
+- JSON based response for the Fantasy copy command
+- API that checks and updates the results from the Jolpica API in Race edit page
+- Calendar check in admin panel
+### Changed
+- Fantasy copy command transaction became atomic
+### Removed
+- Deprecated separate Jolpica checks
+
 ## [2.20.0] - 2025-07-16
 ### Added
 - Price Edit page
